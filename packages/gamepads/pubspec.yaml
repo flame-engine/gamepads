@@ -1,8 +1,8 @@
 name: gamepads
 description: A Flutter plugin to handle gamepad input across multiple platforms.
 version: 0.1.0
-homepage: https://github.com/bluefireteam/gamepads
-repository: https://github.com/bluefireteam/gamepads/tree/master/packages/gamepads
+homepage: https://github.com/flame-engine/gamepads
+repository: https://github.com/flame-engine/gamepads/tree/master/packages/gamepads
 
 flutter:
   plugin:

@@ -6,8 +6,8 @@
   <a title="Pub" href="https://pub.dev/packages/gamepads">
     <img src="https://img.shields.io/pub/v/gamepads.svg?style=popout&include_prereleases"/>
   </a>
-  <a title="Build Status" href="https://github.com/bluefireteam/gamepads/actions?query=workflow%3Abuild+branch%3Amain">
-    <img src="https://github.com/bluefireteam/gamepads/workflows/build/badge.svg?branch=main"/>
+  <a title="Build Status" href="https://github.com/flame-engine/gamepads/actions?query=workflow%3Abuild+branch%3Amain">
+    <img src="https://github.com/flame-engine/gamepads/workflows/build/badge.svg?branch=main"/>
   </a>
   <a title="Discord" href="https://discord.gg/pxrBmy4">
     <img src="https://img.shields.io/discord/509714518008528896.svg"/>

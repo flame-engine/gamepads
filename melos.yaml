@@ -1,5 +1,5 @@
 name: gamepads
-repository: https://github.com/bluefireteam/gamepads
+repository: https://github.com/flame-engine/gamepads
 
 packages:
   - packages/**
