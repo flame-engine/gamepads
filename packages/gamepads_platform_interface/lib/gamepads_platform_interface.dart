@@ -1,3 +1,4 @@
+import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 import 'package:gamepads_platform_interface/method_channel_gamepads_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -16,4 +17,6 @@ abstract class GamepadsPlatformInterface extends PlatformInterface {
       MethodChannelGamepadsPlatformInterface();
 
   Future<int> getValue();
+
+  Stream<GamepadEvent> get gamepadEventsStream;
 }

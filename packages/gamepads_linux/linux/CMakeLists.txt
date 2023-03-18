@@ -1,7 +1,12 @@
 # See: https://github.com/flutter/flutter/blob/bc0ec85717de14677a0253814faead368ac2abe8/packages/flutter_tools/templates/app_shared/linux.tmpl/CMakeLists.txt.tmpl
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.20)
+
 set(PROJECT_NAME "gamepads_linux")
 project(${PROJECT_NAME} LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 include(FetchContent)
 
 # This value is used when generating builds using this plugin, so it must not be changed
@@ -9,6 +14,10 @@ set(PLUGIN_NAME "${PROJECT_NAME}_plugin")
 
 add_library(${PLUGIN_NAME} SHARED
   "gamepads_linux_plugin.cc"
+  "gamepad.h"
+  "gamepad.cc"
+  "format.h"
+  "format.cc"
 )
 apply_standard_settings(${PLUGIN_NAME})
 set_target_properties(${PLUGIN_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)

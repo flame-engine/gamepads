@@ -28,12 +28,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static final _gamepad = Gamepad();
+
+  String _lastEvent = '';
   bool loading = false;
   int _response = 0;
 
   Future<void> _getValue() async {
     setState(() => loading = true);
-    final response = await Gamepad().getValue();
+    final response = await _gamepad.getValue();
     setState(() {
       _response = response;
       loading = false;
@@ -50,6 +53,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            StreamBuilder(
+              stream: _gamepad.gamepadEventsStream,
+              builder: (context, snapshot) {
+                final data = snapshot.data;
+                if (data != null) {
+                  _lastEvent = data.value;
+                }
+                return Text('Last Event: $_lastEvent');
+              },
+            ),
             Text('Result: $_response'),
             TextButton(
               onPressed: _getValue,
