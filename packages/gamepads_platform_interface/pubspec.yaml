@@ -5,7 +5,7 @@ homepage: https://github.com/bluefireteam/gamepads
 repository: https://github.com/bluefireteam/gamepads/tree/master/packages/gamepads_platform_interface
 
 environment:
-  sdk: '>=2.19.4 <3.0.0'
+  sdk: '>=2.19.0 <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:

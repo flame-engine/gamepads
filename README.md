@@ -1,5 +1,5 @@
 <p align="center">
-  [WIP] Gamepads
+  A Flutter plugin to handle gamepad input across multiple platforms.
 </p>
 
 <p align="center">
@@ -20,6 +20,7 @@
 ---
 
 **Note**: this is WIP - not even close to ready!
+
 
 ## Getting Started
 

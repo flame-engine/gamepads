@@ -11,7 +11,7 @@ flutter:
         default_package: gamepads_linux
 
 environment:
-  sdk: '>=2.19.4 <3.0.0'
+  sdk: '>=2.19.0 <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
