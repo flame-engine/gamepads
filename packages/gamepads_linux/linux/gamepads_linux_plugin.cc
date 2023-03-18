@@ -5,11 +5,13 @@
 #include <pthread.h>
 
 #include <iostream>
+#include <optional>
 #include <map>
 #include <memory>
 #include <sstream>
 
-#include "gamepad.h"
+#include "gamepad_connection_listener.h"
+#include "gamepad_listener.h"
 
 #define GAMEPADS_LINUX_PLUGIN(obj)                                       \
     (G_TYPE_CHECK_INSTANCE_CAST((obj), gamepads_linux_plugin_get_type(), \
@@ -24,10 +26,17 @@ G_DEFINE_TYPE(GamepadsLinuxPlugin, gamepads_linux_plugin, g_object_get_type())
 static FlMethodChannel *channel;
 bool _keep_reading_events = false;
 
-static void emit_gamepad_event(std::string value) {
+struct ConnectedGamepad {
+    std::string name;
+    pthread_t listener;
+};
+
+std::map<std::string, ConnectedGamepad> gamepads = {};
+
+static void emit_gamepad_event(const gamepad_listener::GamepadEvent& event) {
     if (channel) {
         g_autoptr(FlValue) map = fl_value_new_map();
-        fl_value_set_string(map, "value", fl_value_new_string(value.c_str()));
+        fl_value_set_string(map, "value", fl_value_new_string(event.value.c_str()));
         fl_method_channel_invoke_method(channel, "onGamepadEvent", map, nullptr, nullptr, nullptr);
     }
 }
@@ -66,11 +75,39 @@ void gamepads_linux_plugin_register_with_registrar(FlPluginRegistrar *registrar)
     g_object_unref(plugin);
 }
 
-void* event_loop_start(void* arg) {
-    gamepad::game_event_read_loop(
-        "/dev/input/js0",
+void* process_connection_event(void* ptr) {
+    std::string device = *(std::string*) ptr;
+    gamepad_listener::listen(
+        device,
         &_keep_reading_events,
-        [](const std::string& value) { emit_gamepad_event(value); }
+        [](const gamepad_listener::GamepadEvent& value) { emit_gamepad_event(value); }
+    );
+    return NULL;
+}
+
+void* event_loop_start(void* arg) {
+    gamepad_connection_listener::listen(
+        &_keep_reading_events,
+        [](const gamepad_connection_listener::ConnectionEvent& event) {
+            std::string key = event.device;
+            if (event.type == gamepad_connection_listener::ConnectionEventType::CONNECTED) {
+                std::cout << "Gamepad connected " << key << std::endl;
+                pthread_t input_thread;
+                int rc = pthread_create(&input_thread, NULL, process_connection_event, (void*) &key);
+                if (rc != 0) {
+                    std::cerr << "Error in pthread_create(): " << rc << std::endl;
+                }
+                ConnectedGamepad gamepad = {key, input_thread};
+                gamepads[key] = gamepad;
+            } else {
+                std::cout << "Gamepad disconnected " << key << std::endl;
+                std::optional<ConnectedGamepad> gamepad = gamepads[key];
+                if (gamepad) {
+                    pthread_cancel(gamepad->listener);
+                    gamepads.erase(key);
+                }
+            }
+        }
     );
     return NULL;
 }

@@ -8,7 +8,10 @@
 #include <functional>
 #include <optional>
 
-#include "format.h"
+#include "utils.h"
+#include "gamepad_listener.h"
+
+using namespace gamepad_listener;
 
 /**
  * Reads a joystick event from the joystick device.
@@ -83,7 +86,7 @@ size_t _get_axis_state(struct js_event *event, struct _axis_state axes[3]) {
     return axis;
 }
 
-std::optional<std::string> _parse_event(js_event event, struct _axis_state axes[3]) {
+std::optional<std::string> _parse_event_string(js_event event, struct _axis_state axes[3]) {
     switch (event.type) {
         case JS_EVENT_BUTTON: {
             return string_format("Button %u %s\n", event.number, event.value ? "pressed" : "released");
@@ -103,26 +106,31 @@ std::optional<std::string> _parse_event(js_event event, struct _axis_state axes[
     } 
 }
 
-namespace gamepad {
-    void game_event_read_loop(
-        std::string device,
-        bool *keep_reading,
-        std::function<void(const std::string&)> consume_event
+namespace gamepad_listener {
+    void listen(
+        const std::string& device,
+        bool* keep_reading,
+        std::function<void(const GamepadEvent&)> event_consumer
     ) {
+        std::cout << "Listening to gamepad " << device << std::endl;
+
         int js = open(device.c_str(), O_RDONLY);
         if (js == -1) {
             std::cerr << "Could not open joystick: " << js << std::endl;
+            return;
         }
 
         struct _axis_state axes[3] = {{0}};
         while (*keep_reading) {
             struct js_event event;
             _read_event(js, &event);
-            std::optional<std::string> value = _parse_event(event, axes);
+            std::optional<std::string> value = _parse_event_string(event, axes);
             if (value) {
-                consume_event(*value);
+                GamepadEvent event = {device, *value};
+                event_consumer(event);
             }
         }
+        std::cout << "Stopped listening for events: " << device << std::endl;
 
         close(js);
     }

@@ -15,12 +15,17 @@
 #include <functional>
 #include <optional>
 
-#include "format.h"
+#include "utils.h"
 
-namespace gamepad {
-    void game_event_read_loop(
-        std::string device,
-        bool *keep_reading,
-        std::function<void(const std::string&)> consume_event
+namespace gamepad_listener {
+    struct GamepadEvent {
+        std::string device;
+        std::string value;
+    };
+
+    void listen(
+        const std::string& device,
+        bool* keep_reading,
+        std::function<void(const GamepadEvent&)> event_consumer
     );
 }

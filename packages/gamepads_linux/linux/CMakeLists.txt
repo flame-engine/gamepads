@@ -14,10 +14,12 @@ set(PLUGIN_NAME "${PROJECT_NAME}_plugin")
 
 add_library(${PLUGIN_NAME} SHARED
   "gamepads_linux_plugin.cc"
-  "gamepad.h"
-  "gamepad.cc"
-  "format.h"
-  "format.cc"
+  "gamepad_listener.h"
+  "gamepad_listener.cc"
+  "gamepad_connection_listener.h"
+  "gamepad_connection_listener.cc"
+  "utils.h"
+  "utils.cc"
 )
 apply_standard_settings(${PLUGIN_NAME})
 set_target_properties(${PLUGIN_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)

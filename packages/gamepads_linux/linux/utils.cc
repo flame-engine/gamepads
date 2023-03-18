@@ -22,3 +22,10 @@ const std::string string_format(const char * const zcFormat, ...) {
     va_end(vaArgs);
     return std::string(zc.data(), iLen);
 }
+
+bool starts_with(const std::string& str, const std::string& prefix) {
+    if (prefix.length() > str.length()) {
+        return false;
+    }
+    return str.compare(0, prefix.length(), prefix) == 0;
+}
