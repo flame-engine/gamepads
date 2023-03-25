@@ -7,7 +7,6 @@
  */
 
 #include <fcntl.h>
-#include <stdio.h>
 #include <unistd.h>
 #include <linux/joystick.h>
 
@@ -26,6 +25,6 @@ namespace gamepad_listener {
     void listen(
         const std::string& device,
         bool* keep_reading,
-        std::function<void(const GamepadEvent&)> event_consumer
+        const std::function<void(const GamepadEvent&)>& event_consumer
     );
 }

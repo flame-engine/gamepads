@@ -1,5 +1,5 @@
 #include <fcntl.h>
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 #include <linux/joystick.h>
 
@@ -29,31 +29,6 @@ int _read_event(int fd, struct js_event *event) {
 
     /* Error, could not read full event. */
     return -1;
-}
-
-/**
- * Returns the number of axes on the controller or 0 if an error occurs.
- */
-size_t _get_axis_count(int fd) {
-    __u8 axes;
-
-    if (ioctl(fd, JSIOCGAXES, &axes) == -1) {
-        return 0;
-    }
-
-    return axes;
-}
-
-/**
- * Returns the number of buttons on the controller or 0 if an error occurs.
- */
-size_t _get_button_count(int fd) {
-    __u8 buttons;
-    if (ioctl(fd, JSIOCGBUTTONS, &buttons) == -1) {
-        return 0;
-    }
-
-    return buttons;
 }
 
 /**
@@ -90,7 +65,6 @@ std::optional<std::string> _parse_event_string(js_event event, struct _axis_stat
     switch (event.type) {
         case JS_EVENT_BUTTON: {
             return string_format("Button %u %s\n", event.number, event.value ? "pressed" : "released");
-            break;
         }
         case JS_EVENT_AXIS: {
             size_t axis = _get_axis_state(&event, axes);
@@ -110,13 +84,14 @@ namespace gamepad_listener {
     void listen(
         const std::string& device,
         bool* keep_reading,
-        std::function<void(const GamepadEvent&)> event_consumer
+        const std::function<void(const GamepadEvent&)>& event_consumer
     ) {
         std::cout << "Listening to gamepad " << device << std::endl;
 
         int js = open(device.c_str(), O_RDONLY);
         if (js == -1) {
             std::cerr << "Could not open joystick: " << js << std::endl;
+            *keep_reading = false;
             return;
         }
 
@@ -126,12 +101,12 @@ namespace gamepad_listener {
             _read_event(js, &event);
             std::optional<std::string> value = _parse_event_string(event, axes);
             if (value) {
-                GamepadEvent event = {device, *value};
-                event_consumer(event);
+                GamepadEvent gamepadEvent = {device, *value};
+                event_consumer(gamepadEvent);
             }
         }
-        std::cout << "Stopped listening for events: " << device << std::endl;
 
+        std::cout << "Stopped listening for events: " << device << std::endl;
         close(js);
     }
 }

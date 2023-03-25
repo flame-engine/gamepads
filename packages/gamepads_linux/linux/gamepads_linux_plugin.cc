@@ -1,14 +1,12 @@
 #include "include/gamepads_linux/gamepads_linux_plugin.h"
 
 #include <flutter_linux/flutter_linux.h>
-#include <string.h>
-#include <pthread.h>
 
 #include <iostream>
 #include <optional>
 #include <map>
-#include <memory>
 #include <sstream>
+#include <thread>
 
 #include "gamepad_connection_listener.h"
 #include "gamepad_listener.h"
@@ -24,11 +22,13 @@ struct _GamepadsLinuxPlugin {
 G_DEFINE_TYPE(GamepadsLinuxPlugin, gamepads_linux_plugin, g_object_get_type())
 
 static FlMethodChannel *channel;
-bool _keep_reading_events = false;
+
+bool keep_reading_events = false;
 
 struct ConnectedGamepad {
     std::string name;
-    pthread_t listener;
+    bool alive = false;
+    std::thread* listener = nullptr;
 };
 
 std::map<std::string, ConnectedGamepad> gamepads = {};
@@ -41,22 +41,26 @@ static void emit_gamepad_event(const gamepad_listener::GamepadEvent& event) {
     }
 }
 
+static void respond_not_found(FlMethodCall *method_call) {
+    g_autoptr(FlMethodResponse) response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
+    fl_method_call_respond(method_call, response, nullptr);
+}
+
+static void respond_int(FlMethodCall *method_call, int value) {
+    g_autoptr(FlMethodResponse) response = FL_METHOD_RESPONSE(fl_method_success_response_new(fl_value_new_int(value)));
+    fl_method_call_respond(method_call, response, nullptr);
+}
+
 static void gamepads_linux_plugin_handle_method_call(GamepadsLinuxPlugin *self, FlMethodCall *method_call) {
-    g_autoptr(FlMethodResponse) response = nullptr;
-    int result;
     const gchar *method = fl_method_call_get_name(method_call);
     // FlValue *args = fl_method_call_get_args(method_call);
 
     if (strcmp(method, "getValue") == 0) {
-        result = 42;
+        respond_int(method_call, 42);
     } else {
-        response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
-        fl_method_call_respond(method_call, response, nullptr);
-        return;
+        respond_not_found(method_call);
     }
 
-    response = FL_METHOD_RESPONSE(fl_method_success_response_new(fl_value_new_int(result)));
-    fl_method_call_respond(method_call, response, nullptr);
 }
 
 static void method_call_cb(FlMethodChannel *channel, FlMethodCall *method_call, gpointer user_data) {
@@ -75,45 +79,46 @@ void gamepads_linux_plugin_register_with_registrar(FlPluginRegistrar *registrar)
     g_object_unref(plugin);
 }
 
-void* process_connection_event(void* ptr) {
-    std::string device = *(std::string*) ptr;
+void process_connection_event(
+    const std::string& device,
+    bool* alive
+) {
     gamepad_listener::listen(
         device,
-        &_keep_reading_events,
+        alive,
         [](const gamepad_listener::GamepadEvent& value) { emit_gamepad_event(value); }
     );
-    return NULL;
 }
 
-void* event_loop_start(void* arg) {
+void event_loop_start() {
     gamepad_connection_listener::listen(
-        &_keep_reading_events,
+        &keep_reading_events,
         [](const gamepad_connection_listener::ConnectionEvent& event) {
             std::string key = event.device;
+            std::optional<ConnectedGamepad> existingGamepad = gamepads[key];
             if (event.type == gamepad_connection_listener::ConnectionEventType::CONNECTED) {
-                std::cout << "Gamepad connected " << key << std::endl;
-                pthread_t input_thread;
-                int rc = pthread_create(&input_thread, NULL, process_connection_event, (void*) &key);
-                if (rc != 0) {
-                    std::cerr << "Error in pthread_create(): " << rc << std::endl;
+                if (existingGamepad && existingGamepad->alive) {
+                    return;
                 }
-                ConnectedGamepad gamepad = {key, input_thread};
-                gamepads[key] = gamepad;
+
+                std::cout << "Gamepad connected " << key << std::endl;
+                gamepads[key] = {key, true, nullptr};
+
+                std::thread input_thread(process_connection_event, key, &(gamepads[key].alive));
+                gamepads[key].listener = &input_thread;
+                input_thread.detach();
             } else {
                 std::cout << "Gamepad disconnected " << key << std::endl;
-                std::optional<ConnectedGamepad> gamepad = gamepads[key];
-                if (gamepad) {
-                    pthread_cancel(gamepad->listener);
+                if (existingGamepad) {
                     gamepads.erase(key);
                 }
             }
         }
     );
-    return NULL;
 }
 
 static void gamepads_linux_plugin_dispose(GObject *object) {
-    _keep_reading_events = false;
+    keep_reading_events = false;
     G_OBJECT_CLASS(gamepads_linux_plugin_parent_class)->dispose(object);
 }
 
@@ -122,11 +127,8 @@ static void gamepads_linux_plugin_class_init(GamepadsLinuxPluginClass *klass) {
 }
 
 static void gamepads_linux_plugin_init(GamepadsLinuxPlugin *self) {
-    _keep_reading_events =  true;
+    keep_reading_events =  true;
 
-    pthread_t input_thread;
-    int rc = pthread_create(&input_thread, NULL, event_loop_start, NULL);
-    if (rc != 0) {
-        std::cerr << "Error in pthread_create(): " << rc << std::endl;
-    }
+    std::thread event_loop_thread(event_loop_start);
+    event_loop_thread.detach();
 }

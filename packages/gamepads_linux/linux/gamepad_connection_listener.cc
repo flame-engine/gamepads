@@ -6,7 +6,7 @@
 
 #include <sys/inotify.h>
 #include <dirent.h>
-#include <unistd.h>
+#include <map>
 
 #include "utils.h"
 #include "gamepad_connection_listener.h"
@@ -14,6 +14,12 @@
 using namespace gamepad_connection_listener;
 
 const std::string _input_dir = "/dev/input/";
+
+std::map<ConnectionEventType, const char*> connectionEventTypeNames = {
+        {ConnectionEventType::CONNECTED, "CONNECTED"},
+        {ConnectionEventType::DISCONNECTED, "DISCONNECTED"},
+};
+
 
 std::optional<ConnectionEventType> _parseEventType(inotify_event* event) {
     int mask = event->mask;
@@ -27,7 +33,7 @@ std::optional<ConnectionEventType> _parseEventType(inotify_event* event) {
 }
 
 void _list_existing(
-    std::function<void(const ConnectionEvent&)> event_consumer
+    const std::function<void(const ConnectionEvent&)>& event_consumer
 ) {
     DIR *dir = opendir(_input_dir.c_str());
 
@@ -59,7 +65,7 @@ void _list_existing(
 
 void _wait_for_connections(
     int inotify,
-    std::function<void(const ConnectionEvent&)> event_consumer
+    const std::function<void(const ConnectionEvent&)>& event_consumer
 ) {
     char buffer[4096] __attribute__ ((aligned(__alignof__(struct inotify_event))));
     ssize_t len = read(inotify, buffer, sizeof(buffer));
@@ -68,19 +74,18 @@ void _wait_for_connections(
         throw std::runtime_error("Error reading inotify events");
     }
 
-    std::cout << "Connection found, processing" << std::endl;
-
     char* ptr = buffer;
     while (ptr < buffer + len) {
-        struct inotify_event *event = reinterpret_cast<struct inotify_event*>(ptr);
+        auto *event = reinterpret_cast<struct inotify_event*>(ptr);
         std::string name = event->name;
         if (!starts_with(name, "js")) {
             break;
         }
 
-        std::cout << "Connection name: " << name << std::endl;
         std::string device = _input_dir + name;
         std::optional<ConnectionEventType> type = _parseEventType(event);
+
+        std::cout << "Connection found: " << connectionEventTypeNames[*type] << " - " << name << std::endl;
         ConnectionEvent connection_event = {*type, device};
         event_consumer(connection_event);
 
@@ -90,8 +95,8 @@ void _wait_for_connections(
 
 namespace gamepad_connection_listener {
     void listen(
-        bool* keep_reading,
-        std::function<void(const ConnectionEvent&)> event_consumer 
+        const bool* keep_reading,
+        const std::function<void(const ConnectionEvent&)>& event_consumer
     ) {
         std::cout << "Reading initial gamepads..." << std::endl;
         _list_existing(event_consumer);

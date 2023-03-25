@@ -19,7 +19,7 @@ namespace gamepad_connection_listener {
     };
 
     void listen(
-        bool* keep_reading,
-        std::function<void(const ConnectionEvent&)> event_consumer
+        const bool* keep_reading,
+        const std::function<void(const ConnectionEvent&)>& event_consumer
     );
 }
