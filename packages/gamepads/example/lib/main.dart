@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gamepads/gamepads.dart';
 
@@ -30,7 +32,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   static final _gamepad = Gamepad();
 
-  String _lastEvent = '';
+  StreamSubscription<GamepadEvent>? _subscription;
+
+  List<GamepadEvent> _lastEvents = [];
   bool loading = false;
   List<GamepadController> _response = [];
 
@@ -43,6 +47,33 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _clear() {
+    setState(() => _lastEvents = []);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _subscription = _gamepad.gamepadEventsStream.listen((event) {
+      setState(() {
+        final newEvents = [
+          event,
+          ..._lastEvents,
+        ];
+        if (newEvents.length > 3) {
+          newEvents.removeRange(3, newEvents.length);
+        }
+        _lastEvents = newEvents;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,22 +83,19 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            StreamBuilder(
-              stream: _gamepad.gamepadEventsStream,
-              builder: (context, snapshot) {
-                final data = snapshot.data;
-                if (data != null) {
-                  _lastEvent = data.toString();
-                }
-                return Text('Last Event: $_lastEvent');
-              },
+          children: [
+            const Text('Last Events:'),
+            ..._lastEvents.map((e) => Text(e.toString())),
+            TextButton(
+              onPressed: _clear,
+              child: const Text('clear events'),
             ),
-            Text('Result: ${_response.map((e) => e.id)}'),
+            const SizedBox(height: 16),
             TextButton(
               onPressed: _getValue,
               child: const Text('listGamepads()'),
             ),
+            Text('Result: ${_response.map((e) => e.id)}'),
           ],
         ),
       ),

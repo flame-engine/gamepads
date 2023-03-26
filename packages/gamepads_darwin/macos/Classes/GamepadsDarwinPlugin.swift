@@ -29,29 +29,30 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     }
     
     private func onGamepadEvent(gamepad: GCExtendedGamepad, element: GCControllerElement) {
-        guard let value = getValue(element: element) else {
-            return
+        for (key, value) in getValues(element: element) {
+            let arguments: [String: Any] = [
+                "gamepadId": getId(gamepad: gamepad),
+                "time": Int(getTimestamp(gamepad: gamepad)),
+                "type": element.isAnalog ? "analog" : "button",
+                "key": key,
+                "value": value,
+            ]
+            channel.invokeMethod("onGamepadEvent", arguments: arguments)
         }
-
-        let arguments: [String: Any] = [
-            "gamepadId": getId(gamepad: gamepad),
-            "time": Int(getTimestamp(gamepad: gamepad)),
-            "type": element.isAnalog ? "analog" : "button",
-            "key": element.sfSymbolsName ?? "Unknown key",
-            "value": value,
-        ]
-        channel.invokeMethod("onGamepadEvent", arguments: arguments)
     }
     
-    private func getValue(element: GCControllerElement) -> Float? {
+    private func getValues(element: GCControllerElement) -> [(String, Float)] {
         if let element = element as? GCControllerButtonInput {
-            return element.value
+            return [(element.sfSymbolsName ?? "Unknown button", element.value)]
         } else if let element = element as? GCControllerAxisInput {
-            return element.value
+            return [(element.sfSymbolsName ?? "Unknown axis", element.value)]
         } else if let element = element as? GCControllerDirectionPad {
-            return element.xAxis.value // TODO fix this
+            return [
+                ("\(element.sfSymbolsName ?? "") xAxis", element.xAxis.value),
+                ("\(element.sfSymbolsName ?? "") yAxis", element.yAxis.value)
+            ]
         } else {
-            return nil
+            return []
         }
     }
     
