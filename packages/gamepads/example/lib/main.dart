@@ -34,15 +34,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   StreamSubscription<GamepadEvent>? _subscription;
 
+  List<GamepadController> _gamepads = [];
   List<GamepadEvent> _lastEvents = [];
   bool loading = false;
-  List<GamepadController> _response = [];
 
   Future<void> _getValue() async {
     setState(() => loading = true);
     final response = await _gamepad.listGamepads();
     setState(() {
-      _response = response;
+      _gamepads = response;
       loading = false;
     });
   }
@@ -95,7 +95,11 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: _getValue,
               child: const Text('listGamepads()'),
             ),
-            Text('Result: ${_response.map((e) => e.id)}'),
+            const Text('Gamepads:'),
+            if (loading)
+              const CircularProgressIndicator()
+            else
+              ..._gamepads.map((e) => Text(e.id))
           ],
         ),
       ),

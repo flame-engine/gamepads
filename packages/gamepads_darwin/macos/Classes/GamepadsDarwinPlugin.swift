@@ -28,7 +28,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         }
     }
     
-    private func onGamepadEvent(gamepad: GCExtendedGamepad, element: GCControllerElement) {
+    private func onGamepadEvent(gamepadId: Int, gamepad: GCExtendedGamepad, element: GCControllerElement) {
         for (key, value) in getValues(element: element) {
             let arguments: [String: Any] = [
                 "gamepadId": getId(gamepad: gamepad),
@@ -48,8 +48,8 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             return [(element.sfSymbolsName ?? "Unknown axis", element.value)]
         } else if let element = element as? GCControllerDirectionPad {
             return [
-                ("\(element.sfSymbolsName ?? "") xAxis", element.xAxis.value),
-                ("\(element.sfSymbolsName ?? "") yAxis", element.yAxis.value)
+                (maybeConcat(element.sfSymbolsName, "xAxis"), element.xAxis.value),
+                (maybeConcat(element.sfSymbolsName, "yAxis"), element.yAxis.value)
             ]
         } else {
             return []
@@ -66,7 +66,9 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     
     private func getId(gamepad: GCExtendedGamepad) -> String {
         if #available(macOS 11.0, *) {
-            return gamepad.device?.productCategory ?? "Unknown device"
+            let device = gamepad.device
+            let playerId = (gamepad.controller?.playerIndex.rawValue).map { String(describing: $0) }
+            return maybeConcat(device?.vendorName, device?.productCategory, playerId) ?? "Unknown device"
         } else {
             return "Unknown device"
         }
@@ -74,5 +76,27 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     
     private func listGamepads() -> [[String: Any?]] {
         return gamepads.gamepads.map { [ "id": getId(gamepad: $0) ] }
+    }
+    
+    private func maybeConcat(_ string1: String?, _ string2: String) -> String {
+        return maybeConcat(string1, string2)!
+    }
+
+    private func maybeConcat(_ strings: String?...) -> String? {
+        let nonNull = strings.compactMap { $0 }
+        if (nonNull.isEmpty) {
+            return nil
+        }
+        return nonNull.joined(separator: " - ")
+    }
+}
+
+extension Optional {
+    func map<T>(_ closure: (Wrapped) -> T) -> T? {
+        if let value = self {
+            return closure(value)
+        } else {
+            return nil
+        }
     }
 }

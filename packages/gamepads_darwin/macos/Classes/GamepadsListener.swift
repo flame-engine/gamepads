@@ -3,7 +3,7 @@ import GameController
 
 class GamepadsListener {
     var gamepads: [GCExtendedGamepad] = []
-    var listener: ((GCExtendedGamepad, GCControllerElement) -> Void)?
+    var listener: ((Int, GCExtendedGamepad, GCControllerElement) -> Void)?
     
     init() {
         NotificationCenter.default.addObserver(
@@ -24,22 +24,45 @@ class GamepadsListener {
         NotificationCenter.default.removeObserver(self)
     }
     
-    @objc func joystickDidConnect(notification: NSNotification) {
+    @objc private func joystickDidConnect(notification: NSNotification) {
         if let controller = notification.object as? GCController {
             if let gamepad = controller.extendedGamepad {
                 gamepads.append(gamepad)
+                let gamepadId = getAndSetPlayerId(of: gamepad)
+
                 gamepad.valueChangedHandler = { gamepad, element in
                     if let listener = self.listener {
-                        listener(gamepad, element);
+                        listener(gamepadId, gamepad, element);
                     }
                 }
             }
         }
     }
     
-    @objc func joystickDidDisconnect(notification: NSNotification) {
+    @objc private func joystickDidDisconnect(notification: NSNotification) {
         if let controller = notification.object as? GCController {
             gamepads.removeAll(where: { $0 == controller})
+        }
+    }
+    
+    private func getAndSetPlayerId(of gamepad: GCExtendedGamepad) -> Int {
+        let gamepadId = gamepads.firstIndex(of: gamepad) ?? -1
+        gamepad.controller?.playerIndex = toPlayerIndex(index: gamepadId)
+        return gamepadId
+    }
+    
+    private func toPlayerIndex(index: Int) -> GCControllerPlayerIndex {
+        switch index {
+        case 0:
+            return GCControllerPlayerIndex.index1
+        case 1:
+            return GCControllerPlayerIndex.index2
+        case 2:
+            return GCControllerPlayerIndex.index3
+        case 3:
+            return GCControllerPlayerIndex.index4
+        default:
+            return GCControllerPlayerIndex.indexUnset
         }
     }
 }
