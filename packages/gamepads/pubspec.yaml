@@ -9,6 +9,8 @@ flutter:
     platforms:
       linux:
         default_package: gamepads_linux
+      macos:
+        default_package: gamepads_darwin
 
 environment:
   sdk: '>=2.19.0 <3.0.0'
@@ -17,6 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  gamepads_darwin: ^0.1.0
   gamepads_linux: ^0.1.0
   gamepads_platform_interface: ^0.1.0
 

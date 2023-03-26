@@ -1,15 +1,15 @@
-name: gamepads_linux
-description: Linux implementation of gamepads, a Flutter plugin to handle gamepad input across multiple platforms.
+name: gamepads_darwin
+description: MacOS implementation of gamepads, a Flutter plugin to handle gamepad input across multiple platforms.
 version: 0.1.0
 homepage: https://github.com/flame-engine/gamepads
-repository: https://github.com/flame-engine/gamepads/tree/master/packages/gamepads_linux
+repository: https://github.com/flame-engine/gamepads/tree/master/packages/gamepads_darwin
 
 flutter:
   plugin:
-    implements: gamepads
+    implements: audioplayers
     platforms:
-      linux:
-        pluginClass: GamepadsLinuxPlugin
+      macos:
+        pluginClass: GamepadsDarwinPlugin
 
 environment:
   sdk: '>=2.19.0 <3.0.0'
