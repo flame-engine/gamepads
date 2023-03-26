@@ -38,7 +38,7 @@ static std::string parse_event_type(js_event event) {
             return "button";
         }
         case JS_EVENT_AXIS: {
-            return "axis";
+            return "analog";
         }
         default: {
             std::cerr << "Unknown event type " << event.type << std::endl;
@@ -57,7 +57,7 @@ static void emit_gamepad_event(
         fl_value_set_string(map, "gamepadId", fl_value_new_string(device.c_str()));
         fl_value_set_string(map, "time", fl_value_new_int(event.time));
         fl_value_set_string(map, "type", fl_value_new_string(parse_event_type(event).c_str()));
-        fl_value_set_string(map, "key", fl_value_new_int(event.number));
+        fl_value_set_string(map, "key", fl_value_new_string(std::to_string(event.number).c_str()));
         fl_value_set_string(map, "value", fl_value_new_float(event.value));
         fl_method_channel_invoke_method(channel, "onGamepadEvent", map, nullptr, nullptr, nullptr);
     }

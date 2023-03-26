@@ -1,10 +1,10 @@
-enum KeyType { button, axis }
+enum KeyType { analog, button }
 
 class GamepadEvent {
   final String gamepadId;
   final int timestamp;
   final KeyType type;
-  final int key;
+  final String key;
   final double value;
 
   GamepadEvent({
@@ -24,7 +24,7 @@ class GamepadEvent {
     final gamepadId = map['gamepadId'] as String;
     final timestamp = map['time'] as int;
     final type = KeyType.values.byName(map['type'] as String);
-    final key = map['key'] as int;
+    final key = map['key'] as String;
     final value = map['value'] as double;
 
     return GamepadEvent(
