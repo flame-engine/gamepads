@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
               builder: (context, snapshot) {
                 final data = snapshot.data;
                 if (data != null) {
-                  _lastEvent = data.value;
+                  _lastEvent = data.toString();
                 }
                 return Text('Last Event: $_lastEvent');
               },

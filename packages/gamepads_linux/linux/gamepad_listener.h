@@ -17,14 +17,9 @@
 #include "utils.h"
 
 namespace gamepad_listener {
-    struct GamepadEvent {
-        std::string gamepad_id;
-        std::string value;
-    };
-
     void listen(
         const std::string& device,
         bool* keep_reading,
-        const std::function<void(const GamepadEvent&)>& event_consumer
+        const std::function<void(const js_event&)>& event_consumer
     );
 }
