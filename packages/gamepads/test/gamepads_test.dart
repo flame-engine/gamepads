@@ -10,7 +10,7 @@ void main() {
   const channel = MethodChannel('xyz.luan/gamepads');
   channel.setMockMethodCallHandler((MethodCall call) async {
     calls.add(call);
-    return 0;
+    return <GamepadController>[];
   });
 
   void clear() {
@@ -30,7 +30,7 @@ void main() {
 
   test('invokes getValue through platform interface', () async {
     final gamepad = Gamepad();
-    expect(await gamepad.getValue(), 0);
+    expect(await gamepad.listGamepads(), <GamepadController>[]);
     expect(popLastCall().method, 'getValue');
   });
 }

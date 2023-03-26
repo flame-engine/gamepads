@@ -14,7 +14,7 @@
 using namespace gamepad_listener;
 
 /**
- * Reads a joystick event from the joystick device.
+ * Reads a joystick event from the joystick gamepad_id.
  *
  * Returns 0 on success. Otherwise -1 is returned.
  */
@@ -101,8 +101,8 @@ namespace gamepad_listener {
             _read_event(js, &event);
             std::optional<std::string> value = _parse_event_string(event, axes);
             if (value) {
-                GamepadEvent gamepadEvent = {device, *value};
-                event_consumer(gamepadEvent);
+                GamepadEvent gamepad_event = {device, *value};
+                event_consumer(gamepad_event);
             }
         }
 

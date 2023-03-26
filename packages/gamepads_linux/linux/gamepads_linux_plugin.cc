@@ -36,6 +36,7 @@ std::map<std::string, ConnectedGamepad> gamepads = {};
 static void emit_gamepad_event(const gamepad_listener::GamepadEvent& event) {
     if (channel) {
         g_autoptr(FlValue) map = fl_value_new_map();
+        fl_value_set_string(map, "gamepadId", fl_value_new_string(event.gamepad_id.c_str()));
         fl_value_set_string(map, "value", fl_value_new_string(event.value.c_str()));
         fl_method_channel_invoke_method(channel, "onGamepadEvent", map, nullptr, nullptr, nullptr);
     }
@@ -46,8 +47,8 @@ static void respond_not_found(FlMethodCall *method_call) {
     fl_method_call_respond(method_call, response, nullptr);
 }
 
-static void respond_int(FlMethodCall *method_call, int value) {
-    g_autoptr(FlMethodResponse) response = FL_METHOD_RESPONSE(fl_method_success_response_new(fl_value_new_int(value)));
+static void respond(FlMethodCall *method_call, FlValue* value) {
+    g_autoptr(FlMethodResponse) response = FL_METHOD_RESPONSE(fl_method_success_response_new(value));
     fl_method_call_respond(method_call, response, nullptr);
 }
 
@@ -55,15 +56,21 @@ static void gamepads_linux_plugin_handle_method_call(GamepadsLinuxPlugin *self, 
     const gchar *method = fl_method_call_get_name(method_call);
     // FlValue *args = fl_method_call_get_args(method_call);
 
-    if (strcmp(method, "getValue") == 0) {
-        respond_int(method_call, 42);
+    if (strcmp(method, "listGamepads") == 0) {
+        g_autoptr(FlValue) list = fl_value_new_list();
+        for (auto [key, gamepad] : gamepads) {
+            g_autoptr(FlValue) map = fl_value_new_map();
+            fl_value_set(map, fl_value_new_string("id"), fl_value_new_string(key.c_str()));
+            fl_value_append(list, map);
+        }
+        respond(method_call, list);
     } else {
         respond_not_found(method_call);
     }
 
 }
 
-static void method_call_cb(FlMethodChannel *channel, FlMethodCall *method_call, gpointer user_data) {
+static void method_call_cb([[maybe_unused]] FlMethodChannel *flutter_channel, FlMethodCall *method_call, gpointer user_data) {
     GamepadsLinuxPlugin *plugin = GAMEPADS_LINUX_PLUGIN(user_data);
     gamepads_linux_plugin_handle_method_call(plugin, method_call);
 }
@@ -110,6 +117,7 @@ void event_loop_start() {
             } else {
                 std::cout << "Gamepad disconnected " << key << std::endl;
                 if (existingGamepad) {
+                    gamepads[key].alive = false;
                     gamepads.erase(key);
                 }
             }

@@ -32,11 +32,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String _lastEvent = '';
   bool loading = false;
-  int _response = 0;
+  List<GamepadController> _response = [];
 
   Future<void> _getValue() async {
     setState(() => loading = true);
-    final response = await _gamepad.getValue();
+    final response = await _gamepad.listGamepads();
     setState(() {
       _response = response;
       loading = false;
@@ -63,10 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Text('Last Event: $_lastEvent');
               },
             ),
-            Text('Result: $_response'),
+            Text('Result: ${_response.map((e) => e.id)}'),
             TextButton(
               onPressed: _getValue,
-              child: const Text('getValue()'),
+              child: const Text('listGamepads()'),
             ),
           ],
         ),

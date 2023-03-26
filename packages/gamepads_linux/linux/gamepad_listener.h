@@ -18,7 +18,7 @@
 
 namespace gamepad_listener {
     struct GamepadEvent {
-        std::string device;
+        std::string gamepad_id;
         std::string value;
     };
 
