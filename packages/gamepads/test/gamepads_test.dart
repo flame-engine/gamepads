@@ -28,9 +28,9 @@ void main() {
 
   setUp(clear);
 
-  test('invokes getValue through platform interface', () async {
+  test('invokes listGamepads through platform interface', () async {
     final gamepad = Gamepad();
     expect(await gamepad.listGamepads(), <GamepadController>[]);
-    expect(popLastCall().method, 'getValue');
+    expect(popLastCall().method, 'listGamepads');
   });
 }
