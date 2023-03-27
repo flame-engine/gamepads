@@ -4,7 +4,7 @@ import GameController
 class GamepadsListener {
     var gamepads: [GCExtendedGamepad] = []
     var listener: ((Int, GCExtendedGamepad, GCControllerElement) -> Void)?
-    
+
     init() {
         NotificationCenter.default.addObserver(
             self,
@@ -19,11 +19,11 @@ class GamepadsListener {
             object: nil
         )
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+ 
     @objc private func joystickDidConnect(notification: NSNotification) {
         if let controller = notification.object as? GCController {
             if let gamepad = controller.extendedGamepad {
@@ -38,19 +38,19 @@ class GamepadsListener {
             }
         }
     }
-    
+ 
     @objc private func joystickDidDisconnect(notification: NSNotification) {
         if let controller = notification.object as? GCController {
             gamepads.removeAll(where: { $0 == controller})
         }
     }
-    
+
     private func getAndSetPlayerId(of gamepad: GCExtendedGamepad) -> Int {
         let gamepadId = gamepads.firstIndex(of: gamepad) ?? -1
         gamepad.controller?.playerIndex = toPlayerIndex(index: gamepadId)
         return gamepadId
     }
-    
+
     private func toPlayerIndex(index: Int) -> GCControllerPlayerIndex {
         switch index {
         case 0:

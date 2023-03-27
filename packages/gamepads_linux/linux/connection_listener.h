@@ -7,7 +7,7 @@
 
 #include "utils.h"
 
-namespace gamepad_connection_listener {
+namespace connection_listener {
     enum class ConnectionEventType {
         CONNECTED,
         DISCONNECTED,
@@ -15,7 +15,7 @@ namespace gamepad_connection_listener {
     
     struct ConnectionEvent {
         ConnectionEventType type;
-        std::string device;
+        std::string device_id;
     };
 
     void listen(

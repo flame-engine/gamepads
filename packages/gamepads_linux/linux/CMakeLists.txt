@@ -14,10 +14,10 @@ set(PLUGIN_NAME "${PROJECT_NAME}_plugin")
 
 add_library(${PLUGIN_NAME} SHARED
   "gamepads_linux_plugin.cc"
-  "gamepad_listener.h"
-  "gamepad_listener.cc"
-  "gamepad_connection_listener.h"
-  "gamepad_connection_listener.cc"
+  "gamepad.h"
+  "gamepad.cc"
+  "connection_listener.h"
+  "connection_listener.cc"
   "utils.h"
   "utils.cc"
 )

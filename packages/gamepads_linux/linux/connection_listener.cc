@@ -9,9 +9,9 @@
 #include <map>
 
 #include "utils.h"
-#include "gamepad_connection_listener.h"
+#include "connection_listener.h"
 
-using namespace gamepad_connection_listener;
+using namespace connection_listener;
 
 const std::string _input_dir = "/dev/input/";
 
@@ -22,7 +22,7 @@ std::map<ConnectionEventType, const char*> connectionEventTypeNames = {
 
 
 std::optional<ConnectionEventType> _parseEventType(inotify_event* event) {
-    int mask = event->mask;
+    uint mask = event->mask;
     if ((mask & IN_CREATE) || (mask & IN_ATTRIB)) {
         return ConnectionEventType::CONNECTED;
     } else if (mask & IN_DELETE) {
@@ -93,7 +93,7 @@ void _wait_for_connections(
     }
 }
 
-namespace gamepad_connection_listener {
+namespace connection_listener {
     void listen(
         const bool* keep_reading,
         const std::function<void(const ConnectionEvent&)>& event_consumer

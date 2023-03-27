@@ -5,20 +5,20 @@ import FlutterMacOS
 public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     let channel: FlutterMethodChannel
     let gamepads = GamepadsListener()
-    
+ 
     init(channel: FlutterMethodChannel) {
         self.channel = channel
         super.init()
-        
+
         self.gamepads.listener = onGamepadEvent
     }
-    
+
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "xyz.luan/gamepads", binaryMessenger: registrar.messenger)
         let instance = GamepadsDarwinPlugin(channel: channel)
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
-    
+
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "listGamepads":
@@ -27,7 +27,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             result(FlutterMethodNotImplemented)
         }
     }
-    
+
     private func onGamepadEvent(gamepadId: Int, gamepad: GCExtendedGamepad, element: GCControllerElement) {
         for (key, value) in getValues(element: element) {
             let arguments: [String: Any] = [
@@ -40,7 +40,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             channel.invokeMethod("onGamepadEvent", arguments: arguments)
         }
     }
-    
+
     private func getValues(element: GCControllerElement) -> [(String, Float)] {
         if let element = element as? GCControllerButtonInput {
             return [(element.sfSymbolsName ?? "Unknown button", element.value)]
@@ -55,7 +55,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             return []
         }
     }
-    
+ 
     private func getTimestamp(gamepad: GCExtendedGamepad) -> TimeInterval {
         if #available(macOS 11.0, *) {
             return gamepad.lastEventTimestamp
@@ -63,7 +63,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             return Date().timeIntervalSince1970
         }
     }
-    
+ 
     private func getId(gamepad: GCExtendedGamepad) -> String {
         if #available(macOS 11.0, *) {
             let device = gamepad.device
@@ -73,11 +73,11 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             return "Unknown device"
         }
     }
-    
+
     private func listGamepads() -> [[String: Any?]] {
         return gamepads.gamepads.map { [ "id": getId(gamepad: $0) ] }
     }
-    
+
     private func maybeConcat(_ string1: String?, _ string2: String) -> String {
         return maybeConcat(string1, string2)!
     }
