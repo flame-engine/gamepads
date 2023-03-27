@@ -5,7 +5,7 @@ import FlutterMacOS
 public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     let channel: FlutterMethodChannel
     let gamepads = GamepadsListener()
- 
+
     init(channel: FlutterMethodChannel) {
         self.channel = channel
         super.init()
@@ -31,7 +31,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     private func onGamepadEvent(gamepadId: Int, gamepad: GCExtendedGamepad, element: GCControllerElement) {
         for (key, value) in getValues(element: element) {
             let arguments: [String: Any] = [
-                "gamepadId": getId(gamepad: gamepad),
+                "gamepadId": String(gamepadId),
                 "time": Int(getTimestamp(gamepad: gamepad)),
                 "type": element.isAnalog ? "analog" : "button",
                 "key": key,
@@ -55,7 +55,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             return []
         }
     }
- 
+
     private func getTimestamp(gamepad: GCExtendedGamepad) -> TimeInterval {
         if #available(macOS 11.0, *) {
             return gamepad.lastEventTimestamp
@@ -63,19 +63,20 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             return Date().timeIntervalSince1970
         }
     }
- 
-    private func getId(gamepad: GCExtendedGamepad) -> String {
+
+    private func getName(gamepad: GCExtendedGamepad) -> String {
         if #available(macOS 11.0, *) {
             let device = gamepad.device
-            let playerId = (gamepad.controller?.playerIndex.rawValue).map { String(describing: $0) }
-            return maybeConcat(device?.vendorName, device?.productCategory, playerId) ?? "Unknown device"
+            return maybeConcat(device?.vendorName, device?.productCategory) ?? "Unknown device"
         } else {
             return "Unknown device"
         }
     }
 
     private func listGamepads() -> [[String: Any?]] {
-        return gamepads.gamepads.map { [ "id": getId(gamepad: $0) ] }
+        return gamepads.gamepads.enumerated().map { (index, gamepad) in
+            [ "id": String(index), "name": getName(gamepad: gamepad) ]
+        }
     }
 
     private func maybeConcat(_ string1: String?, _ string2: String) -> String {
