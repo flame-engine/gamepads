@@ -23,8 +23,8 @@ dependencies:
     sdk: flutter
   gamepads_darwin: ^0.1.0
   gamepads_linux: ^0.1.0
-  gamepads_windows: ^0.1.0
   gamepads_platform_interface: ^0.1.0
+  gamepads_windows: ^0.1.0
 
 dev_dependencies:
   flame_lint: ^0.2.0
