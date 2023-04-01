@@ -16,6 +16,10 @@ set(PLUGIN_NAME "gamepads_windows_plugin")
 list(APPEND PLUGIN_SOURCES
   "gamepads_windows_plugin.cpp"
   "gamepads_windows_plugin.h"
+  "gamepad.cpp"
+  "gamepad.h"
+  "utils.cpp"
+  "utils.h"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment

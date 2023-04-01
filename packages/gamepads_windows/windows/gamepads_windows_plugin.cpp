@@ -1,6 +1,8 @@
 #include "gamepads_windows_plugin.h"
 
 #include <windows.h>
+#include <dbt.h>
+#include <hidclass.h>
 
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
@@ -9,16 +11,6 @@
 
 #include <memory>
 #include <sstream>
-
-struct GamepadInfo {
-	std::string device_id;
-	std::string name;
-	int file_descriptor;
-	bool alive;
-};
-
-bool keep_reading_events = false;
-std::map<std::string, GamepadInfo> gamepads = {};
 
 namespace gamepads_windows {
 	void GamepadsWindowsPlugin::RegisterWithRegistrar(
@@ -31,7 +23,7 @@ namespace gamepads_windows {
 				&flutter::StandardMethodCodec::GetInstance()
 			);
 
-		auto plugin = std::make_unique<GamepadsWindowsPlugin>();
+		auto plugin = std::make_unique<GamepadsWindowsPlugin>(registrar, channel.get());
 
 		channel->SetMethodCallHandler(
 			[plugin_pointer = plugin.get()](const auto& call, auto result) {
@@ -42,9 +34,30 @@ namespace gamepads_windows {
 		registrar->AddPlugin(std::move(plugin));
 	}
 
-	GamepadsWindowsPlugin::GamepadsWindowsPlugin() {}
+	GamepadsWindowsPlugin::GamepadsWindowsPlugin(
+		flutter::PluginRegistrarWindows* registrar,
+		flutter::MethodChannel<flutter::EncodableValue>* channel
+	) : registrar(registrar), channel(channel) {
+		gamepads.event_emitter = [&](Gamepad* gamepad, const Event& event) {
+			this->emit_gamepad_event(gamepad, event);
+		};
+		gamepads.update_gamepads();
+		window_proc_id = registrar->RegisterTopLevelWindowProcDelegate(
+			[this](HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
+				DEV_BROADCAST_DEVICEINTERFACE filter = {};
+				filter.dbcc_size = sizeof(filter);
+				filter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
+				filter.dbcc_classguid = GUID_DEVINTERFACE_HID;
+				this->hDevNotify = RegisterDeviceNotification(hwnd, &filter, DEVICE_NOTIFY_WINDOW_HANDLE);
 
-	GamepadsWindowsPlugin::~GamepadsWindowsPlugin() {}
+				return GamepadListenerProc(hwnd, message, wparam, lparam);
+			});
+	}
+
+	GamepadsWindowsPlugin::~GamepadsWindowsPlugin() {
+		UnregisterDeviceNotification(hDevNotify);
+		registrar->UnregisterTopLevelWindowProcDelegate(window_proc_id);
+	}
 
 	void GamepadsWindowsPlugin::HandleMethodCall(
 		const flutter::MethodCall<flutter::EncodableValue>& method_call,
@@ -52,16 +65,31 @@ namespace gamepads_windows {
 	) {
 		if (method_call.method_name().compare("listGamepads") == 0) {
 			flutter::EncodableList list;
-			for (auto [device_id, gamepad] : gamepads) {
+			for (auto [device_id, gamepad] : gamepads.gamepads) {
 				flutter::EncodableMap map;
-				map[flutter::EncodableValue("id")] = flutter::EncodableValue(device_id);
+				map[flutter::EncodableValue("id")] = flutter::EncodableValue(std::to_string(device_id));
 				map[flutter::EncodableValue("name")] = flutter::EncodableValue(gamepad.name);
 				list.push_back(flutter::EncodableValue(map));
 			}
 			result->Success(flutter::EncodableValue(list));
-		}
-		else {
+		} else {
 			result->NotImplemented();
+		}
+	}
+
+	void GamepadsWindowsPlugin::emit_gamepad_event(
+		Gamepad* gamepad,
+		const Event& event
+	) {
+		if (this->channel) {
+			flutter::EncodableMap map;
+			map[flutter::EncodableValue("gamepadId")] = flutter::EncodableValue(static_cast<int>(gamepad->joy_id));
+			map[flutter::EncodableValue("time")] = flutter::EncodableValue(event.time);
+			map[flutter::EncodableValue("type")] = flutter::EncodableValue(event.type);
+			map[flutter::EncodableValue("key")] = flutter::EncodableValue(event.key);
+			map[flutter::EncodableValue("value")] = flutter::EncodableValue(event.value);
+			// TODO(luan) emit the event
+			// this->channel->InvokeMethod("onGamepadEvent", std::make_unique<flutter::EncodableValue>(flutter::EncodableValue(map)));
 		}
 	}
 }

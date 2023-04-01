@@ -6,13 +6,18 @@
 
 #include <memory>
 
+#include "gamepad.h"
+
 namespace gamepads_windows {
 
 class GamepadsWindowsPlugin : public flutter::Plugin {
  public:
   static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
 
-  GamepadsWindowsPlugin();
+  GamepadsWindowsPlugin(
+      flutter::PluginRegistrarWindows* registrar,
+      flutter::MethodChannel<flutter::EncodableValue>* channel
+  );
 
   virtual ~GamepadsWindowsPlugin();
 
@@ -21,10 +26,19 @@ class GamepadsWindowsPlugin : public flutter::Plugin {
   GamepadsWindowsPlugin& operator=(const GamepadsWindowsPlugin&) = delete;
 
  private:
-  // Called when a method is called on this plugin's channel from Dart.
+  flutter::PluginRegistrarWindows* registrar;
+  flutter::MethodChannel<flutter::EncodableValue>* channel;
+  int window_proc_id = -1;
+  HDEVNOTIFY hDevNotify;
+
   void HandleMethodCall(
       const flutter::MethodCall<flutter::EncodableValue> &method_call,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result
+  );
+
+  void emit_gamepad_event(
+      Gamepad* gamepad,
+      const Event& event
   );
 };
 
