@@ -1,3 +1,5 @@
+# gamepads
+
 <p align="center">
   A Flutter plugin to handle gamepad input across multiple platforms.
 </p>
@@ -20,9 +22,6 @@
 ---
 
 > **Note**: This plugin is still in beta. All APIs are subject to change. Any feedback is appreciated.
-
-
-# gamepads
 
 Gamepads is a Flutter plugin to handle gamepad (or joystick) input across multiple platforms.
 
@@ -100,8 +99,15 @@ If you want, you can also support us monetarily by donating through OpenCollecti
 
 Through GitHub Sponsors:
 
-[![GitHub Badge](https://img.shields.io/badge/Github%20Sponsor-blue?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sponsors/bluefireteam)
+<a href="https://github.com/sponsors/bluefireteam" target="_blank">
+  <img
+    src="https://img.shields.io/badge/Github%20Sponsor-blue?style=for-the-badge&logo=github&logoColor=white"
+    width=200
+  />
+</a>
 
 Or by becoming a patron on Patreon:
 
-[![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/bluefireoss)
+<a href="https://www.patreon.com/bluefireoss" target="_blank">
+  <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" width=200 />
+</a>
