@@ -45,6 +45,9 @@ std::list<Event> Gamepads::diff_states(
     if (old.dwVpos != current.dwVpos) {
         events.push_back({ time, "analog", "dwVpos", static_cast<int>(current.dwVpos) });
     }
+    if (old.dwPOV != current.dwPOV) {
+        events.push_back({ time, "analog", "pov", static_cast<int>(current.dwPOV) });
+    }
     if (old.dwButtons != current.dwButtons) {
         for (int i = 0; i < gamepad->num_buttons; ++i) {
             bool was_pressed = old.dwButtons & (1 << i);
@@ -64,7 +67,8 @@ bool Gamepads::are_states_different(const JOYINFOEX& a, const JOYINFOEX& b) {
         a.dwRpos != b.dwRpos ||
         a.dwUpos != b.dwUpos ||
         a.dwVpos != b.dwVpos ||
-        a.dwButtons != b.dwButtons;
+        a.dwButtons != b.dwButtons ||
+        a.dwPOV != b.dwPOV;
 }
 
 void Gamepads::read_gamepad(Gamepad* gamepad) {
