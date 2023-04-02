@@ -30,8 +30,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static final _gamepad = Gamepad();
-
   StreamSubscription<GamepadEvent>? _subscription;
 
   List<GamepadController> _gamepads = [];
@@ -40,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _getValue() async {
     setState(() => loading = true);
-    final response = await _gamepad.listGamepads();
+    final response = await Gamepads.list();
     setState(() {
       _gamepads = response;
       loading = false;
@@ -54,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _subscription = _gamepad.gamepadEventsStream.listen((event) {
+    _subscription = Gamepads.events.listen((event) {
       setState(() {
         final newEvents = [
           event,

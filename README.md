@@ -19,11 +19,89 @@
 
 ---
 
-**Note**: this is WIP - not even close to ready!
+> **Note**: This plugin is still in beta. All APIs are subject to change. Any feedback is appreciated.
+
+
+# gamepads
+
+Gamepads is a Flutter plugin to handle gamepad (or joystick) input across multiple platforms.
+
+It supports multiple simultaneously connected gamepads, and will automatically detect and listen to
+ new connections.
 
 
 ## Getting Started
 
-We tried to make gamepads as simple to use as possible.
+The `list` method will list all currently connected gamepads:
 
-TODO: write more docs.
+```dart
+  final gamepads = await Gamepads.list();
+  // ...
+```
+
+This uses the data class `GamepadController`, which has an `id` and a user-facing `name`.
+
+And the `events` stream will broadcast input events from all gamepads:
+
+```dart
+  Gamepads.events.listen((event) {
+    // ...
+  });
+```
+
+You can also listen to events only for a specific gamepad with `eventsByGamepad`.
+
+Events are described by the data class `GamepadEvent`:
+
+```dart
+class GamepadEvent {
+  /// The id of the gamepad controller that fired the event.
+  final String gamepadId;
+
+  /// The timestamp in which the event was fired, in milliseconds since epoch.
+  final int timestamp;
+
+  /// The [KeyType] of the key that was triggered.
+  final KeyType type;
+
+  /// A platform-dependant identifier for the key that was triggered.
+  final String key;
+
+  /// The current value of the key.
+  final double value;
+
+  // ...
+}
+```
+
+
+## Next Steps
+
+As mentioned, this is still a WIP library. Not only APIs are expected to change if needed, but we
+ plan to add more features, like:
+
+- stream to listen for connecting/disconnecting gamepads
+- get current state of a gamepad
+- add support for web and even mobile
+
+If you are interested in helping, please reach out!
+You can use GitHub or our [Discord server](https://discord.gg/pxrBmy4).
+
+
+## Support
+
+The simplest way to show us your support is by giving the project a star! :star:
+
+If you want, you can also support us monetarily by donating through OpenCollective:
+
+<a href="https://opencollective.com/blue-fire/donate" target="_blank">
+  <img src="https://opencollective.com/blue-fire/donate/button@2x.png?color=blue" width=200 />
+</a>
+
+Through GitHub Sponsors:
+
+[![GitHub Badge](https://img.shields.io/badge/Github%20Sponsor-blue?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sponsors/bluefireteam)
+
+Or by becoming a patron on Patreon:
+
+[![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/bluefireoss)
