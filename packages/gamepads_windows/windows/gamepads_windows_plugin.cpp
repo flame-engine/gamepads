@@ -16,14 +16,14 @@ namespace gamepads_windows {
 	void GamepadsWindowsPlugin::RegisterWithRegistrar(
 		flutter::PluginRegistrarWindows* registrar
 	) {
-		auto channel =
+		channel =
 			std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
 				registrar->messenger(),
 				"xyz.luan/gamepads",
 				&flutter::StandardMethodCodec::GetInstance()
 			);
 
-		auto plugin = std::make_unique<GamepadsWindowsPlugin>(registrar, channel.get());
+		auto plugin = std::make_unique<GamepadsWindowsPlugin>(registrar);
 
 		channel->SetMethodCallHandler(
 			[plugin_pointer = plugin.get()](const auto& call, auto result) {
@@ -35,9 +35,8 @@ namespace gamepads_windows {
 	}
 
 	GamepadsWindowsPlugin::GamepadsWindowsPlugin(
-		flutter::PluginRegistrarWindows* registrar,
-		flutter::MethodChannel<flutter::EncodableValue>* channel
-	) : registrar(registrar), channel(channel) {
+		flutter::PluginRegistrarWindows* registrar
+	) : registrar(registrar) {
 		gamepads.event_emitter = [&](Gamepad* gamepad, const Event& event) {
 			this->emit_gamepad_event(gamepad, event);
 		};
@@ -81,15 +80,18 @@ namespace gamepads_windows {
 		Gamepad* gamepad,
 		const Event& event
 	) {
-		if (this->channel) {
+		auto _channel = this->channel.get();
+		if (_channel) {
 			flutter::EncodableMap map;
-			map[flutter::EncodableValue("gamepadId")] = flutter::EncodableValue(static_cast<int>(gamepad->joy_id));
+			map[flutter::EncodableValue("gamepadId")] = flutter::EncodableValue(std::to_string(gamepad->joy_id));
 			map[flutter::EncodableValue("time")] = flutter::EncodableValue(event.time);
 			map[flutter::EncodableValue("type")] = flutter::EncodableValue(event.type);
 			map[flutter::EncodableValue("key")] = flutter::EncodableValue(event.key);
-			map[flutter::EncodableValue("value")] = flutter::EncodableValue(event.value);
-			// TODO(luan) emit the event
-			// this->channel->InvokeMethod("onGamepadEvent", std::make_unique<flutter::EncodableValue>(flutter::EncodableValue(map)));
+			map[flutter::EncodableValue("value")] = flutter::EncodableValue(static_cast<double>(event.value));
+			_channel->InvokeMethod(
+				"onGamepadEvent",
+				std::make_unique<flutter::EncodableValue>(flutter::EncodableValue(map))
+			);
 		}
 	}
 }

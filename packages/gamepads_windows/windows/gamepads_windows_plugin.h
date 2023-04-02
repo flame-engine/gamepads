@@ -15,8 +15,7 @@ class GamepadsWindowsPlugin : public flutter::Plugin {
   static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
 
   GamepadsWindowsPlugin(
-      flutter::PluginRegistrarWindows* registrar,
-      flutter::MethodChannel<flutter::EncodableValue>* channel
+      flutter::PluginRegistrarWindows* registrar
   );
 
   virtual ~GamepadsWindowsPlugin();
@@ -27,7 +26,8 @@ class GamepadsWindowsPlugin : public flutter::Plugin {
 
  private:
   flutter::PluginRegistrarWindows* registrar;
-  flutter::MethodChannel<flutter::EncodableValue>* channel;
+  static inline std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>> channel{};
+
   int window_proc_id = -1;
   HDEVNOTIFY hDevNotify;
 
