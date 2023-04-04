@@ -1,6 +1,6 @@
 name: gamepads
 description: A Flutter plugin to handle gamepad input across multiple platforms.
-version: 0.1.0
+version: 0.0.0
 homepage: https://github.com/flame-engine/gamepads
 repository: https://github.com/flame-engine/gamepads/tree/master/packages/gamepads
 
@@ -21,10 +21,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  gamepads_darwin: ^0.1.0
-  gamepads_linux: ^0.1.0
-  gamepads_platform_interface: ^0.1.0
-  gamepads_windows: ^0.1.0
+  gamepads_darwin: ^0.0.0
+  gamepads_linux: ^0.0.0
+  gamepads_platform_interface: ^0.0.0
+  gamepads_windows: ^0.0.0
 
 dev_dependencies:
   flame_lint: ^0.2.0
