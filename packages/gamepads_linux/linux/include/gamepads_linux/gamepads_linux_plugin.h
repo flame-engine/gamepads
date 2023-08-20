@@ -13,12 +13,13 @@ G_BEGIN_DECLS
 
 typedef struct _GamepadsLinuxPlugin GamepadsLinuxPlugin;
 typedef struct {
-    GObjectClass parent_class;
+  GObjectClass parent_class;
 } GamepadsLinuxPluginClass;
 
 FLUTTER_PLUGIN_EXPORT GType gamepads_linux_plugin_get_type();
 
-FLUTTER_PLUGIN_EXPORT void gamepads_linux_plugin_register_with_registrar(FlPluginRegistrar *registrar);
+FLUTTER_PLUGIN_EXPORT void gamepads_linux_plugin_register_with_registrar(
+    FlPluginRegistrar* registrar);
 
 G_END_DECLS
 

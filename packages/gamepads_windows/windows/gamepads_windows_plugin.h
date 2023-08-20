@@ -12,11 +12,9 @@ namespace gamepads_windows {
 
 class GamepadsWindowsPlugin : public flutter::Plugin {
  public:
-  static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
+  static void RegisterWithRegistrar(flutter::PluginRegistrarWindows* registrar);
 
-  GamepadsWindowsPlugin(
-      flutter::PluginRegistrarWindows* registrar
-  );
+  GamepadsWindowsPlugin(flutter::PluginRegistrarWindows* registrar);
 
   virtual ~GamepadsWindowsPlugin();
 
@@ -26,20 +24,17 @@ class GamepadsWindowsPlugin : public flutter::Plugin {
 
  private:
   flutter::PluginRegistrarWindows* registrar;
-  static inline std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>> channel{};
+  static inline std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>>
+      channel{};
 
   int window_proc_id = -1;
   HDEVNOTIFY hDevNotify;
 
   void HandleMethodCall(
-      const flutter::MethodCall<flutter::EncodableValue> &method_call,
-      std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result
-  );
+      const flutter::MethodCall<flutter::EncodableValue>& method_call,
+      std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
 
-  void emit_gamepad_event(
-      Gamepad* gamepad,
-      const Event& event
-  );
+  void emit_gamepad_event(Gamepad* gamepad, const Event& event);
 };
 
 }  // namespace gamepads_windows
