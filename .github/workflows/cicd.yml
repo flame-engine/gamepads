@@ -49,6 +49,17 @@ jobs:
           node-version: 18
       - run: npm install -g markdownlint-cli
       - run: markdownlint . -p .markdownlintignore -c .markdownlint.yaml
+
+  super-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: super-linter/super-linter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: main
+          VALIDATE_CLANG_FORMAT: true
   # END LINTING STAGE
 
   # BEGIN TESTING STAGE

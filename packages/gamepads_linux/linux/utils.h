@@ -1,5 +1,5 @@
 #include <memory>
-#include <string>
 #include <stdexcept>
+#include <string>
 
 bool starts_with(const std::string& string, const std::string& prefix);

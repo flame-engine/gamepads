@@ -14,8 +14,7 @@ extern "C" {
 #endif
 
 FLUTTER_PLUGIN_EXPORT void GamepadsWindowsPluginCApiRegisterWithRegistrar(
-    FlutterDesktopPluginRegistrarRef registrar
-);
+    FlutterDesktopPluginRegistrarRef registrar);
 
 #if defined(__cplusplus)
 }  // extern "C"
