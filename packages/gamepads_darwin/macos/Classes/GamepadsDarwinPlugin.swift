@@ -42,15 +42,34 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     }
 
     private func getValues(element: GCControllerElement) -> [(String, Float)] {
-        let name = getNameForElement(element: element)
         if let element = element as? GCControllerButtonInput {
-            return [(name ?? "Unknown button", element.value)]
+            var button: String = "Unknown button"
+            if #available(macOS 11.0, *) {
+                if (element.sfSymbolsName != nil) {
+                    button = element.sfSymbolsName!
+                }
+            }
+            
+            return [(button, element.value)]
         } else if let element = element as? GCControllerAxisInput {
-            return [(name ?? "Unknown axis", element.value)]
+            var axis: String = "Unknown axis"
+            if #available(macOS 11.0, *) {
+                if (element.sfSymbolsName != nil) {
+                    axis = element.sfSymbolsName!
+                }
+            }
+            return [(axis, element.value)]
         } else if let element = element as? GCControllerDirectionPad {
+            var directionPad: String = "Unknown direction pad"
+    
+            if #available(macOS 11.0, *) {
+                if (element.sfSymbolsName != nil) {
+                    directionPad = element.sfSymbolsName!
+                }
+            }
             return [
-                (maybeConcat(name, "xAxis"), element.xAxis.value),
-                (maybeConcat(name, "yAxis"), element.yAxis.value)
+                (maybeConcat(directionPad, "xAxis"), element.xAxis.value),
+                (maybeConcat(directionPad, "yAxis"), element.yAxis.value)
             ]
         } else {
             return []
