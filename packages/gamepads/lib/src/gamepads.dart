@@ -13,6 +13,9 @@ class Gamepads {
 
   static Stream<GamepadEvent> get events => _platform.gamepadEventsStream;
 
+  static Stream<GamepadConnectedEvent> get isConnected =>
+      _platform.gamepadConnectedStream;
+
   static Stream<GamepadEvent> eventsByGamepad(String gamepadId) {
     return events.where((event) => event.gamepadId == gamepadId);
   }

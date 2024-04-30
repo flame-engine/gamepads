@@ -20,4 +20,6 @@ abstract class GamepadsPlatformInterface extends PlatformInterface {
   Future<List<GamepadController>> listGamepads();
 
   Stream<GamepadEvent> get gamepadEventsStream;
+
+  Stream<GamepadConnectedEvent> get gamepadConnectedStream;
 }
