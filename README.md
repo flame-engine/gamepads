@@ -76,13 +76,13 @@ class GamepadEvent {
 The `isConnected` stream will broadcast whether the gamepad connects or disconnects:
 
 ```dart
-  Gamepads.isConnected.listen((GamepadConnectedEvent event) {
-    if (event.isConnected) {
-      // Gamepad has connected
-    } else {
-      // Gamepad has disconnected
-    }
-  });
+Gamepads.isConnected.listen((GamepadConnectedEvent event) {
+  if (event.isConnected) {
+    // Gamepad has connected
+  } else {
+    // Gamepad has disconnected
+  }
+});
 ```
 
 Gamepad Disconnected and Connected events are described by the data class `GamepadConnectedEvent`:
