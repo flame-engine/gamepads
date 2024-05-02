@@ -6,16 +6,25 @@
 
 <p align="center">
   <a title="Pub" href="https://pub.dev/packages/gamepads">
-    <img src="https://img.shields.io/pub/v/gamepads.svg?style=popout&include_prereleases"/>
+    <img
+      src="https://img.shields.io/pub/v/gamepads.svg?style=popout&include_prereleases"
+      alt="Badge for latest release"
+    />
   </a>
   <a title="Build Status" href="https://github.com/flame-engine/gamepads/actions?query=workflow%3Acicd+branch%3Amain">
-    <img src="https://github.com/flame-engine/gamepads/workflows/cicd/badge.svg?branch=main"/>
+    <img
+      src="https://github.com/flame-engine/gamepads/workflows/cicd/badge.svg?branch=main"
+      alt="Badge for build status"
+    />
   </a>
   <a title="Discord" href="https://discord.gg/pxrBmy4">
-    <img src="https://img.shields.io/discord/509714518008528896.svg"/>
+    <img src="https://img.shields.io/discord/509714518008528896.svg" alt="Badge for Discord server"/>
   </a>
   <a title="Melos" href="https://github.com/invertase/melos">
-    <img src="https://img.shields.io/badge/maintained%20with-melos-f700ff.svg"/>
+    <img
+      src="https://img.shields.io/badge/maintained%20with-melos-f700ff.svg"
+      alt="Badge showing that Melos is used"
+    />
   </a>
 </p>
 
@@ -26,7 +35,7 @@
 Gamepads is a Flutter plugin to handle gamepad (or joystick) input across multiple platforms.
 
 It supports multiple simultaneously connected gamepads, and will automatically detect and listen to
- new connections.
+new connections.
 
 
 ## Getting Started
@@ -94,7 +103,11 @@ The simplest way to show us your support is by giving the project a star! :star:
 If you want, you can also support us monetarily by donating through OpenCollective:
 
 <a href="https://opencollective.com/blue-fire/donate" target="_blank">
-  <img src="https://opencollective.com/blue-fire/donate/button@2x.png?color=blue" width=200 />
+  <img
+    src="https://opencollective.com/blue-fire/donate/button@2x.png?color=blue"
+    width=200
+    alt="Open Collective donate button"
+  />
 </a>
 
 Through GitHub Sponsors:
@@ -103,11 +116,16 @@ Through GitHub Sponsors:
   <img
     src="https://img.shields.io/badge/Github%20Sponsor-blue?style=for-the-badge&logo=github&logoColor=white"
     width=200
+    alt="GitHub Sponsor button"
   />
 </a>
 
 Or by becoming a patron on Patreon:
 
 <a href="https://www.patreon.com/bluefireoss" target="_blank">
-  <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" width=200 />
+  <img
+   src="https://c5.patreon.com/external/logo/become_a_patron_button.png"
+   width=200
+   alt="Patreon donate button"
+  />
 </a>
