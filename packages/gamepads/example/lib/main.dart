@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (loading)
               const CircularProgressIndicator()
             else
-              ..._gamepads.map((e) => Text('${e.id} - ${e.name}'))
+              ..._gamepads.map((e) => Text('${e.id} - ${e.name}')),
           ],
         ),
       ),
