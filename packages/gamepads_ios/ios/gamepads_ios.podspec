@@ -4,14 +4,14 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'gamepads_ios'
-  s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.version          = '0.1.1'
+  s.summary          = 'iOS implementation of gamepads.'
   s.description      = <<-DESC
-A new Flutter plugin project.
+iOS implementation of gamepads, a Flutter plugin to handle gamepad input across multiple platforms.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://flame-engine.org'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Luan' => 'luan@blue-fire.xyz' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
