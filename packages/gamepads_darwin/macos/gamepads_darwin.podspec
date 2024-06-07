@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'gamepads_darwin'
-  s.version          = '0.0.1'
+  s.version          = '0.1.1'
   s.summary          = 'MacOS implementation of gamepads.'
   s.description      = <<-DESC
 MacOS implementation of gamepads, a Flutter plugin to handle gamepad input across multiple platforms.
