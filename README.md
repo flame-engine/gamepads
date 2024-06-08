@@ -82,6 +82,7 @@ class GamepadEvent {
 }
 ```
 
+
 ## Next Steps
 
 As mentioned, this is still a WIP library. Not only APIs are expected to change if needed, but we
@@ -94,12 +95,13 @@ As mentioned, this is still a WIP library. Not only APIs are expected to change 
 If you are interested in helping, please reach out!
 You can use GitHub or our [Discord server](https://discord.gg/pxrBmy4).
 
+
 ## Android Integration
 
-The Android implementation requires the application's Activity to forward input events (and 
+The Android implementation requires the application's Activity to forward input events (and
 input devices) to the plugin. Below is an example of a MainActivity for a clean Flutter project
 that has implemented the required boilerplate code. For many projects it will be possible to simply
-duplicate this setup. 
+duplicate this setup.
 
 ```dart
 package [YOUR_PACKAGE_NAME]
@@ -131,7 +133,8 @@ class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
             || device.sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK
     }
 
-    override fun registerInputDeviceListener(listener: InputManager.InputDeviceListener, handler: Handler?) {
+    override fun registerInputDeviceListener(
+      listener: InputManager.InputDeviceListener, handler: Handler?) {
         val inputManager = getSystemService(INPUT_SERVICE) as InputManager
         inputManager.registerInputDeviceListener(listener, null)
     }
@@ -146,6 +149,7 @@ class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
 }
 
 ```
+
 
 ## Support
 
