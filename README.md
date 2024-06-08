@@ -82,7 +82,6 @@ class GamepadEvent {
 }
 ```
 
-
 ## Next Steps
 
 As mentioned, this is still a WIP library. Not only APIs are expected to change if needed, but we
@@ -95,6 +94,58 @@ As mentioned, this is still a WIP library. Not only APIs are expected to change 
 If you are interested in helping, please reach out!
 You can use GitHub or our [Discord server](https://discord.gg/pxrBmy4).
 
+## Android Integration
+
+The Android implementation requires the application's Activity to forward input events (and 
+input devices) to the plugin. Below is an example of a MainActivity for a clean Flutter project
+that has implemented the required boilerplate code. For many projects it will be possible to simply
+duplicate this setup. 
+
+```dart
+package [YOUR_PACKAGE_NAME]
+
+import android.hardware.input.InputManager
+import android.os.Handler
+import android.view.InputDevice
+import android.view.KeyEvent
+import android.view.MotionEvent
+import io.flutter.embedding.android.FlutterActivity
+import dev.markvideon.gamepads_android.GamepadsCompatibleActivity
+
+class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
+    var keyListener: ((KeyEvent) -> Boolean)? = null
+    var motionListener: ((MotionEvent) -> Boolean)? = null
+
+    override fun dispatchGenericMotionEvent(motionEvent: MotionEvent): Boolean {
+        motionListener?.invoke(motionEvent)
+        return true
+    }
+
+    override fun dispatchKeyEvent(keyEvent: KeyEvent): Boolean {
+        keyListener?.invoke(keyEvent)
+        return true
+    }
+
+    override fun isGamepadsInputDevice(device: InputDevice): Boolean {
+        return device.sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD
+            || device.sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK
+    }
+
+    override fun registerInputDeviceListener(listener: InputManager.InputDeviceListener, handler: Handler?) {
+        val inputManager = getSystemService(INPUT_SERVICE) as InputManager
+        inputManager.registerInputDeviceListener(listener, null)
+    }
+
+    override fun registerKeyEventHandler(handler: (KeyEvent) -> Boolean) {
+        keyListener = handler
+    }
+
+    override fun registerMotionEventHandler(handler: (MotionEvent) -> Boolean) {
+        motionListener = handler
+    }
+}
+
+```
 
 ## Support
 
