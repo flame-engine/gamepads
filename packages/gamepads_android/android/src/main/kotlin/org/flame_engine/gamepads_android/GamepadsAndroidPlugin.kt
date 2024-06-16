@@ -27,15 +27,12 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private lateinit var events : EventListener
 
   private fun listGamepads(): List<Map<String, String>>  {
-    val results = mutableListOf<Map<String, String>>()
-    devices.getDevices().forEach({
-      results.add(mapOf(
-        "id" to it.key.toString(),
-        "name" to it.value.name
-      ))
-    })
-
-    return results
+    return devices.getDevices().map { device ->
+      mapOf(
+        "id" to device.key.toString(),
+        "name" to device.value.name
+      )
+    }
   }
 
   // FlutterPlugin
