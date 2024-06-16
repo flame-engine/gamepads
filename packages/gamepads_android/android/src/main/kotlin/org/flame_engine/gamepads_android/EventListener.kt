@@ -51,8 +51,8 @@ class EventListener {
         val value = motionEvent.getAxisValue(axis) * multiplier
 
         // No-op if threshold is not met
-        if (lastAxisValue[axis] != null) {
-            val lastValue = lastAxisValue[axis]!!
+        val lastValue = lastAxisValue[axis]
+        if (lastValue is Float) {
             if (abs(value - lastValue) < axisEpisilon) {
                 return true;
             }
