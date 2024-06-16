@@ -1,11 +1,10 @@
-package dev.markvideon.gamepads_android
+package org.flame_engine.gamepads_android
 
 import android.hardware.input.InputManager
 import android.os.Handler
 import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
-
 interface GamepadsCompatibleActivity {
     fun isGamepadsInputDevice(device: InputDevice): Boolean
     fun registerInputDeviceListener(listener: InputManager.InputDeviceListener, handler: Handler?)

@@ -1,4 +1,4 @@
-package dev.markvideon.gamepads_android
+package org.flame_engine.gamepads_android
 
 import android.hardware.input.InputManager
 import android.util.Log

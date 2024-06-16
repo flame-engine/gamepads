@@ -8,7 +8,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: dev.markvideon.gamepads_android
+        package: org.flame_engine.gamepads_android
         pluginClass: GamepadsAndroidPlugin
 
 environment:

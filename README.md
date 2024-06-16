@@ -112,7 +112,7 @@ import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
 import io.flutter.embedding.android.FlutterActivity
-import dev.markvideon.gamepads_android.GamepadsCompatibleActivity
+import org.flame_engine.gamepads_android.GamepadsCompatibleActivity
 
 class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
     var keyListener: ((KeyEvent) -> Boolean)? = null
