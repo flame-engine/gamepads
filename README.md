@@ -126,11 +126,6 @@ class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
         return keyListener?.invoke(keyEvent) ?: false
     }
 
-    override fun isGamepadsInputDevice(device: InputDevice): Boolean {
-        return device.sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD
-            || device.sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK
-    }
-
     override fun registerInputDeviceListener(
       listener: InputManager.InputDeviceListener, handler: Handler?) {
         val inputManager = getSystemService(INPUT_SERVICE) as InputManager
