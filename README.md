@@ -119,13 +119,11 @@ class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
     var motionListener: ((MotionEvent) -> Boolean)? = null
 
     override fun dispatchGenericMotionEvent(motionEvent: MotionEvent): Boolean {
-        motionListener?.invoke(motionEvent)
-        return true
+        return motionListener?.invoke(motionEvent) ?: false
     }
-
+    
     override fun dispatchKeyEvent(keyEvent: KeyEvent): Boolean {
-        keyListener?.invoke(keyEvent)
-        return true
+        return keyListener?.invoke(keyEvent) ?: false
     }
 
     override fun isGamepadsInputDevice(device: InputDevice): Boolean {
