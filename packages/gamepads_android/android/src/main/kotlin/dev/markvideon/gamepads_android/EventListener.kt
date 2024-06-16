@@ -67,7 +67,7 @@ class EventListener {
             "time" to motionEvent.getEventTime(),
             "type" to "analog",
             "key" to MotionEvent.axisToString(axis),
-            "value" to value
+            "value" to value,
         )
         channel.invokeMethod("onGamepadEvent", arguments)
         return true
