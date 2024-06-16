@@ -8,7 +8,7 @@ import android.view.MotionEvent
 import io.flutter.plugin.common.MethodChannel
 import kotlin.math.abs
 
-class SupportedAxis(val axisId: Int, val invert: Boolean = false)
+data class SupportedAxis(val axisId: Int, val invert: Boolean = false)
 
 class EventListener {
     private val TAG = "EventListener"
