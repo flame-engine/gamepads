@@ -65,7 +65,7 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     val compatibleActivity = activity as GamepadsCompatibleActivity
     devices = DeviceListener { compatibleActivity.isGamepadsInputDevice(it) }
     events = EventListener()
-    compatibleActivity.registerInputDeviceListener(devices, null)
+    compatibleActivity.registerInputDeviceListener(devices, handler = null)
     compatibleActivity.registerKeyEventHandler { event ->
       if (devices.containsKey(event.deviceId)) {
         events.onKeyEvent(event, channel)
