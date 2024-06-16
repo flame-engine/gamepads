@@ -19,11 +19,12 @@ import io.flutter.plugin.common.MethodChannel.Result
 import kotlin.concurrent.thread
 
 class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
+  companion object {
+    private const val TAG = "GamepadsAndroidPlugin"
+  }
   private lateinit var channel : MethodChannel
   private lateinit var devices : DeviceListener
   private lateinit var events : EventListener
-
-  private val TAG = "GamepadsAndroidPlugin"
 
   private fun listGamepads(): List<Map<String, String>>  {
     val results = mutableListOf<Map<String, String>>()
@@ -65,20 +66,20 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     devices = DeviceListener { compatibleActivity.isGamepadsInputDevice(it) }
     events = EventListener()
     compatibleActivity.registerInputDeviceListener(devices, null)
-    compatibleActivity.registerKeyEventHandler(fun (it: KeyEvent): Boolean {
-      if (devices.containsKey(it.deviceId)) {
-        return events.onKeyEvent(it, channel)
+    compatibleActivity.registerKeyEventHandler { event ->
+      if (devices.containsKey(event.deviceId)) {
+        events.onKeyEvent(event, channel)
       } else {
-        return false
+        false
       }
-     })
-    compatibleActivity.registerMotionEventHandler(fun (it: MotionEvent): Boolean {
-      if (devices.containsKey(it.deviceId)) {
-        return events.onMotionEvent(it, channel)
+     }
+    compatibleActivity.registerMotionEventHandler { event ->
+      if (devices.containsKey(event.deviceId)) {
+        events.onMotionEvent(event, channel)
       } else {
-        return false
+        false
       }
-    })
+    }
   }
 
   override fun onDetachedFromActivity() {

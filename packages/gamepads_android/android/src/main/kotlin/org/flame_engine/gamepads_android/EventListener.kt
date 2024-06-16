@@ -11,17 +11,15 @@ import kotlin.math.abs
 data class SupportedAxis(val axisId: Int, val invert: Boolean = false)
 
 class EventListener {
-    private val TAG = "EventListener"
-    private val axisEpisilon = 0.001
+    companion object {
+        private const val TAG = "EventListener"
+        private const val axisEpisilon = 0.001
+    }
     private val lastAxisValue = mutableMapOf<Int, Float>()
     private val supportedAxes = listOf<SupportedAxis>(
         SupportedAxis(MotionEvent.AXIS_X),
         SupportedAxis(MotionEvent.AXIS_Y, invert = true),
-        // Observed AXIS_Z corresponds to X-Axis of Right Thumbstick on Xbox Series X, Xbox One,
-        // DualShock 4 controllers.
         SupportedAxis(MotionEvent.AXIS_Z),
-        // Observed AXIS_RZ corresponds to Y-Axis of Right Thumbstick on Xbox Series X, Xbox One,
-        // DualShock 4 controllers.
         SupportedAxis(MotionEvent.AXIS_RZ, invert = true),
         SupportedAxis(MotionEvent.AXIS_HAT_X),
         SupportedAxis(MotionEvent.AXIS_HAT_Y, invert = true),
