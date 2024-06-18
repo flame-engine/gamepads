@@ -7,6 +7,8 @@ repository: https://github.com/flame-engine/gamepads/tree/main/packages/gamepads
 flutter:
   plugin:
     platforms:
+      android:
+        default_package: gamepads_android
       ios:
         default_package: gamepads_ios
       linux:
@@ -23,6 +25,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  gamepads_android: ^0.1.1
   gamepads_darwin: ^0.1.1
   gamepads_ios: ^0.1.1
   gamepads_linux: ^0.1.1

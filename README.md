@@ -96,6 +96,54 @@ If you are interested in helping, please reach out!
 You can use GitHub or our [Discord server](https://discord.gg/pxrBmy4).
 
 
+## Android Integration
+
+The Android implementation requires the application's Activity to forward input events (and
+input devices) to the plugin. Below is an example of a MainActivity for a clean Flutter project
+that has implemented the required boilerplate code. For many projects it will be possible to simply
+duplicate this setup.
+
+```dart
+package [YOUR_PACKAGE_NAME]
+
+import android.hardware.input.InputManager
+import android.os.Handler
+import android.view.InputDevice
+import android.view.KeyEvent
+import android.view.MotionEvent
+import io.flutter.embedding.android.FlutterActivity
+import org.flame_engine.gamepads_android.GamepadsCompatibleActivity
+
+class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
+    var keyListener: ((KeyEvent) -> Boolean)? = null
+    var motionListener: ((MotionEvent) -> Boolean)? = null
+
+    override fun dispatchGenericMotionEvent(motionEvent: MotionEvent): Boolean {
+        return motionListener?.invoke(motionEvent) ?: false
+    }
+    
+    override fun dispatchKeyEvent(keyEvent: KeyEvent): Boolean {
+        return keyListener?.invoke(keyEvent) ?: false
+    }
+
+    override fun registerInputDeviceListener(
+      listener: InputManager.InputDeviceListener, handler: Handler?) {
+        val inputManager = getSystemService(INPUT_SERVICE) as InputManager
+        inputManager.registerInputDeviceListener(listener, null)
+    }
+
+    override fun registerKeyEventHandler(handler: (KeyEvent) -> Boolean) {
+        keyListener = handler
+    }
+
+    override fun registerMotionEventHandler(handler: (MotionEvent) -> Boolean) {
+        motionListener = handler
+    }
+}
+
+```
+
+
 ## Support
 
 The simplest way to show us your support is by giving the project a star! :star:
