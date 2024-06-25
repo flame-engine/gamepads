@@ -11,6 +11,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         super.init()
 
         self.gamepads.listener = onGamepadEvent
+        self.gamepads.connected_listener = onGamepadConnectedEvent
     }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -41,6 +42,15 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         }
     }
 
+    private func onGamepadConnectedEvent(gamepadId: Int, gamepad: GCExtendedGamepad, isConnected: Bool) {
+        let arguments: [String: Any] = [
+            "gamepadId": String(gamepadId),
+            "time": Int(getTimestamp(gamepad: gamepad)),
+            "isConnected": isConnected,
+        ]
+        channel.invokeMethod("onGamepadConnectedEvent", arguments: arguments)
+    }
+    
     private func getValues(element: GCControllerElement) -> [(String, Float)] {
         if let element = element as? GCControllerButtonInput {
             var button: String = "Unknown button"
@@ -73,14 +83,6 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             ]
         } else {
             return []
-        }
-    }
-    
-    private func getNameForElement(element: GCControllerElement) -> String? {
-        if #available(macOS 11.0, *) {
-            return element.sfSymbolsName
-        } else {
-            return nil
         }
     }
 

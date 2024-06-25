@@ -52,7 +52,7 @@ This uses the data class `GamepadController`, which has an `id` and a user-facin
 And the `events` stream will broadcast input events from all gamepads:
 
 ```dart
-  Gamepads.events.listen((event) {
+  Gamepads.events.listen((GamepadEvent event) {
     // ...
   });
 ```
@@ -82,13 +82,38 @@ class GamepadEvent {
 }
 ```
 
+The `isConnected` stream will broadcast whether the gamepad connects or disconnects (at the moment this will only work for MacOS environments):
+
+```dart
+Gamepads.isConnected.listen((GamepadConnectedEvent event) {
+  if (event.isConnected) {
+    // Gamepad has connected
+  } else {
+    // Gamepad has disconnected
+  }
+});
+```
+
+Gamepad Disconnected and Connected events are described by the data class `GamepadConnectedEvent`:
+
+```dart
+class GamepadConnectedEvent {
+  /// The id of the gamepad controller that fired the event.
+  final String gamepadId;
+
+  /// The timestamp in which the event was fired, in milliseconds since epoch.
+  final int timestamp;
+
+  /// Whether the gamepad has connected or disconnected.
+  final bool isConnected;
+}
+```
 
 ## Next Steps
 
 As mentioned, this is still a WIP library. Not only APIs are expected to change if needed, but we
  plan to add more features, like:
 
-- stream to listen for connecting/disconnecting gamepads
 - get current state of a gamepad
 - add support for web and even mobile
 
