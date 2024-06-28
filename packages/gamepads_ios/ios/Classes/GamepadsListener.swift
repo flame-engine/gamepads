@@ -41,7 +41,7 @@ class GamepadsListener {
  
     @objc private func joystickDidDisconnect(notification: NSNotification) {
         if let controller = notification.object as? GCController {
-            gamepads.removeAll(where: { $0 == controller})
+            gamepads.removeAll(where: { $0 == controller.extendedGamepad })
         }
     }
 
