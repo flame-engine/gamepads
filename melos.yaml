@@ -3,7 +3,6 @@ repository: https://github.com/flame-engine/gamepads
 
 packages:
   - packages/**
-  - packages/**/example
 
 command:
   version:
