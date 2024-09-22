@@ -5,6 +5,10 @@ import 'package:gamepads_platform_interface/api/gamepad_state.dart';
 import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
 
 /// Represents a single, currently connected joystick controller (or gamepad).
+///
+/// By calling the constructor, this object will automatically subscribe to
+/// events and update its internal [state]. To stop listening, be sure to call
+/// [dispose]. Failing to do so may result in the object leaking memory.
 class GamepadController {
   /// A unique identifier for the gamepad controller.
   ///
@@ -36,6 +40,7 @@ class GamepadController {
     return GamepadController(id: id, name: name, plugin: plugin);
   }
 
+  /// Stops listening for new inputs.
   Future<void> dispose() async {
     await _subscription?.cancel();
     _subscription = null;
