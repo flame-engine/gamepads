@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 import 'package:gamepads_platform_interface/api/gamepad_state.dart';
 import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
 
@@ -14,12 +17,14 @@ class GamepadController {
 
   final state = GamepadState();
 
+  StreamSubscription<GamepadEvent>? _subscription;
+
   GamepadController({
     required this.id,
     required this.name,
     required GamepadsPlatformInterface plugin,
   }) {
-    plugin.eventsByGamepad(id).listen(state.update);
+    _subscription = plugin.eventsByGamepad(id).listen(state.update);
   }
 
   factory GamepadController.parse(
@@ -29,5 +34,10 @@ class GamepadController {
     final id = map['id'] as String;
     final name = map['name'] as String;
     return GamepadController(id: id, name: name, plugin: plugin);
+  }
+
+  Future<void> dispose() async {
+    await _subscription?.cancel();
+    _subscription = null;
   }
 }
