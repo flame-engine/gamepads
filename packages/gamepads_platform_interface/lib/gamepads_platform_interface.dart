@@ -20,4 +20,7 @@ abstract class GamepadsPlatformInterface extends PlatformInterface {
   Future<List<GamepadController>> listGamepads();
 
   Stream<GamepadEvent> get gamepadEventsStream;
+
+  Stream<GamepadEvent> eventsByGamepad(String gamepadId) =>
+    gamepadEventsStream.where((event) => event.gamepadId == gamepadId);
 }

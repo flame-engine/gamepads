@@ -21,7 +21,7 @@ class MethodChannelGamepadsPlatformInterface extends GamepadsPlatformInterface {
       <String, dynamic>{},
     );
     return result!.map((Object? e) {
-      return GamepadController.parse(e! as Map<dynamic, dynamic>);
+      return GamepadController.parse(e! as Map<dynamic, dynamic>, this);
     }).toList();
   }
 
