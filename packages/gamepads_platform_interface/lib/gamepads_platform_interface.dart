@@ -22,5 +22,5 @@ abstract class GamepadsPlatformInterface extends PlatformInterface {
   Stream<GamepadEvent> get gamepadEventsStream;
 
   Stream<GamepadEvent> eventsByGamepad(String gamepadId) =>
-    gamepadEventsStream.where((event) => event.gamepadId == gamepadId);
+      gamepadEventsStream.where((event) => event.gamepadId == gamepadId);
 }
