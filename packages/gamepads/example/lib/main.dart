@@ -96,8 +96,13 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text('Gamepads:'),
             if (loading)
               const CircularProgressIndicator()
-            else
-              ..._gamepads.map((e) => Text('${e.id} - ${e.name}')),
+            else ...[
+              for (final gamepad in _gamepads) ...[
+                Text('${gamepad.id} - ${gamepad.name}'),
+                Text('  Analog inputs: ${gamepad.state.analogInputs}'),
+                Text('  Button inputs: ${gamepad.state.buttonInputs}'),
+              ],
+            ],
           ],
         ),
       ),
