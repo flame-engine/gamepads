@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-10-21
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.3`](#gamepads---v013)
+ - [`gamepads_platform_interface` - `v0.1.2`](#gamepads_platform_interface---v012)
+ - [`gamepads_linux` - `v0.1.1+2`](#gamepads_linux---v0112)
+ - [`gamepads_windows` - `v0.1.1+2`](#gamepads_windows---v0112)
+ - [`gamepads_darwin` - `v0.1.2+1`](#gamepads_darwin---v0121)
+ - [`gamepads_ios` - `v0.1.2+1`](#gamepads_ios---v0121)
+ - [`gamepads_android` - `v0.1.2+1`](#gamepads_android---v0121)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads_linux` - `v0.1.1+2`
+ - `gamepads_windows` - `v0.1.1+2`
+ - `gamepads_darwin` - `v0.1.2+1`
+ - `gamepads_ios` - `v0.1.2+1`
+ - `gamepads_android` - `v0.1.2+1`
+
+---
+
+#### `gamepads` - `v0.1.3`
+
+ - **FEAT**: Added GamepadState that can be updated ([#43](https://github.com/flame-engine/gamepads/issues/43)). ([0c9890e8](https://github.com/flame-engine/gamepads/commit/0c9890e80c423621c52226521612e307d8419308))
+
+#### `gamepads_platform_interface` - `v0.1.2`
+
+ - **FEAT**: Added GamepadState that can be updated ([#43](https://github.com/flame-engine/gamepads/issues/43)). ([0c9890e8](https://github.com/flame-engine/gamepads/commit/0c9890e80c423621c52226521612e307d8419308))
+
+
 ## 2024-07-13
 
 ### Changes

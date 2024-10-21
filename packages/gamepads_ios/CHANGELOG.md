@@ -1,3 +1,7 @@
+## 0.1.2+1
+
+ - Update a dependency to the latest release.
+
 ## 0.1.2
 
  - **FIX**: Remove extendedGamepad from gamepads array on disconnect ([#39](https://github.com/flame-engine/gamepads/issues/39)). ([b24257d3](https://github.com/flame-engine/gamepads/commit/b24257d3e467385351bf5ba14780eacfa318cd0d))
