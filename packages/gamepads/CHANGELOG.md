@@ -1,3 +1,7 @@
+## 0.1.3
+
+ - **FEAT**: Added GamepadState that can be updated ([#43](https://github.com/flame-engine/gamepads/issues/43)). ([0c9890e8](https://github.com/flame-engine/gamepads/commit/0c9890e80c423621c52226521612e307d8419308))
+
 ## 0.1.2
 
  - **REFACTOR**: Lint Kotlin, C and C++ code ([#6](https://github.com/flame-engine/gamepads/issues/6)). ([6d3e9334](https://github.com/flame-engine/gamepads/commit/6d3e9334072d24525ed7ccf9f8c7fa481c8373fc))
