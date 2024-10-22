@@ -1,3 +1,7 @@
+## 0.1.4
+
+ - fix: Take other values than 1 into consideration for pressed buttons
+
 ## 0.1.3
 
  - **FEAT**: Added GamepadState that can be updated ([#43](https://github.com/flame-engine/gamepads/issues/43)). ([0c9890e8](https://github.com/flame-engine/gamepads/commit/0c9890e80c423621c52226521612e307d8419308))
