@@ -20,7 +20,7 @@ class GamepadState {
         analogInputs[event.key] = event.value;
         break;
       case KeyType.button:
-        buttonInputs[event.key] = event.value == 1;
+        buttonInputs[event.key] = event.value != 0;
         break;
     }
   }
