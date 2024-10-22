@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-10-22
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.4`](#gamepads---v014)
+ - [`gamepads_platform_interface` - `v0.1.2+1`](#gamepads_platform_interface---v0121)
+ - [`gamepads_linux` - `v0.1.1+3`](#gamepads_linux---v0113)
+ - [`gamepads_windows` - `v0.1.1+3`](#gamepads_windows---v0113)
+ - [`gamepads_darwin` - `v0.1.2+2`](#gamepads_darwin---v0122)
+ - [`gamepads_ios` - `v0.1.2+2`](#gamepads_ios---v0122)
+ - [`gamepads_android` - `v0.1.2+2`](#gamepads_android---v0122)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads_linux` - `v0.1.1+3`
+ - `gamepads_windows` - `v0.1.1+3`
+ - `gamepads_darwin` - `v0.1.2+2`
+ - `gamepads_ios` - `v0.1.2+2`
+ - `gamepads_android` - `v0.1.2+2`
+
+---
+
+#### `gamepads` - `v0.1.4`
+
+ - fix: Take other values than 1 into consideration for pressed buttons
+
+#### `gamepads_platform_interface` - `v0.1.2+1`
+
+ - **FIX**: Take other values than 1 into consideration for pressed buttons ([#46](https://github.com/flame-engine/gamepads/issues/46)). ([8c27112d](https://github.com/flame-engine/gamepads/commit/8c27112ddf1f2d0ea8e07bdcdd13c84546a72836))
+
+
 ## 2024-10-21
 
 ### Changes
