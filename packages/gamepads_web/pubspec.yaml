@@ -22,8 +22,9 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   gamepads_platform_interface: ^0.1.2+1
-  js: ^0.6.3
+  js_interop: ^0.0.1
   plugin_platform_interface: ^2.1.8
+  web: ^1.1.0
 
 dev_dependencies:
   flame_lint: ^0.2.0
