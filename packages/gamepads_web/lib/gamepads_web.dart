@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_dynamic_calls, omit_local_variable_types
-
 import 'dart:async';
 import 'dart:js_interop';
 
@@ -8,18 +6,17 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:gamepads_platform_interface/api/gamepad_controller.dart';
 import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
-
 import 'package:gamepads_web/gamepad_detector.dart';
 import 'package:web/web.dart' as web;
 
 class GamePadState {
   GamePadState(int length) {
     keyStates = List<dynamic>.filled(length, null);
-    axesStates = List<dynamic>.filled(4, null);
+    axesStates = List<double>.filled(4, 0);
   }
 
   List<dynamic>? keyStates;
-  List<dynamic>? axesStates;
+  List<double>? axesStates;
 }
 
 /// A web implementation of the GamepadsWebPlatform of the GamepadsWeb plugin.
@@ -31,48 +28,46 @@ class GamepadsWeb extends GamepadsPlatformInterface {
 
   void updateGamepadsStatus() {
     final gamepads = getGamepadList();
-    for (int i = 0; i < gamepads.length; i++) {
-      final gamepad = gamepads[i];
-      if (gamepad != null) {
-        final int buttoncount = gamepad.buttons.length;
-        final String gamepadId = gamepad.index.toString();
-        GamePadState lastState;
-        if (lastGamePadstates.containsKey(gamepadId) &&
-            lastGamePadstates[gamepadId]?.keyStates?.length == buttoncount) {
-          lastState = lastGamePadstates[gamepadId]!;
-        } else {
-          lastGamePadstates[gamepadId] = GamePadState(buttoncount);
-          lastState = lastGamePadstates[gamepadId]!;
+    for (final gamepad in gamepads) {
+      final buttonlist = gamepad!.buttons.toDart;
+      final axeslist = gamepad.axes.toDart;
+      final gamepadId = gamepad.index.toString();
+      GamePadState lastState;
+      if (lastGamePadstates.containsKey(gamepadId) &&
+          lastGamePadstates[gamepadId]?.keyStates?.length ==
+              buttonlist.length) {
+        lastState = lastGamePadstates[gamepadId]!;
+      } else {
+        lastGamePadstates[gamepadId] = GamePadState(buttonlist.length);
+        lastState = lastGamePadstates[gamepadId]!;
+      }
+      for (var i = 0; i < buttonlist.length; i++) {
+        if (lastState.keyStates?[i] != buttonlist[i].value) {
+          lastState.keyStates?[i] = buttonlist[i].value;
+          emitGamepadEvent(
+            GamepadEvent(
+              gamepadId: gamepadId,
+              timestamp: DateTime.now().millisecondsSinceEpoch,
+              type: KeyType.button,
+              key: 'button $i',
+              value: buttonlist[i].value,
+            ),
+          );
         }
-        for (int i = 0; i < buttoncount; i++) {
-          if (lastState.keyStates?[i] != gamepad.buttons[i].value) {
-            lastState.keyStates?[i] = gamepad.buttons[i].value;
-            emitGamepadEvent(
-              GamepadEvent(
-                gamepadId: gamepadId,
-                timestamp: DateTime.now().millisecondsSinceEpoch,
-                type: KeyType.button,
-                key: 'button $i',
-                value: gamepad.buttons[i].value,
-              ),
-            );
-          }
-        }
-        for (int i = 0; i < 4; i++) {
-          if (lastState.keyStates?[i] != gamepad.axes[i]) {
-            if (gamepad.axes[i] > 0.1 || gamepad.axes[i] < -0.1) {
-              lastState.axesStates?[i] = gamepad.axes[i];
-              emitGamepadEvent(
-                GamepadEvent(
-                  gamepadId: gamepadId,
-                  timestamp: DateTime.now().millisecondsSinceEpoch,
-                  type: KeyType.analog,
-                  key: 'analog $i',
-                  value: gamepad.axes[i],
-                ),
-              );
-            }
-          }
+      }
+      for (var i = 0; i < 4; i++) {
+        if ((lastState.axesStates![i] - axeslist[i].toDartDouble).abs() >
+            0.03) {
+          lastState.axesStates?[i] = axeslist[i].toDartDouble;
+          emitGamepadEvent(
+            GamepadEvent(
+              gamepadId: gamepadId,
+              timestamp: DateTime.now().millisecondsSinceEpoch,
+              type: KeyType.analog,
+              key: 'analog $i',
+              value: axeslist[i].toDartDouble,
+            ),
+          );
         }
       }
     }
