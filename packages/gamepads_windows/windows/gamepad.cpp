@@ -1,9 +1,9 @@
 #include <iostream>
 #define WIN32_LEAN_AND_MEAN
-#include <dbt.h>
-#include <hidclass.h>
 #include <initguid.h>
 #include <windows.h>
+#include <dbt.h>
+#include <hidclass.h>
 #pragma comment(lib, "winmm.lib")
 #include <mmsystem.h>
 
