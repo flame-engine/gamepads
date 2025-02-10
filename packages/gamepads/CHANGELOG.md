@@ -1,5 +1,9 @@
 ## 0.1.4
 
+ - Bump "gamepads" to `0.1.4`.
+
+## 0.1.4
+
  - fix: Take other values than 1 into consideration for pressed buttons
 
 ## 0.1.3

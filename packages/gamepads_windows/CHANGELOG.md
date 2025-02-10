@@ -1,3 +1,7 @@
+## 0.1.2
+
+ - **FIX**: Update gamepad.cpp includes to fix windows compilation error ([#51](https://github.com/flame-engine/gamepads/issues/51)). ([d6b8ab43](https://github.com/flame-engine/gamepads/commit/d6b8ab4346b9e5f617dde5fcb54457721a54cb73))
+
 ## 0.1.1+3
 
  - Update a dependency to the latest release.
