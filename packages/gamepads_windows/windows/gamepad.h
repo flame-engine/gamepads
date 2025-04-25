@@ -38,6 +38,6 @@ class Gamepads {
 extern Gamepads gamepads;
 
 std::optional<LRESULT> CALLBACK GamepadListenerProc(HWND hwnd,
-                                     UINT uMsg,
-                                     WPARAM wParam,
-                                     LPARAM lParam);
+                                                    UINT uMsg,
+                                                    WPARAM wParam,
+                                                    LPARAM lParam);
