@@ -135,9 +135,9 @@ void Gamepads::update_gamepads() {
 std::set<std::wstring> connected_devices;
 
 std::optional<LRESULT> CALLBACK GamepadListenerProc(HWND hwnd,
-                                     UINT uMsg,
-                                     WPARAM wParam,
-                                     LPARAM lParam) {
+                                                    UINT uMsg,
+                                                    WPARAM wParam,
+                                                    LPARAM lParam) {
   switch (uMsg) {
     case WM_DEVICECHANGE: {
       if (lParam != NULL) {
