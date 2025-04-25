@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-04-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.6`](#gamepads---v016)
+ - [`gamepads_windows` - `v0.1.3`](#gamepads_windows---v013)
+
+---
+
+#### `gamepads` - `v0.1.6`
+
+ - Bump dependencies.
+
+#### `gamepads_windows` - `v0.1.3`
+
+ - **FIX**: Window resizing bug ([#56](https://github.com/flame-engine/gamepads/issues/56)). ([ae7c8f3d](https://github.com/flame-engine/gamepads/commit/ae7c8f3d7f670c7cbb3d9c55119736cbf4a8f54a))
+
+
 ## 2025-02-11
 
 ### Changes
