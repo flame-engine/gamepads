@@ -15,6 +15,32 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gamepads` - `v0.1.7`](#gamepads---v017)
+ - [`gamepads_windows` - `v0.1.4`](#gamepads_windows---v014)
+
+---
+
+#### `gamepads` - `v0.1.7`
+
+ - Bumped dependencies.
+
+#### `gamepads_windows` - `v0.1.4`
+
+ - **FIX**: Use `std::optional` for return from `GamepadListenerProc` ([#58](https://github.com/flame-engine/gamepads/issues/58)). ([fbf52fd2](https://github.com/flame-engine/gamepads/commit/fbf52fd281cec345b110c8a5c63053cafd4571cd))
+
+
+## 2025-04-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gamepads` - `v0.1.6`](#gamepads---v016)
  - [`gamepads_windows` - `v0.1.3`](#gamepads_windows---v013)
 
