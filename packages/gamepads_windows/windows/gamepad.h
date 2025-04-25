@@ -3,6 +3,7 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <optional>
 
 struct Gamepad {
   UINT joy_id;
@@ -36,7 +37,7 @@ class Gamepads {
 
 extern Gamepads gamepads;
 
-LRESULT CALLBACK GamepadListenerProc(HWND hwnd,
+std::optional<LRESULT> CALLBACK GamepadListenerProc(HWND hwnd,
                                      UINT uMsg,
                                      WPARAM wParam,
                                      LPARAM lParam);

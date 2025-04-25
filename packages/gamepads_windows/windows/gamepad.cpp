@@ -9,7 +9,6 @@
 
 #include <list>
 #include <map>
-#include <optional>
 #include <set>
 #include <thread>
 
@@ -135,7 +134,7 @@ void Gamepads::update_gamepads() {
 
 std::set<std::wstring> connected_devices;
 
-LRESULT CALLBACK GamepadListenerProc(HWND hwnd,
+std::optional<LRESULT> CALLBACK GamepadListenerProc(HWND hwnd,
                                      UINT uMsg,
                                      WPARAM wParam,
                                      LPARAM lParam) {
@@ -168,5 +167,5 @@ LRESULT CALLBACK GamepadListenerProc(HWND hwnd,
       return 0;
     }
   }
-  return 0;
+  return std::nullopt;
 }
