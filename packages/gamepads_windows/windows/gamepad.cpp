@@ -167,8 +167,6 @@ LRESULT CALLBACK GamepadListenerProc(HWND hwnd,
       PostQuitMessage(0);
       return 0;
     }
-    default: {
-      return DefWindowProc(hwnd, uMsg, wParam, lParam);
-    }
   }
+  return 0;
 }
