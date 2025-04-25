@@ -1,3 +1,7 @@
+## 0.1.3
+
+ - **FIX**: Window resizing bug ([#56](https://github.com/flame-engine/gamepads/issues/56)). ([ae7c8f3d](https://github.com/flame-engine/gamepads/commit/ae7c8f3d7f670c7cbb3d9c55119736cbf4a8f54a))
+
 ## 0.1.2
 
  - **FIX**: Update gamepad.cpp includes to fix windows compilation error ([#51](https://github.com/flame-engine/gamepads/issues/51)). ([d6b8ab43](https://github.com/flame-engine/gamepads/commit/d6b8ab4346b9e5f617dde5fcb54457721a54cb73))
