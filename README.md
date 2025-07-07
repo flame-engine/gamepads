@@ -123,7 +123,7 @@ class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
     }
     
     override fun dispatchKeyEvent(keyEvent: KeyEvent): Boolean {
-        return keyListener?.invoke(keyEvent) ?: false
+        return keyListener?.invoke(keyEvent) ?: super.dispatchKeyEvent(keyEvent)
     }
 
     override fun registerInputDeviceListener(
