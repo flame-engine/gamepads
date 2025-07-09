@@ -6,7 +6,7 @@ homepage: https://github.com/flame-engine/gamepads
 repository: https://github.com/flame-engine/gamepads/tree/main/packages/gamepads_platform_interface
 
 environment:
-  sdk: '>=3.6.0 <4.0.0'
+  sdk: ">=3.8.0 <4.0.0"
   flutter: ">=3.27.1"
 
 dependencies:
