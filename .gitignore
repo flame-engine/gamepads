@@ -5,3 +5,4 @@ pubspec.lock
 pubspec_overrides.yaml
 cmake-build-debug/
 .vs/
+**/.flutter-plugins-dependencies

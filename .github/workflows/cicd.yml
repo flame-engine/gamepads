@@ -7,44 +7,45 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+env:
+  FLUTTER_MIN_VERSION: '3.32.0'
+
 jobs:
   # BEGIN LINTING STAGE
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.7.1'
-          channel: 'stable'
-          cache: true
-      - uses: bluefireteam/melos-action@main
-        with:
-          melos-version: '3.0.0-dev.0'
+      - uses: bluefireteam/melos-action@v3
       - run: melos run format-check
 
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.7.1'
-          channel: 'stable'
-      - uses: bluefireteam/melos-action@v2
-        with:
-          melos-version: '3.0.0-dev.0'
-      - name: "Analyze"
-        uses: invertase/github-action-dart-analyzer@v1
+          flutter-version: ${{env.FLUTTER_MIN_VERSION}}
+      - uses: bluefireteam/melos-action@v3
+      - run: melos exec dart analyze .
+
+  analyze-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - uses: bluefireteam/melos-action@v3
+      - name: "Analyze with latest stable"
+        uses: invertase/github-action-dart-analyzer@v3
         with:
           fatal-infos: true
-          fatal-warnings: true
 
   markdown-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
       - run: npm install -g markdownlint-cli
@@ -66,14 +67,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.7.1'
-          channel: 'stable'
           cache: true
-      - uses: bluefireteam/melos-action@main
-        with:
-          melos-version: '3.0.0-dev.0'
-      - uses: bluefireteam/spec-action@main
+      - uses: bluefireteam/melos-action@v3
+      - name: Run tests
+        run: melos test
   # END TESTING STAGE
