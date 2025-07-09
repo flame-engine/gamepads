@@ -23,6 +23,8 @@ Packages with other changes:
 
 #### `gamepads` - `v0.1.8`
 
+ - Bumped dependencies.
+
 #### `gamepads_android` - `v0.1.4`
 
  - **FIX**: Bluetooth keyboards should not be recognized as gamepads ([#66](https://github.com/flame-engine/gamepads/issues/66)). ([9c657182](https://github.com/flame-engine/gamepads/commit/9c65718227e3638bfc036e32d05cb3e5b88e4448))
