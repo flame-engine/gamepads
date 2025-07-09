@@ -1,5 +1,7 @@
 ## 0.1.8
 
+ - Bumped dependencies.
+
 ## 0.1.7
 
  - Bumped dependencies.
