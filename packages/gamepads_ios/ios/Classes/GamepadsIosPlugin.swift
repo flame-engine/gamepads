@@ -1,112 +1,119 @@
 import Flutter
-import GameController
 import UIKit
+import GameController
 
 public class GamepadsIosPlugin: NSObject, FlutterPlugin {
-    let channel: FlutterMethodChannel
-    let gamepads = GamepadsListener()
+  private var channel: FlutterMethodChannel!
+  private var controllerIds = [GCController: Int]()
+  private var nextControllerId = 1
 
-    init(channel: FlutterMethodChannel) {
-        self.channel = channel
-        super.init()
+  public static func register(with registrar: FlutterPluginRegistrar) {
+    let instance = GamepadsIosPlugin()
+    instance.channel = FlutterMethodChannel(name: "xyz.luan/gamepads", binaryMessenger: registrar.messenger())
+    registrar.addMethodCallDelegate(instance, channel: instance.channel)
 
-        self.gamepads.listener = onGamepadEvent
+    NotificationCenter.default.addObserver(
+      instance,
+      selector: #selector(instance.controllerConnected),
+      name: .GCControllerDidConnect,
+      object: nil
+    )
+
+    NotificationCenter.default.addObserver(
+      instance,
+      selector: #selector(instance.controllerDisconnected),
+      name: .GCControllerDidDisconnect,
+      object: nil
+    )
+
+    for controller in GCController.controllers() {
+      instance.setupController(controller)
+    }
+  }
+
+  public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    if call.method == "listGamepads" {
+      let gamepads = controllerIds.compactMap { (controller, id) -> [String: Any]? in
+        guard let vendorName = controller.vendorName else { return nil }
+        return [
+          "id": String(id),
+          "name": vendorName
+        ]
+      }
+      result(gamepads)
+    } else {
+      result(FlutterMethodNotImplemented)
+    }
+  }
+
+  @objc private func controllerConnected(notification: Notification) {
+    if let controller = notification.object as? GCController {
+      setupController(controller)
+    }
+  }
+
+  @objc private func controllerDisconnected(notification: Notification) {
+    if let controller = notification.object as? GCController {
+      controllerIds.removeValue(forKey: controller)
+      // Optional: send disconnection event
+    }
+  }
+
+  private func setupController(_ controller: GCController) {
+    if controllerIds[controller] == nil {
+      controllerIds[controller] = nextControllerId
+      nextControllerId += 1
     }
 
-    public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "xyz.luan/gamepads", binaryMessenger: registrar.messenger())
-        let instance = GamepadsIosPlugin(channel: channel)
-        registrar.addMethodCallDelegate(instance, channel: channel)
+    guard let gamepad = controller.extendedGamepad else { return }
+    let gamepadId = controllerIds[controller]!
+
+    gamepad.dpad.valueChangedHandler = { [weak self] _, xValue, yValue in
+      self?.sendEvent(gamepadId: gamepadId, key: "dpad - xAxis", value: xValue, isAnalog: true)
+      self?.sendEvent(gamepadId: gamepadId, key: "dpad - yAxis", value: yValue, isAnalog: true)
     }
 
-    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        switch call.method {
-        case "listGamepads":
-            result(listGamepads())
-        default:
-            result(FlutterMethodNotImplemented)
-        }
+    gamepad.leftThumbstick.valueChangedHandler = { [weak self] _, xValue, yValue in
+      self?.sendEvent(gamepadId: gamepadId, key: "leftStick - xAxis", value: xValue, isAnalog: true)
+      self?.sendEvent(gamepadId: gamepadId, key: "leftStick - yAxis", value: yValue, isAnalog: true)
     }
 
-    private func onGamepadEvent(gamepadId: Int, gamepad: GCExtendedGamepad, element: GCControllerElement) {
-        for (key, value) in getValues(element: element) {
-            let arguments: [String: Any] = [
-                "gamepadId": String(gamepadId),
-                "time": Int(getTimestamp(gamepad: gamepad)),
-                "type": element.isAnalog ? "analog" : "button",
-                "key": key,
-                "value": value,
-            ]
-            channel.invokeMethod("onGamepadEvent", arguments: arguments)
-        }
+    gamepad.rightThumbstick.valueChangedHandler = { [weak self] _, xValue, yValue in
+      self?.sendEvent(gamepadId: gamepadId, key: "rightStick - xAxis", value: xValue, isAnalog: true)
+      self?.sendEvent(gamepadId: gamepadId, key: "rightStick - yAxis", value: yValue, isAnalog: true)
     }
 
-    private func getValues(element: GCControllerElement) -> [(String, Float)] {
-        let name = getNameForElement(element: element)
-        if let element = element as? GCControllerButtonInput {
-            return [(name ?? "Unknown button", element.value)]
-        } else if let element = element as? GCControllerAxisInput {
-            return [(name ?? "Unknown axis", element.value)]
-        } else if let element = element as? GCControllerDirectionPad {
-            return [
-                (maybeConcat(name, "xAxis"), element.xAxis.value),
-                (maybeConcat(name, "yAxis"), element.yAxis.value)
-            ]
-        } else {
-            return []
-        }
-    }
-    
-    private func getNameForElement(element: GCControllerElement) -> String? {
-        if #available(iOS 14.0, *) {
-            return element.sfSymbolsName
-        } else {
-            return nil
-        }
+    var buttons: [(GCControllerButtonInput?, String)] = [
+      (gamepad.buttonA, "buttonA"),
+      (gamepad.buttonB, "buttonB"),
+      (gamepad.buttonX, "buttonX"),
+      (gamepad.buttonY, "buttonY"),
+      (gamepad.leftShoulder, "leftShoulder"),
+      (gamepad.rightShoulder, "rightShoulder"),
+      (gamepad.leftTrigger, "leftTrigger"),
+      (gamepad.rightTrigger, "rightTrigger")
+    ]
+
+    if #available(iOS 14.0, *) {
+      buttons.append((gamepad.buttonMenu, "buttonMenu"))
+      buttons.append((gamepad.buttonOptions, "buttonOptions"))
+      buttons.append((gamepad.buttonHome, "buttonHome"))
     }
 
-    private func getTimestamp(gamepad: GCExtendedGamepad) -> TimeInterval {
-        if #available(iOS 14.0, *) {
-            return gamepad.lastEventTimestamp
-        } else {
-            return Date().timeIntervalSince1970
-        }
+    for (button, name) in buttons {
+      button?.valueChangedHandler = { [weak self] _, _, pressed in
+        self?.sendEvent(gamepadId: gamepadId, key: name, value: pressed ? 1.0 : 0.0, isAnalog: false)
+      }
     }
+  }
 
-    private func getName(gamepad: GCExtendedGamepad) -> String {
-        if #available(iOS 14.0, *) {
-            let device = gamepad.device
-            return maybeConcat(device?.vendorName, device?.productCategory) ?? "Unknown device"
-        } else {
-            return "Unknown device"
-        }
-    }
-
-    private func listGamepads() -> [[String: Any?]] {
-        return gamepads.gamepads.enumerated().map { (index, gamepad) in
-            [ "id": String(index), "name": getName(gamepad: gamepad) ]
-        }
-    }
-
-    private func maybeConcat(_ string1: String?, _ string2: String) -> String {
-        return maybeConcat(string1, string2)!
-    }
-
-    private func maybeConcat(_ strings: String?...) -> String? {
-        let nonNull = strings.compactMap { $0 }
-        if (nonNull.isEmpty) {
-            return nil
-        }
-        return nonNull.joined(separator: " - ")
-    }
-}
-
-extension Optional {
-    func map<T>(_ closure: (Wrapped) -> T) -> T? {
-        if let value = self {
-            return closure(value)
-        } else {
-            return nil
-        }
-    }
+  private func sendEvent(gamepadId: Int, key: String, value: Float, isAnalog: Bool) {
+    channel.invokeMethod("onGamepadEvent", arguments: [
+      "type": isAnalog ? "analog" : "button",
+      "gamepadId": String(gamepadId),
+      "key": key,
+      "value": value,
+      "time": Int(Date().timeIntervalSince1970 * 1000)
+    ])
+  }
 }
