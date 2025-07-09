@@ -1,3 +1,7 @@
+## 0.1.3
+
+ - **FIX**: Correct dpad axis mapping and add support for start/select/home buttons (iOS) ([#65](https://github.com/flame-engine/gamepads/issues/65)). ([1aef0c28](https://github.com/flame-engine/gamepads/commit/1aef0c2881db84b78f68f23b754912a2625b7902))
+
 ## 0.1.2+2
 
  - Update a dependency to the latest release.

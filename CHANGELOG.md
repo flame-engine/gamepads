@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-07-09
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.8`](#gamepads---v018)
+ - [`gamepads_android` - `v0.1.4`](#gamepads_android---v014)
+ - [`gamepads_ios` - `v0.1.3`](#gamepads_ios---v013)
+
+---
+
+#### `gamepads` - `v0.1.8`
+
+ - Bumped dependencies.
+
+#### `gamepads_android` - `v0.1.4`
+
+ - **FIX**: Bluetooth keyboards should not be recognized as gamepads ([#66](https://github.com/flame-engine/gamepads/issues/66)). ([9c657182](https://github.com/flame-engine/gamepads/commit/9c65718227e3638bfc036e32d05cb3e5b88e4448))
+
+#### `gamepads_ios` - `v0.1.3`
+
+ - **FIX**: Correct dpad axis mapping and add support for start/select/home buttons (iOS) ([#65](https://github.com/flame-engine/gamepads/issues/65)). ([1aef0c28](https://github.com/flame-engine/gamepads/commit/1aef0c2881db84b78f68f23b754912a2625b7902))
+
+
 ## 2025-04-25
 
 ### Changes
