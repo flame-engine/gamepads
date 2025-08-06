@@ -91,7 +91,9 @@ public class GamepadsIosPlugin: NSObject, FlutterPlugin {
       (gamepad.leftShoulder, "leftShoulder"),
       (gamepad.rightShoulder, "rightShoulder"),
       (gamepad.leftTrigger, "leftTrigger"),
-      (gamepad.rightTrigger, "rightTrigger")
+      (gamepad.rightTrigger, "rightTrigger"),
+      (gamepad.leftThumbstickButton, "leftThumbstickButton"),
+      (gamepad.rightThumbstickButton, "rightThumbstickButton")
     ]
 
     if #available(iOS 14.0, *) {
