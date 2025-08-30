@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  gamepads: ^0.1.7
+  gamepads: ^0.1.8+1
 
 dev_dependencies:
   flame_lint: ^1.4.1

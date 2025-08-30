@@ -1,3 +1,8 @@
+## 0.1.3+1
+
+ - **FIX**: Adding rightThumbstickButton and leftThumbstickButton keys for iOS ([#71](https://github.com/flame-engine/gamepads/issues/71)). ([244e16cb](https://github.com/flame-engine/gamepads/commit/244e16cbd0b2b1e0c193f8397dcae91c93416bba))
+ - **FIX**: Correct dpad axis mapping and add support for start/select/home buttons (iOS) ([#65](https://github.com/flame-engine/gamepads/issues/65)). ([1aef0c28](https://github.com/flame-engine/gamepads/commit/1aef0c2881db84b78f68f23b754912a2625b7902))
+
 ## 0.1.3
 
  - **FIX**: Correct dpad axis mapping and add support for start/select/home buttons (iOS) ([#65](https://github.com/flame-engine/gamepads/issues/65)). ([1aef0c28](https://github.com/flame-engine/gamepads/commit/1aef0c2881db84b78f68f23b754912a2625b7902))
