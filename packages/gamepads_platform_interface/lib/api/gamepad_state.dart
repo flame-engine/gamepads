@@ -18,10 +18,8 @@ class GamepadState {
     switch (event.type) {
       case KeyType.analog:
         analogInputs[event.key] = event.value;
-        break;
       case KeyType.button:
         buttonInputs[event.key] = event.value != 0;
-        break;
     }
   }
 }
