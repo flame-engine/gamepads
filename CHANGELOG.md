@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-12
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads_android` - `v0.1.6`](#gamepads_android---v016)
+ - [`gamepads` - `v0.1.8+2`](#gamepads---v0182)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads` - `v0.1.8+2`
+
+---
+
+#### `gamepads_android` - `v0.1.6`
+
+ - **FIX**: Fix incorrect handling of unhandled MotionEvent axes on android ([#74](https://github.com/flame-engine/gamepads/issues/74)). ([dbd2ced1](https://github.com/flame-engine/gamepads/commit/dbd2ced145a8d009e68696b090a55664d25b2a4a))
+ - **FEAT**: Add support for AXIS_WHEEL on Android gamepads ([#75](https://github.com/flame-engine/gamepads/issues/75)). ([f3c03351](https://github.com/flame-engine/gamepads/commit/f3c033513e573e9777c1491aba3be971d2dd4cf5))
+
+
 ## 2025-08-30
 
 ### Changes
