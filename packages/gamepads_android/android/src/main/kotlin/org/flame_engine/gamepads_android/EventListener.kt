@@ -44,10 +44,13 @@ class EventListener {
     }
 
     fun onMotionEvent(motionEvent: MotionEvent, channel: MethodChannel): Boolean {
-        supportedAxes.forEach {
-            reportAxis(motionEvent, channel, it)
+        var handled = false
+        supportedAxes.forEach { axis ->
+            val axisHandled = reportAxis(motionEvent, channel, axis)
+            if (axisHandled) handled = true
         }
-        return true
+
+        return handled
     }
 
     private fun reportAxis(
