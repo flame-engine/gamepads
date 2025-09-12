@@ -28,6 +28,7 @@ class EventListener {
         SupportedAxis(MotionEvent.AXIS_RTRIGGER),
         SupportedAxis(MotionEvent.AXIS_BRAKE),
         SupportedAxis(MotionEvent.AXIS_GAS),
+        SupportedAxis(MotionEvent.AXIS_WHEEL),
     )
 
     fun onKeyEvent(keyEvent: KeyEvent, channel: MethodChannel): Boolean {
