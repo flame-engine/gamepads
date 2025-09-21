@@ -73,7 +73,6 @@ class GamepadsWeb extends GamepadsPlatformInterface {
     }
   }
 
-  /// Constructs a GamepadsWeb
   GamepadsWeb() {
     web.window.addEventListener(
       'gamepadconnected',
