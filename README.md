@@ -103,7 +103,7 @@ input devices) to the plugin. Below is an example of a MainActivity for a clean 
 that has implemented the required boilerplate code. For many projects it will be possible to simply
 duplicate this setup.
 
-```dart
+```kotlin
 package [YOUR_PACKAGE_NAME]
 
 import android.hardware.input.InputManager
@@ -123,7 +123,10 @@ class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
     }
     
     override fun dispatchKeyEvent(keyEvent: KeyEvent): Boolean {
-        return keyListener?.invoke(keyEvent) ?: false
+        if (keyListener?.invoke(keyEvent) == true) {
+            return true
+        }
+        return super.dispatchKeyEvent(keyEvent)
     }
 
     override fun registerInputDeviceListener(

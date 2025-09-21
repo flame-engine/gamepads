@@ -3,6 +3,212 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-12
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads_android` - `v0.1.6`](#gamepads_android---v016)
+ - [`gamepads` - `v0.1.8+2`](#gamepads---v0182)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads` - `v0.1.8+2`
+
+---
+
+#### `gamepads_android` - `v0.1.6`
+
+ - **FIX**: Fix incorrect handling of unhandled MotionEvent axes on android ([#74](https://github.com/flame-engine/gamepads/issues/74)). ([dbd2ced1](https://github.com/flame-engine/gamepads/commit/dbd2ced145a8d009e68696b090a55664d25b2a4a))
+ - **FEAT**: Add support for AXIS_WHEEL on Android gamepads ([#75](https://github.com/flame-engine/gamepads/issues/75)). ([f3c03351](https://github.com/flame-engine/gamepads/commit/f3c033513e573e9777c1491aba3be971d2dd4cf5))
+
+
+## 2025-08-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads_android` - `v0.1.5`](#gamepads_android---v015)
+ - [`gamepads_ios` - `v0.1.3+1`](#gamepads_ios---v0131)
+ - [`gamepads_windows` - `v0.1.4+1`](#gamepads_windows---v0141)
+ - [`gamepads` - `v0.1.8+1`](#gamepads---v0181)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads` - `v0.1.8+1`
+
+---
+
+#### `gamepads_android` - `v0.1.5`
+
+ - **FIX**: Bluetooth keyboards should not be recognized as gamepads ([#66](https://github.com/flame-engine/gamepads/issues/66)). ([9c657182](https://github.com/flame-engine/gamepads/commit/9c65718227e3638bfc036e32d05cb3e5b88e4448))
+ - **FEAT**: Add AXIS_BRAKE and AXIS_GAS as supported axes on Android. ([#50](https://github.com/flame-engine/gamepads/issues/50)). ([adfb8d1f](https://github.com/flame-engine/gamepads/commit/adfb8d1fa2206571d6c59315697d3cf9c951b423))
+
+#### `gamepads_ios` - `v0.1.3+1`
+
+ - **FIX**: Adding rightThumbstickButton and leftThumbstickButton keys for iOS ([#71](https://github.com/flame-engine/gamepads/issues/71)). ([244e16cb](https://github.com/flame-engine/gamepads/commit/244e16cbd0b2b1e0c193f8397dcae91c93416bba))
+ - **FIX**: Correct dpad axis mapping and add support for start/select/home buttons (iOS) ([#65](https://github.com/flame-engine/gamepads/issues/65)). ([1aef0c28](https://github.com/flame-engine/gamepads/commit/1aef0c2881db84b78f68f23b754912a2625b7902))
+
+#### `gamepads_windows` - `v0.1.4+1`
+
+ - **FIX**: Use `std::optional` for return from `GamepadListenerProc` ([#58](https://github.com/flame-engine/gamepads/issues/58)). ([fbf52fd2](https://github.com/flame-engine/gamepads/commit/fbf52fd281cec345b110c8a5c63053cafd4571cd))
+ - **FIX**: Window resizing bug ([#56](https://github.com/flame-engine/gamepads/issues/56)). ([ae7c8f3d](https://github.com/flame-engine/gamepads/commit/ae7c8f3d7f670c7cbb3d9c55119736cbf4a8f54a))
+ - **FIX**: Update gamepad.cpp includes to fix windows compilation error ([#51](https://github.com/flame-engine/gamepads/issues/51)). ([d6b8ab43](https://github.com/flame-engine/gamepads/commit/d6b8ab4346b9e5f617dde5fcb54457721a54cb73))
+
+
+## 2025-07-09
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.8`](#gamepads---v018)
+ - [`gamepads_android` - `v0.1.4`](#gamepads_android---v014)
+ - [`gamepads_ios` - `v0.1.3`](#gamepads_ios---v013)
+
+---
+
+#### `gamepads` - `v0.1.8`
+
+ - Bumped dependencies.
+
+#### `gamepads_android` - `v0.1.4`
+
+ - **FIX**: Bluetooth keyboards should not be recognized as gamepads ([#66](https://github.com/flame-engine/gamepads/issues/66)). ([9c657182](https://github.com/flame-engine/gamepads/commit/9c65718227e3638bfc036e32d05cb3e5b88e4448))
+
+#### `gamepads_ios` - `v0.1.3`
+
+ - **FIX**: Correct dpad axis mapping and add support for start/select/home buttons (iOS) ([#65](https://github.com/flame-engine/gamepads/issues/65)). ([1aef0c28](https://github.com/flame-engine/gamepads/commit/1aef0c2881db84b78f68f23b754912a2625b7902))
+
+
+## 2025-04-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.7`](#gamepads---v017)
+ - [`gamepads_windows` - `v0.1.4`](#gamepads_windows---v014)
+
+---
+
+#### `gamepads` - `v0.1.7`
+
+ - Bumped dependencies.
+
+#### `gamepads_windows` - `v0.1.4`
+
+ - **FIX**: Use `std::optional` for return from `GamepadListenerProc` ([#58](https://github.com/flame-engine/gamepads/issues/58)). ([fbf52fd2](https://github.com/flame-engine/gamepads/commit/fbf52fd281cec345b110c8a5c63053cafd4571cd))
+
+
+## 2025-04-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.6`](#gamepads---v016)
+ - [`gamepads_windows` - `v0.1.3`](#gamepads_windows---v013)
+
+---
+
+#### `gamepads` - `v0.1.6`
+
+ - Bump dependencies.
+
+#### `gamepads_windows` - `v0.1.3`
+
+ - **FIX**: Window resizing bug ([#56](https://github.com/flame-engine/gamepads/issues/56)). ([ae7c8f3d](https://github.com/flame-engine/gamepads/commit/ae7c8f3d7f670c7cbb3d9c55119736cbf4a8f54a))
+
+
+## 2025-02-11
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.5`](#gamepads---v015)
+
+---
+
+#### `gamepads` - `v0.1.5`
+
+ - Bump version to 0.1.5 (due to previous manual versioning)
+
+
+## 2025-02-10
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.4`](#gamepads---v014)
+ - [`gamepads_windows` - `v0.1.2`](#gamepads_windows---v012)
+ - [`gamepads_android` - `v0.1.3`](#gamepads_android---v013)
+
+---
+
+#### `gamepads` - `v0.1.4`
+
+ - Bump "gamepads" to `0.1.4`.
+
+#### `gamepads_windows` - `v0.1.2`
+
+ - **FIX**: Update gamepad.cpp includes to fix windows compilation error ([#51](https://github.com/flame-engine/gamepads/issues/51)). ([d6b8ab43](https://github.com/flame-engine/gamepads/commit/d6b8ab4346b9e5f617dde5fcb54457721a54cb73))
+
+#### `gamepads_android` - `v0.1.3`
+
+ - **FEAT**: Add AXIS_BRAKE and AXIS_GAS as supported axes on Android. ([#50](https://github.com/flame-engine/gamepads/issues/50)). ([adfb8d1f](https://github.com/flame-engine/gamepads/commit/adfb8d1fa2206571d6c59315697d3cf9c951b423))
+
+
 ## 2024-10-22
 
 ### Changes

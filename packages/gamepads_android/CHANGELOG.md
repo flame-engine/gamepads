@@ -1,3 +1,21 @@
+## 0.1.6
+
+ - **FIX**: Fix incorrect handling of unhandled MotionEvent axes on android ([#74](https://github.com/flame-engine/gamepads/issues/74)). ([dbd2ced1](https://github.com/flame-engine/gamepads/commit/dbd2ced145a8d009e68696b090a55664d25b2a4a))
+ - **FEAT**: Add support for AXIS_WHEEL on Android gamepads ([#75](https://github.com/flame-engine/gamepads/issues/75)). ([f3c03351](https://github.com/flame-engine/gamepads/commit/f3c033513e573e9777c1491aba3be971d2dd4cf5))
+
+## 0.1.5
+
+ - **FIX**: Bluetooth keyboards should not be recognized as gamepads ([#66](https://github.com/flame-engine/gamepads/issues/66)). ([9c657182](https://github.com/flame-engine/gamepads/commit/9c65718227e3638bfc036e32d05cb3e5b88e4448))
+ - **FEAT**: Add AXIS_BRAKE and AXIS_GAS as supported axes on Android. ([#50](https://github.com/flame-engine/gamepads/issues/50)). ([adfb8d1f](https://github.com/flame-engine/gamepads/commit/adfb8d1fa2206571d6c59315697d3cf9c951b423))
+
+## 0.1.4
+
+ - **FIX**: Bluetooth keyboards should not be recognized as gamepads ([#66](https://github.com/flame-engine/gamepads/issues/66)). ([9c657182](https://github.com/flame-engine/gamepads/commit/9c65718227e3638bfc036e32d05cb3e5b88e4448))
+
+## 0.1.3
+
+ - **FEAT**: Add AXIS_BRAKE and AXIS_GAS as supported axes on Android. ([#50](https://github.com/flame-engine/gamepads/issues/50)). ([adfb8d1f](https://github.com/flame-engine/gamepads/commit/adfb8d1fa2206571d6c59315697d3cf9c951b423))
+
 ## 0.1.2+2
 
  - Update a dependency to the latest release.

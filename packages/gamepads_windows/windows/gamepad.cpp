@@ -1,15 +1,14 @@
 #include <iostream>
 #define WIN32_LEAN_AND_MEAN
-#include <dbt.h>
-#include <hidclass.h>
 #include <initguid.h>
 #include <windows.h>
+#include <dbt.h>
+#include <hidclass.h>
 #pragma comment(lib, "winmm.lib")
 #include <mmsystem.h>
 
 #include <list>
 #include <map>
-#include <optional>
 #include <set>
 #include <thread>
 
@@ -135,10 +134,10 @@ void Gamepads::update_gamepads() {
 
 std::set<std::wstring> connected_devices;
 
-LRESULT CALLBACK GamepadListenerProc(HWND hwnd,
-                                     UINT uMsg,
-                                     WPARAM wParam,
-                                     LPARAM lParam) {
+std::optional<LRESULT> CALLBACK GamepadListenerProc(HWND hwnd,
+                                                    UINT uMsg,
+                                                    WPARAM wParam,
+                                                    LPARAM lParam) {
   switch (uMsg) {
     case WM_DEVICECHANGE: {
       if (lParam != NULL) {
@@ -167,8 +166,6 @@ LRESULT CALLBACK GamepadListenerProc(HWND hwnd,
       PostQuitMessage(0);
       return 0;
     }
-    default: {
-      return DefWindowProc(hwnd, uMsg, wParam, lParam);
-    }
   }
+  return std::nullopt;
 }

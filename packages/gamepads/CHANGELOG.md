@@ -1,3 +1,31 @@
+## 0.1.8+2
+
+ - Update a dependency to the latest release.
+
+## 0.1.8+1
+
+ - Update a dependency to the latest release.
+
+## 0.1.8
+
+ - Bumped dependencies.
+
+## 0.1.7
+
+ - Bumped dependencies.
+
+## 0.1.6
+
+ - Bump dependencies.
+
+## 0.1.5
+
+ - Bump version to 0.1.5 (due to previous manual versioning)
+
+## 0.1.4
+
+ - Bump "gamepads" to `0.1.4`.
+
 ## 0.1.4
 
  - fix: Take other values than 1 into consideration for pressed buttons

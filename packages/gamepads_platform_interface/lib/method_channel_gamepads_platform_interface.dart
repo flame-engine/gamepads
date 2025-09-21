@@ -29,7 +29,6 @@ class MethodChannelGamepadsPlatformInterface extends GamepadsPlatformInterface {
     switch (call.method) {
       case 'onGamepadEvent':
         emitGamepadEvent(GamepadEvent.parse(call.args));
-        break;
     }
   }
 
