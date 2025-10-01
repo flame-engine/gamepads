@@ -8,6 +8,7 @@ workspace:
     - packages/gamepads_ios
     - packages/gamepads_linux
     - packages/gamepads_platform_interface
+    - packages/gamepads_web
     - packages/gamepads_windows
 
 environment:
