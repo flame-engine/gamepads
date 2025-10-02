@@ -28,6 +28,6 @@ dependencies:
   web: ^1.1.0
 
 dev_dependencies:
-  flame_lint: ^0.2.0
+  flame_lint: ^1.4.1
   flutter_test:
     sdk: flutter
