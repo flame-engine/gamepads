@@ -6,8 +6,7 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:gamepads_platform_interface/api/gamepad_controller.dart';
 import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
-import 'package:gamepads_web/src/gamepad_detector.dart'
-    show getGamepadList, getGamepads;
+import 'package:gamepads_web/src/gamepad_detector.dart' show getGamepadList, getGamepads;
 import 'package:web/web.dart' as web;
 
 class _GamePadState {
