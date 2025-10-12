@@ -55,3 +55,8 @@ set(gamepads_windows_bundled_libraries
   ""
   PARENT_SCOPE
 )
+
+# Adds Microsoft.GameInput library from NuGet
+set_property(TARGET ${PLUGIN_NAME}
+    PROPERTY VS_PACKAGE_REFERENCES "Microsoft.GameInput_3.0.26100.6154"
+)
