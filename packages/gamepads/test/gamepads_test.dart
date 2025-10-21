@@ -12,12 +12,12 @@ void main() {
   const channel = MethodChannel('xyz.luan/gamepads');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
-    channel,
-    (MethodCall methodCall) async {
-      calls.add(methodCall);
-      return <GamepadController>[];
-    },
-  );
+        channel,
+        (MethodCall methodCall) async {
+          calls.add(methodCall);
+          return <GamepadController>[];
+        },
+      );
 
   void clear() {
     calls.clear();
@@ -32,8 +32,9 @@ void main() {
     return popCall();
   }
 
-  final platformInterface = GamepadsPlatformInterface.instance
-      as MethodChannelGamepadsPlatformInterface;
+  final platformInterface =
+      GamepadsPlatformInterface.instance
+          as MethodChannelGamepadsPlatformInterface;
 
   setUp(clear);
 
