@@ -55,7 +55,7 @@ class GamepadsWeb extends GamepadsPlatformInterface {
           );
         }
       }
-      for (var i = 0; i < 4; i++) {
+      for (var i = 0; i < lastState.axesStates.length; i++) {
         if ((lastState.axesStates![i] - axeslist[i].toDartDouble).abs() >
             0.03) {
           lastState.axesStates?[i] = axeslist[i].toDartDouble;
