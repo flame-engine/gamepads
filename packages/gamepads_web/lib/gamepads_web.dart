@@ -11,10 +11,9 @@ import 'package:gamepads_web/src/gamepad_detector.dart'
 import 'package:web/web.dart' as web;
 
 class _GamePadState {
-  _GamePadState(int length) {
-    keyStates = List<dynamic>.filled(length, null);
+  _GamepadState(int amountOfKeys) :
+    keyStates = List<double?>.filled(amountOfKeys, null),
     axesStates = List<double>.filled(4, 0);
-  }
 
   final List<dynamic> keyStates;
   final List<double> axesStates;
