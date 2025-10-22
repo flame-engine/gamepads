@@ -20,7 +20,7 @@ List<GamepadController> getGamepads(GamepadsPlatformInterface plugin) {
   return controllers;
 }
 
-List<Gamepad?> getGamepadList() {
+List<Gamepad?> _getGamepadList() {
   final gamepads = window.navigator.getGamepads().toDart;
   gamepads.removeWhere((item) => item == null);
   return gamepads;
