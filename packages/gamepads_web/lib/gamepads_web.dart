@@ -24,7 +24,7 @@ class GamepadsWeb extends GamepadsPlatformInterface {
   int _gamepadCount = 0;
   Timer? _gamepadPollingTimer;
 
-  final Map<String, _GamePadState> _lastGamePadstates = {};
+  final Map<String, _GamePadState> _lastGamepadStates = {};
 
   void updateGamepadsStatus() {
     final gamepads = getGamepadList();
