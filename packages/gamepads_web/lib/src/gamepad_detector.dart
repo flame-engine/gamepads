@@ -6,18 +6,14 @@ import 'package:web/web.dart';
 
 List<GamepadController> getGamepads(GamepadsPlatformInterface plugin) {
   final controllers = <GamepadController>[];
-  final gamepads = getGamepadList();
-  for (var i = 0; i < gamepads.length; i++) {
-    final gamepad = gamepads[i];
-    controllers.add(
+  return getGamepadList()
+    .map((gamepad) =>
       GamepadController(
         id: gamepad!.index.toString(),
         name: gamepad.id,
         plugin: plugin,
       ),
     );
-  }
-  return controllers;
 }
 
 List<Gamepad?> _getGamepadList() {
