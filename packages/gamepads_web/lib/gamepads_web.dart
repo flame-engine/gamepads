@@ -32,7 +32,7 @@ class GamepadsWeb extends GamepadsPlatformInterface {
       final buttonlist = gamepad!.buttons.toDart;
       final axeslist = gamepad.axes.toDart;
       final gamepadId = gamepad.index.toString();
-      _GamePadState lastState;
+      final _GamePadState lastState;
       if (_lastGamePadstates.containsKey(gamepadId) &&
           _lastGamePadstates[gamepadId]?.keyStates?.length ==
               buttonlist.length) {
