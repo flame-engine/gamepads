@@ -16,8 +16,8 @@ class _GamePadState {
     axesStates = List<double>.filled(4, 0);
   }
 
-  List<dynamic>? keyStates;
-  List<double>? axesStates;
+  final List<dynamic> keyStates;
+  final List<double> axesStates;
 }
 
 /// A web implementation of the GamepadsWebPlatform of the GamepadsWeb plugin.
