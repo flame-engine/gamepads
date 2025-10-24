@@ -5,19 +5,18 @@ import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
 import 'package:web/web.dart';
 
 List<GamepadController> getGamepads(GamepadsPlatformInterface plugin) {
-  final controllers = <GamepadController>[];
   return getGamepadList()
-    .map((gamepad) =>
-      GamepadController(
-        id: gamepad!.index.toString(),
-        name: gamepad.id,
-        plugin: plugin,
-      ),
-    );
+    .map((gamepad) => GamepadController(
+      id: gamepad.index.toString(),
+      name: gamepad.id,
+      plugin: plugin,
+    ),)
+    .toList();
 }
 
-List<Gamepad?> _getGamepadList() {
-  final gamepads = window.navigator.getGamepads().toDart;
-  gamepads.removeWhere((item) => item == null);
-  return gamepads;
+List<Gamepad> getGamepadList() {
+  return window.navigator.getGamepads()
+    .toDart
+    .whereType<Gamepad>()
+    .toList();
 }
