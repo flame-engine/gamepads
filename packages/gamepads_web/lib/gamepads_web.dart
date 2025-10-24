@@ -15,7 +15,7 @@ class _GamePadState {
     keyStates = List<double?>.filled(amountOfKeys, null),
     axesStates = List<double>.filled(4, 0);
 
-  final List<dynamic> keyStates;
+  final List<double?> keyStates;
   final List<double> axesStates;
 }
 
