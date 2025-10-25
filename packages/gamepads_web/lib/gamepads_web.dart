@@ -11,9 +11,9 @@ import 'package:gamepads_web/src/gamepad_detector.dart'
 import 'package:web/web.dart' as web;
 
 class _GamePadState {
-  _GamePadState(int amountOfKeys) :
-    keyStates = List<double?>.filled(amountOfKeys, null),
-    axesStates = List<double>.filled(4, 0);
+  _GamePadState(int amountOfKeys)
+    : keyStates = List<double?>.filled(amountOfKeys, null),
+      axesStates = List<double>.filled(4, 0);
 
   final List<double?> keyStates;
   final List<double> axesStates;
@@ -34,8 +34,7 @@ class GamepadsWeb extends GamepadsPlatformInterface {
       final gamepadId = gamepad.index.toString();
       final _GamePadState lastState;
       if (_lastGamePadStates.containsKey(gamepadId) &&
-          _lastGamePadStates[gamepadId]?.keyStates.length ==
-              buttons.length) {
+          _lastGamePadStates[gamepadId]?.keyStates.length == buttons.length) {
         lastState = _lastGamePadStates[gamepadId]!;
       } else {
         _lastGamePadStates[gamepadId] = _GamePadState(buttons.length);
@@ -56,8 +55,7 @@ class GamepadsWeb extends GamepadsPlatformInterface {
         }
       }
       for (var i = 0; i < lastState.axesStates.length; i++) {
-        if ((lastState.axesStates[i] - axes[i].toDartDouble).abs() >
-            0.03) {
+        if ((lastState.axesStates[i] - axes[i].toDartDouble).abs() > 0.03) {
           lastState.axesStates[i] = axes[i].toDartDouble;
           emitGamepadEvent(
             GamepadEvent(
