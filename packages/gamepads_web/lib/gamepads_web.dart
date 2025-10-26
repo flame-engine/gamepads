@@ -10,8 +10,8 @@ import 'package:gamepads_web/src/gamepad_detector.dart'
     show getGamepadList, getGamepads;
 import 'package:web/web.dart' as web;
 
-class _GamePadState {
-  _GamePadState(int amountOfKeys)
+class _GamepadState {
+  _GamepadState(int amountOfKeys)
     : keyStates = List<double?>.filled(amountOfKeys, null),
       axesStates = List<double>.filled(4, 0);
 
@@ -24,7 +24,7 @@ class GamepadsWeb extends GamepadsPlatformInterface {
   int _gamepadCount = 0;
   Timer? _gamepadPollingTimer;
 
-  final Map<String, _GamePadState> _lastGamePadStates = {};
+  final Map<String, _GamepadState> _lastGamepadStates = {};
 
   void updateGamepadsStatus() {
     final gamepads = getGamepadList();
@@ -32,13 +32,13 @@ class GamepadsWeb extends GamepadsPlatformInterface {
       final buttons = gamepad.buttons.toDart;
       final axes = gamepad.axes.toDart;
       final gamepadId = gamepad.index.toString();
-      final _GamePadState lastState;
-      if (_lastGamePadStates.containsKey(gamepadId) &&
-          _lastGamePadStates[gamepadId]?.keyStates.length == buttons.length) {
-        lastState = _lastGamePadStates[gamepadId]!;
+      final _GamepadState lastState;
+      if (_lastGamepadStates.containsKey(gamepadId) &&
+          _lastGamepadStates[gamepadId]?.keyStates.length == buttons.length) {
+        lastState = _lastGamepadStates[gamepadId]!;
       } else {
-        _lastGamePadStates[gamepadId] = _GamePadState(buttons.length);
-        lastState = _lastGamePadStates[gamepadId]!;
+        _lastGamepadStates[gamepadId] = _GamepadState(buttons.length);
+        lastState = _lastGamepadStates[gamepadId]!;
       }
       for (var i = 0; i < buttons.length; i++) {
         if (lastState.keyStates[i] != buttons[i].value) {
