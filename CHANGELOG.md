@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-10-28
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.9`](#gamepads---v019)
+
+---
+
+#### `gamepads` - `v0.1.9`
+
+ - **FEAT**: Support for Web ([#48](https://github.com/flame-engine/gamepads/issues/48)). ([eae56125](https://github.com/flame-engine/gamepads/commit/eae56125423acd3beea7387dbae0085a24ea5995))
+
+
 ## 2025-09-12
 
 ### Changes
