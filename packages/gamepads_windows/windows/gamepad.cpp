@@ -3,12 +3,10 @@
 #include <vector>
 #include <concrt.h>
 #include <winerror.h>
-#include <winrt/Windows.Gaming.Input.h>
 
 #include "gamepad.h"
 #include "utils.h"
 #include <optional>
-#include <chrono>
 #include <GameInput.h>
 #include <iomanip>
 #include <sstream>
@@ -16,12 +14,8 @@
 
 Gamepads gamepads;
 
-using namespace concurrency;
-using namespace winrt;
 using namespace Windows::Gaming;
-using namespace std::chrono_literals;
 
-static concurrency::critical_section  m_lock{};
 
 static IGameInput* g_gameInput = nullptr;
 static IGameInputDevice* g_gamepad = nullptr;
