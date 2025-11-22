@@ -44,27 +44,27 @@ std::list<Event> diff_states(const GameInputDeviceInfo& device_info,
   std::list<Event> events;
   if (old.leftThumbstickX != current.leftThumbstickX) {
     events.push_back(
-        {time, "analog", "dwXpos", current.leftThumbstickX});
+        {time, "analog", "leftThumbstickX", current.leftThumbstickX});
   }
   if (old.leftThumbstickY != current.leftThumbstickY) {
     events.push_back(
-        {time, "analog", "dwYpos", current.leftThumbstickY});
+        {time, "analog", "leftThumbstickY", current.leftThumbstickY});
   }
   if (old.rightThumbstickX != current.rightThumbstickX) {
     events.push_back(
-        {time, "analog", "dwZpos", current.rightThumbstickX});
+        {time, "analog", "rightThumbstickX", current.rightThumbstickX});
   }
   if (old.rightThumbstickY != current.rightThumbstickY) {
     events.push_back(
-        {time, "analog", "dwRpos", current.rightThumbstickY});
+        {time, "analog", "rightThumbstickY", current.rightThumbstickY});
   }
   if (old.leftTrigger != current.leftTrigger) {
     events.push_back(
-        {time, "analog", "dwUpos", current.leftTrigger});
+        {time, "analog", "leftTrigger", current.leftTrigger});
   }
   if (old.rightTrigger != current.rightTrigger) {
     events.push_back(
-        {time, "analog", "dwVpos", current.rightTrigger});
+        {time, "analog", "rightTrigger", current.rightTrigger});
   }
   if (old.buttons != current.buttons) {
     for (uint32_t i = 0; i < device_info.controllerButtonCount; ++i) {
