@@ -26,6 +26,26 @@ static concurrency::critical_section  m_lock{};
 static IGameInput* g_gameInput = nullptr;
 static IGameInputDevice* g_gamepad = nullptr;
 
+std::string get_button_name(uint32_t button) {
+  switch (button) {
+    case GameInputGamepadMenu: return "menu";
+    case GameInputGamepadView: return "view";
+    case GameInputGamepadA: return "a";
+    case GameInputGamepadB: return "b";
+    case GameInputGamepadX: return "x";
+    case GameInputGamepadY: return "y";
+    case GameInputGamepadDPadUp: return "dpadUp";
+    case GameInputGamepadDPadDown: return "dpadDown";
+    case GameInputGamepadDPadLeft: return "dpadLeft";
+    case GameInputGamepadDPadRight: return "dpadRight";
+    case GameInputGamepadLeftShoulder: return "leftShoulder";
+    case GameInputGamepadRightShoulder: return "rightShoulder";
+    case GameInputGamepadLeftThumbstick: return "leftThumbstick";
+    case GameInputGamepadRightThumbstick: return "rightThumbstick";
+  }
+  return "";
+}
+
 std::string AppLocalDeviceIdToString(const APP_LOCAL_DEVICE_ID& id) {
     std::ostringstream oss;
     oss << std::hex << std::setfill('0');
@@ -72,8 +92,9 @@ std::list<Event> diff_states(const GameInputDeviceInfo& device_info,
       bool is_pressed = current.buttons & (1 << i);
       if (was_pressed != is_pressed) {
         double value = is_pressed ? 1.0 : 0.0;
+        auto key = get_button_name(1 << i);
         events.push_back(
-            {time, "button", "button-" + std::to_string(i), value});
+            {time, "button", key, value});
       }
     }
   }
