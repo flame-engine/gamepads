@@ -6,15 +6,12 @@
 
 #include "gamepad.h"
 #include "utils.h"
-#include <optional>
 #include <GameInput.h>
 #include <iomanip>
 #include <sstream>
 #pragma comment(lib, "GameInput.lib")
 
 Gamepads gamepads;
-
-using namespace Windows::Gaming;
 
 
 static IGameInput* g_gameInput = nullptr;
@@ -105,16 +102,6 @@ bool are_states_different(const GameInputGamepadState& a, const GameInputGamepad
     a.buttons != b.buttons;
 }
 
-void OnDeviceEvent(
-          GameInputCallbackToken callbackToken,
-         void* context,
-         IGameInputReading* reading,
-         bool hasOverrunOccurred
-) {
-  //auto* self = static_cast<Gamepads*>(context);
-  std::cout << "Gamepad event" << std::endl;
-}
-
 void Gamepads::init()
 {
   GameInputCreate(&g_gameInput);
@@ -146,18 +133,6 @@ void Gamepads::init()
         this->deviceCallbackToken
       );
     }
-
-    /*
-    // Currently doesn't produce any data, but perhaps in future, it can be used instead of read_thread.
-    g_gameInput->RegisterReadingCallback(
-        nullptr, // Any device,
-        GameInputKindGamepad,
-        0.0,
-        static_cast<void*>(this),
-        OnDeviceEvent,
-        this->readingCallbackToken
-    );
-    */
   }
 }
 
@@ -166,7 +141,6 @@ void Gamepads::stop()
   if (g_gamepad) g_gamepad->Release();
   if (g_gameInput) {
     g_gameInput->UnregisterCallback(*this->deviceCallbackToken, 5000);
-    //g_gameInput->UnregisterCallback(*this->readingCallbackToken, 5000);
     g_gameInput->Release();
   }
 

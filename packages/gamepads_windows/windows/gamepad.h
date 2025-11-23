@@ -1,10 +1,6 @@
 
 #include <map>
-#include <winrt/Windows.Gaming.Input.h>
 #include <wtypes.h>
-
-using namespace winrt;
-using namespace Windows::Gaming;
 
 #include <windows.h>
 #include <functional>
@@ -34,7 +30,6 @@ class Gamepads {
   std::list<GamepadData*> gamepads;
 
   GameInputCallbackToken* deviceCallbackToken;
-  //GameInputCallbackToken* readingCallbackToken;
   void read_gamepad(GamepadData* gamepad, IGameInputDevice* device);
 
   void on_gamepad_connected(IGameInputDevice* device);
@@ -49,8 +44,3 @@ class Gamepads {
 };
 
 extern Gamepads gamepads;
-
-std::optional<LRESULT> CALLBACK GamepadListenerProc(HWND hwnd,
-                                                    UINT uMsg,
-                                                    WPARAM wParam,
-                                                    LPARAM lParam);
