@@ -78,7 +78,10 @@ std::list<Event> diff_states(const GameInputDeviceInfo& device_info,
         {time, "analog", "rightTrigger", current.rightTrigger});
   }
   if (old.buttons != current.buttons) {
-    for (uint32_t i = 0; i < device_info.controllerButtonCount; ++i) {
+    // While device_info.controllerButtonCount often gives 14,
+    // if you install GameInput v3 redistributable, the reported
+    // button count drops to zero. Button input is still reported.
+    for (uint32_t i = 0; i < 14; ++i) {
       bool was_pressed = old.buttons & (1 << i);
       bool is_pressed = current.buttons & (1 << i);
       if (was_pressed != is_pressed) {
