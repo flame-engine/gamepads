@@ -46,9 +46,7 @@ std::string AppLocalDeviceIdToString(const APP_LOCAL_DEVICE_ID& id) {
     return oss.str();
 }
 
-std::list<Event> diff_states(const GameInputDeviceInfo& device_info,
-                                       const GameInputGamepadState& old,
-                                       const GameInputGamepadState& current) {
+std::list<Event> diff_states(const GameInputGamepadState& old, const GameInputGamepadState& current) {
   std::time_t now = std::time(nullptr);
   int time = static_cast<int>(now);
 
@@ -78,7 +76,7 @@ std::list<Event> diff_states(const GameInputDeviceInfo& device_info,
         {time, "analog", "rightTrigger", current.rightTrigger});
   }
   if (old.buttons != current.buttons) {
-    // While device_info.controllerButtonCount often gives 14,
+    // While GameInputDeviceInfo.controllerButtonCount often gives 14,
     // if you install GameInput v3 redistributable, the reported
     // button count drops to zero. Button input is still reported.
     for (uint32_t i = 0; i < 14; ++i) {
@@ -212,17 +210,15 @@ void Gamepads::on_gamepad_disconnected(IGameInputDevice * device)
 
 
 void Gamepads::read_gamepad(GamepadData* gamepad, IGameInputDevice* device) {
-  auto info = device->GetDeviceInfo();
-
   GameInputGamepadState previous_state;
-  while (info != nullptr && !gamepad->stop_thead && g_gameInput != nullptr) {
+  while (!gamepad->stop_thead && g_gameInput != nullptr) {
     IGameInputReading* reading;
     GameInputGamepadState state;
     g_gameInput->GetCurrentReading(GameInputKindGamepad, device, &reading);
     if (reading != nullptr) {
       if(reading->GetGamepadState(&state)) {
         if (are_states_different(previous_state, state)) {
-          auto events = diff_states(*info, state, previous_state);
+          auto events = diff_states(state, previous_state);
           for (auto event : events) {
             if (event_emitter.has_value()) {
               (*event_emitter)(gamepad, event);
