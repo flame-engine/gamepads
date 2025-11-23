@@ -37,7 +37,7 @@ std::string get_button_name(uint32_t button) {
     case GameInputGamepadLeftThumbstick: return "leftThumbstick";
     case GameInputGamepadRightThumbstick: return "rightThumbstick";
   }
-  return "";
+  return "button-" + std::to_string(button);
 }
 
 std::string AppLocalDeviceIdToString(const APP_LOCAL_DEVICE_ID& id) {
