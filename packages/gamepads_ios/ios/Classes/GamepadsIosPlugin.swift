@@ -68,21 +68,34 @@ public class GamepadsIosPlugin: NSObject, FlutterPlugin {
     guard let gamepad = controller.extendedGamepad else { return }
     let gamepadId = controllerIds[controller]!
 
+    // D-Pad
     gamepad.dpad.valueChangedHandler = { [weak self] _, xValue, yValue in
       self?.sendEvent(gamepadId: gamepadId, key: "dpad - xAxis", value: xValue, isAnalog: true)
       self?.sendEvent(gamepadId: gamepadId, key: "dpad - yAxis", value: yValue, isAnalog: true)
     }
 
+    // Left stick
     gamepad.leftThumbstick.valueChangedHandler = { [weak self] _, xValue, yValue in
       self?.sendEvent(gamepadId: gamepadId, key: "leftStick - xAxis", value: xValue, isAnalog: true)
       self?.sendEvent(gamepadId: gamepadId, key: "leftStick - yAxis", value: yValue, isAnalog: true)
     }
 
+    // Right stick
     gamepad.rightThumbstick.valueChangedHandler = { [weak self] _, xValue, yValue in
       self?.sendEvent(gamepadId: gamepadId, key: "rightStick - xAxis", value: xValue, isAnalog: true)
       self?.sendEvent(gamepadId: gamepadId, key: "rightStick - yAxis", value: yValue, isAnalog: true)
     }
 
+    // Triggers (ANALOG)
+    gamepad.leftTrigger?.valueChangedHandler = { [weak self] _, value, _ in
+      self?.sendEvent(gamepadId: gamepadId, key: "leftTrigger", value: value, isAnalog: true)
+    }
+
+    gamepad.rightTrigger?.valueChangedHandler = { [weak self] _, value, _ in
+      self?.sendEvent(gamepadId: gamepadId, key: "rightTrigger", value: value, isAnalog: true)
+    }
+
+    // Digital buttons
     var buttons: [(GCControllerButtonInput?, String)] = [
       (gamepad.buttonA, "buttonA"),
       (gamepad.buttonB, "buttonB"),
@@ -90,8 +103,6 @@ public class GamepadsIosPlugin: NSObject, FlutterPlugin {
       (gamepad.buttonY, "buttonY"),
       (gamepad.leftShoulder, "leftShoulder"),
       (gamepad.rightShoulder, "rightShoulder"),
-      (gamepad.leftTrigger, "leftTrigger"),
-      (gamepad.rightTrigger, "rightTrigger"),
       (gamepad.leftThumbstickButton, "leftThumbstickButton"),
       (gamepad.rightThumbstickButton, "rightThumbstickButton")
     ]
