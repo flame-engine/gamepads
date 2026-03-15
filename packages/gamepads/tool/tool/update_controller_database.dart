@@ -46,9 +46,7 @@ void main() {
     }
   }
 
-  final escapedLines = filteredLines
-      .map((line) => line.replaceAll("'", r"\'"))
-      .join('\n');
+  final joinedLines = filteredLines.join('\n');
 
   final output = StringBuffer()
     ..writeln('// GENERATED FILE — DO NOT EDIT')
@@ -69,7 +67,7 @@ void main() {
       'Windows.',
     )
     ..writeln("const gamecontrollerDbData = '''")
-    ..writeln(escapedLines)
+    ..writeln(joinedLines)
     ..writeln("''';");
 
   outputFile.writeAsStringSync(output.toString());
