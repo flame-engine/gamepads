@@ -28,11 +28,20 @@ class MacosMapping extends PlatformMapping {
     'b.circle': GamepadButton.b,
     'x.circle': GamepadButton.x,
     'y.circle': GamepadButton.y,
+    // PlayStation-style: l1/r1, Xbox-style: lb/rb
     'l1.rectangle': GamepadButton.leftBumper,
     'r1.rectangle': GamepadButton.rightBumper,
+    'lb.rectangle': GamepadButton.leftBumper,
+    'rb.rectangle': GamepadButton.rightBumper,
+    // PlayStation-style: l2/r2, Xbox-style: lt/rt
     'l2.rectangle': GamepadButton.leftTrigger,
     'r2.rectangle': GamepadButton.rightTrigger,
+    'lt.rectangle': GamepadButton.leftTrigger,
+    'rt.rectangle': GamepadButton.rightTrigger,
+    // Menu button varies: "line.3.horizontal" or
+    // "line.horizontal.3"
     'line.3.horizontal': GamepadButton.start,
+    'line.horizontal.3': GamepadButton.start,
     'circle.circle': GamepadButton.back,
     'house': GamepadButton.home,
     'l.joystick.press': GamepadButton.leftStick,
@@ -40,8 +49,13 @@ class MacosMapping extends PlatformMapping {
   };
 
   // Trigger patterns for analog trigger axes.
-  static const _leftTriggerPattern = 'l2.rectangle';
-  static const _rightTriggerPattern = 'r2.rectangle';
+  // PlayStation-style: l2/r2, Xbox-style: lt/rt
+  static const _triggerPatterns = <String, GamepadAxis>{
+    'l2.rectangle': GamepadAxis.leftTrigger,
+    'r2.rectangle': GamepadAxis.rightTrigger,
+    'lt.rectangle': GamepadAxis.leftTrigger,
+    'rt.rectangle': GamepadAxis.rightTrigger,
+  };
 
   static const _leftStickPattern = 'l.joystick';
   static const _rightStickPattern = 'r.joystick';
@@ -107,11 +121,10 @@ class MacosMapping extends PlatformMapping {
       }
     }
     // Triggers are reported as analog with their SF Symbol name.
-    if (key.contains(_leftTriggerPattern)) {
-      return GamepadAxis.leftTrigger;
-    }
-    if (key.contains(_rightTriggerPattern)) {
-      return GamepadAxis.rightTrigger;
+    for (final entry in _triggerPatterns.entries) {
+      if (key.contains(entry.key)) {
+        return entry.value;
+      }
     }
     return null;
   }
