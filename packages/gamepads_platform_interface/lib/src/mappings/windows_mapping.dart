@@ -36,7 +36,7 @@ class WindowsMapping extends PlatformMapping {
   PlatformMapping forDevice({int? vendorId, int? productId}) {
     final mapping = WindowsMapping(unknownBehavior: _unknownBehavior);
     if (vendorId != null && productId != null) {
-      final dbMapping = ControllerDb.lookup(
+      final dbMapping = ControllerDatabase.lookup(
         vendorId: vendorId,
         productId: productId,
       );

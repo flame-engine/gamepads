@@ -45,8 +45,8 @@ class ControllerMapping {
 /// [SDL_GameControllerDB](https://github.com/gabomdq/SDL_GameControllerDB)
 /// project and includes Linux and Windows entries for over 1500
 /// controllers.
-class ControllerDb {
-  ControllerDb._();
+class ControllerDatabase {
+  ControllerDatabase._();
 
   static Map<(int, int), ControllerMapping>? _mappings;
 

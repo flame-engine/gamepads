@@ -28,14 +28,14 @@ class LinuxMapping extends PlatformMapping {
   PlatformMapping forDevice({int? vendorId, int? productId}) {
     final mapping = LinuxMapping(unknownBehavior: _unknownBehavior);
     if (vendorId != null && productId != null) {
-      mapping._controllerMapping = ControllerDb.lookup(
+      mapping._controllerMapping = ControllerDatabase.lookup(
         vendorId: vendorId,
         productId: productId,
       );
     }
     if (mapping._controllerMapping == null &&
         _unknownBehavior == UnknownControllerBehavior.bestEffort) {
-      mapping._controllerMapping = ControllerDb.defaultMapping;
+      mapping._controllerMapping = ControllerDatabase.defaultMapping;
     }
     return mapping;
   }

@@ -115,26 +115,30 @@ Gamepads.normalizedEvents.listen((event) {
 });
 ```
 
-The `normalizedEvents` stream is lazy — normalization only runs while there is an active
-listener. When nobody is listening, no normalized events are created.
+The `normalizedEvents` stream is lazy — normalization only runs
+while there is an active listener. When nobody is listening, no
+normalized events are created.
+
 
 ### Standard Gamepad Model
 
 Buttons and axes follow the Xbox/standard gamepad layout:
 
-| Type            | Values                                        | Range                            |
-|-----------------|-----------------------------------------------|----------------------------------|
-| `GamepadButton` | `a`, `b`, `x`, `y`                            | 0.0 (released) or 1.0 (pressed)  |
-| `GamepadButton` | `leftBumper`, `rightBumper`                   | 0.0 (released) or 1.0 (pressed)  |
-| `GamepadButton` | `leftTrigger`, `rightTrigger`                 | 0.0 (released) or 1.0 (pressed)  |
-| `GamepadButton` | `back`, `start`, `home`                       | 0.0 (released) or 1.0 (pressed)  |
-| `GamepadButton` | `leftStick`, `rightStick`                     | 0.0 (released) or 1.0 (pressed)  |
-| `GamepadButton` | `dpadUp`, `dpadDown`, `dpadLeft`, `dpadRight` | 0.0 (released) or 1.0 (pressed)  |
-| `GamepadAxis`   | `leftStickX`, `leftStickY`                    | -1.0 to 1.0                      |
-| `GamepadAxis`   | `rightStickX`, `rightStickY`                  | -1.0 to 1.0                      |
-| `GamepadAxis`   | `leftTrigger`, `rightTrigger`                 | 0.0 to 1.0                       |
+| Type     | Values                          | Range       |
+|----------|---------------------------------|-------------|
+| `Button` | `a`, `b`, `x`, `y`              | 0.0 or 1.0  |
+| `Button` | `leftBumper`, `rightBumper`     | 0.0 or 1.0  |
+| `Button` | `leftTrigger`, `rightTrigger`   | 0.0 or 1.0  |
+| `Button` | `back`, `start`, `home`         | 0.0 or 1.0  |
+| `Button` | `leftStick`, `rightStick`       | 0.0 or 1.0  |
+| `Button` | `dpadUp/Down/Left/Right`        | 0.0 or 1.0  |
+| `Axis`   | `leftStickX`, `leftStickY`      | -1.0 to 1.0 |
+| `Axis`   | `rightStickX`, `rightStickY`    | -1.0 to 1.0 |
+| `Axis`   | `leftTrigger`, `rightTrigger`   | 0.0 to 1.0  |
 
+Buttons use 0.0 (released) and 1.0 (pressed).
 Stick conventions: Left/Down = -1, Right/Up = +1.
+
 
 ### Platform Mapping Tiers
 
@@ -149,7 +153,8 @@ mapping by vendor/product ID. This database includes mappings for over 1500 cont
 For unknown controllers, the default behavior is best-effort mapping using an Xbox-like layout.
 You can switch to strict mode (returns `null` for unrecognized inputs) by configuring the
 normalizer accordingly. You can also load additional mappings at runtime via
-`ControllerDb.loadSdlMappings()`.
+`ControllerDatabase.loadSdlMappings()`.
+
 
 ### Normalized State
 

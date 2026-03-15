@@ -275,8 +275,8 @@ void main() {
       });
     });
 
-    group('ControllerDb SDL integration', () {
-      tearDown(ControllerDb.resetMappings);
+    group('ControllerDatabase SDL integration', () {
+      tearDown(ControllerDatabase.resetMappings);
 
       test('loadSdlMappings adds to database', () {
         final content = _sdlLine(_xboxGuid, [
@@ -290,7 +290,7 @@ void main() {
           'platform:Linux',
         ]);
 
-        final count = ControllerDb.loadSdlMappings(
+        final count = ControllerDatabase.loadSdlMappings(
           content,
           platform: 'Linux',
         );
@@ -317,12 +317,12 @@ void main() {
           'platform:Linux',
         ]);
 
-        ControllerDb.loadSdlMappings(
+        ControllerDatabase.loadSdlMappings(
           overrideContent,
           platform: 'Linux',
         );
 
-        final mapping = ControllerDb.lookup(
+        final mapping = ControllerDatabase.lookup(
           vendorId: 0x045e,
           productId: 0x028e,
         );
@@ -341,14 +341,14 @@ void main() {
           'platform:Linux',
         ]);
 
-        ControllerDb.loadSdlMappings(
+        ControllerDatabase.loadSdlMappings(
           overrideContent,
           platform: 'Linux',
         );
-        ControllerDb.resetMappings();
+        ControllerDatabase.resetMappings();
 
         // After reset, bundled DB is re-loaded on next access.
-        final mapping = ControllerDb.lookup(
+        final mapping = ControllerDatabase.lookup(
           vendorId: 0x045e,
           productId: 0x028e,
         );
