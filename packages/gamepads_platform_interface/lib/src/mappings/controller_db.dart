@@ -1,5 +1,6 @@
 import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
 import 'package:gamepads_platform_interface/api/gamepad_button.dart';
+import 'package:gamepads_platform_interface/src/mappings/data/gamecontrollerdb_data.dart';
 import 'package:gamepads_platform_interface/src/mappings/sdl_mapping_parser.dart';
 
 /// A database entry describing how a specific controller maps its raw
@@ -36,37 +37,45 @@ class ControllerMapping {
 
 /// Database of controller mappings, keyed by (vendorId, productId).
 ///
-/// Populated by loading SDL GameController DB format strings via
-/// [loadSdlMappings]. A minimal built-in fallback mapping is included
-/// for use when no SDL database has been loaded.
+/// On first access, the bundled SDL GameController DB is automatically
+/// parsed and loaded. Additional mappings can be added at runtime via
+/// [loadSdlMappings].
+///
+/// The bundled database is sourced from the community-maintained
+/// [SDL_GameControllerDB](https://github.com/gabomdq/SDL_GameControllerDB)
+/// project and includes Linux and Windows entries for over 1500
+/// controllers.
 class ControllerDb {
   ControllerDb._();
 
-  static final _mappings = <(int, int), ControllerMapping>{};
+  static Map<(int, int), ControllerMapping>? _mappings;
+
+  static Map<(int, int), ControllerMapping> get _db {
+    if (_mappings == null) {
+      _mappings = {};
+      _mappings!.addAll(
+        SdlMappingParser.parseToDb(gamecontrollerDbData),
+      );
+    }
+    return _mappings!;
+  }
 
   /// Looks up a controller mapping by vendor and product ID.
   ///
-  /// Returns `null` if the controller is not in the database.
+  /// On first call, the bundled SDL GameController DB is automatically
+  /// parsed. Returns `null` if the controller is not in the database.
   static ControllerMapping? lookup({
     required int vendorId,
     required int productId,
   }) {
-    return _mappings[(vendorId, productId)];
+    return _db[(vendorId, productId)];
   }
 
-  /// Loads controller mappings from an SDL GameController DB format
-  /// string.
+  /// Loads additional controller mappings from an SDL GameController DB
+  /// format string.
   ///
-  /// The [content] should be the contents of a `gamecontrollerdb.txt`
-  /// file. Each line has the format:
-  /// ```
-  /// GUID,name,a:b0,b:b1,...,platform:Linux,
-  /// ```
-  ///
-  /// Only mappings matching [platform] are loaded (e.g., "Linux" or
-  /// "Windows"). If [platform] is null, all entries are loaded.
-  ///
-  /// Later calls add to (and can override) previously loaded mappings.
+  /// Loaded mappings are merged with (and can override) the bundled
+  /// database.
   ///
   /// Returns the number of mappings loaded.
   static int loadSdlMappings(String content, {String? platform}) {
@@ -74,13 +83,14 @@ class ControllerDb {
       content,
       platform: platform,
     );
-    _mappings.addAll(parsed);
+    _db.addAll(parsed);
     return parsed.length;
   }
 
-  /// Clears all loaded mappings.
-  static void clearMappings() {
-    _mappings.clear();
+  /// Resets the database to its initial state. The bundled SDL database
+  /// will be re-parsed on the next lookup.
+  static void resetMappings() {
+    _mappings = null;
   }
 
   /// Default Xbox-like mapping used as a best-effort fallback for

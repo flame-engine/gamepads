@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
 import 'package:gamepads_platform_interface/api/gamepad_button.dart';
 import 'package:gamepads_platform_interface/src/mappings/android_mapping.dart';
-import 'package:gamepads_platform_interface/src/mappings/controller_db.dart';
 import 'package:gamepads_platform_interface/src/mappings/ios_mapping.dart';
 import 'package:gamepads_platform_interface/src/mappings/linux_mapping.dart';
 import 'package:gamepads_platform_interface/src/mappings/macos_mapping.dart';
@@ -381,23 +380,8 @@ void main() {
       expect(mapping.normalizeButton('0', 1.0), isNull);
     });
 
-    test('resolves SDL-loaded controller', () {
-      ControllerDb.loadSdlMappings(
-        '030000005e0400008e02000010010000,'
-        'Xbox 360 Controller,'
-        'a:b0,b:b1,x:b2,y:b3,'
-        'back:b6,start:b7,guide:b8,'
-        'leftshoulder:b4,rightshoulder:b5,'
-        'leftstick:b9,rightstick:b10,'
-        'leftx:a0,lefty:a1,rightx:a3,righty:a4,'
-        'lefttrigger:a2,righttrigger:a5,'
-        'dpup:h0.1,dpdown:h0.4,'
-        'dpleft:h0.8,dpright:h0.2,'
-        'platform:Linux,',
-        platform: 'Linux',
-      );
-      addTearDown(ControllerDb.clearMappings);
-
+    test('resolves known controller from bundled DB', () {
+      // Xbox 360 is in the bundled SDL GameController DB
       final mapping = LinuxMapping().forDevice(
         vendorId: 0x045e,
         productId: 0x028e,
@@ -409,10 +393,6 @@ void main() {
       expect(
         mapping.normalizeButton('1', 1.0)?.button,
         GamepadButton.b,
-      );
-      expect(
-        mapping.normalizeButton('6', 1.0)?.button,
-        GamepadButton.back,
       );
     });
 

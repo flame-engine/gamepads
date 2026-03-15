@@ -212,7 +212,7 @@ void main() {
     });
 
     group('ControllerDb SDL integration', () {
-      tearDown(ControllerDb.clearMappings);
+      tearDown(ControllerDb.resetMappings);
 
       test('loadSdlMappings adds to database', () {
         final validContent = _xboxLine(
@@ -254,7 +254,7 @@ void main() {
         expect(mapping.buttons['0'], GamepadButton.b);
       });
 
-      test('clearMappings removes all loaded entries', () {
+      test('resetMappings restores bundled DB', () {
         final overrideContent = _xboxLine(
           'Xbox 360 Override,'
           'a:b1,b:b0,'
@@ -266,13 +266,15 @@ void main() {
           overrideContent,
           platform: 'Linux',
         );
-        ControllerDb.clearMappings();
+        ControllerDb.resetMappings();
 
+        // After reset, bundled DB is re-loaded on next access.
         final mapping = ControllerDb.lookup(
           vendorId: 0x045e,
           productId: 0x028e,
         );
-        expect(mapping, isNull);
+        expect(mapping, isNotNull);
+        expect(mapping!.buttons['0'], GamepadButton.a);
       });
     });
   });
