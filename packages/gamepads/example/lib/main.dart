@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:gamepads/gamepads.dart';
 
 void main() {
-  Gamepads.normalizer = GamepadNormalizer();
   runApp(const MyApp());
 }
 

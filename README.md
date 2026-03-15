@@ -98,16 +98,7 @@ controller type. It is fully opt-in — if you only use
 `Gamepads.events`, no normalization work is performed and
 there is zero overhead.
 
-To use it, set up a `GamepadNormalizer` at app startup:
-
-```dart
-Gamepads.normalizer = GamepadNormalizer();
-```
-
-The platform is auto-detected. To override it, use
-`GamepadNormalizer.forPlatform(GamepadPlatform.linux)`.
-
-Then listen to `normalizedEvents` instead of `events`:
+Just listen to `normalizedEvents` instead of `events`:
 
 ```dart
 Gamepads.normalizedEvents.listen((event) {
@@ -120,9 +111,19 @@ Gamepads.normalizedEvents.listen((event) {
 });
 ```
 
-The `normalizedEvents` stream is lazy — normalization only
-runs while there is an active listener. When nobody is
-listening, no normalized events are created.
+The platform is auto-detected. The `normalizedEvents` stream
+is lazy — normalization only runs while there is an active
+listener. When nobody is listening, no normalized events are
+created.
+
+To override the auto-detected platform, set a custom
+normalizer before accessing `normalizedEvents`:
+
+```dart
+Gamepads.normalizer = GamepadNormalizer.forPlatform(
+  GamepadPlatform.linux,
+);
+```
 
 
 ### Standard Gamepad Model

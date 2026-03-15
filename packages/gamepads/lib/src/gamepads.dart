@@ -13,10 +13,13 @@ class Gamepads {
 
   /// The normalizer used to convert raw events to normalized events.
   ///
-  /// Must be set before accessing [normalizedEvents]. Typically set once
-  /// at app startup:
+  /// Set automatically when [normalizedEvents] is first accessed.
+  /// Override to use a custom normalizer (e.g., for a specific
+  /// platform or with a custom mapping):
   /// ```dart
-  /// Gamepads.normalizer = GamepadNormalizer();
+  /// Gamepads.normalizer = GamepadNormalizer.forPlatform(
+  ///   GamepadPlatform.linux,
+  /// );
   /// ```
   static GamepadNormalizer? normalizer;
 
@@ -26,20 +29,15 @@ class Gamepads {
 
   /// A stream of normalized gamepad events.
   ///
-  /// Requires [normalizer] to be set. Events that cannot be normalized
-  /// (unrecognized keys) are silently dropped.
+  /// A [GamepadNormalizer] is auto-created on first access using the
+  /// current platform. Override [normalizer] before accessing this
+  /// stream to use a custom normalizer.
   ///
-  /// Throws [StateError] if [normalizer] has not been set.
+  /// Events that cannot be normalized (unrecognized keys) are silently
+  /// dropped.
   static Stream<NormalizedGamepadEvent> get normalizedEvents {
-    final currentNormalizer = normalizer;
-    if (currentNormalizer == null) {
-      throw StateError(
-        'Gamepads.normalizer must be set before accessing '
-        'normalizedEvents. Set it at app startup: '
-        'Gamepads.normalizer = GamepadNormalizer(platform: ...)',
-      );
-    }
-    return events.transform(currentNormalizer.transformer);
+    normalizer ??= GamepadNormalizer();
+    return events.transform(normalizer!.transformer);
   }
 
   static Stream<GamepadEvent> eventsByGamepad(String gamepadId) {
