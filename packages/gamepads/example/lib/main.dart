@@ -29,14 +29,24 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+/// Wraps either a normalized event or a raw event that could not be
+/// normalized.
+class _EventEntry {
+  final NormalizedGamepadEvent? normalized;
+  final GamepadEvent raw;
+
+  _EventEntry({required this.raw, this.normalized});
+}
+
 class _MyHomePageState extends State<MyHomePage> {
-  StreamSubscription<NormalizedGamepadEvent>? _subscription;
+  StreamSubscription<GamepadEvent>? _subscription;
+  late final GamepadNormalizer _normalizer;
 
   List<GamepadController> _gamepads = [];
-  List<NormalizedGamepadEvent> _lastEvents = [];
+  List<_EventEntry> _lastEvents = [];
   bool loading = false;
 
-  Future<void> _getValue() async {
+  Future<void> _listGamepads() async {
     setState(() => loading = true);
     final response = await Gamepads.list();
     setState(() {
@@ -52,16 +62,25 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _subscription = Gamepads.normalizedEvents.listen((event) {
+    _normalizer = GamepadNormalizer();
+    _subscription = Gamepads.events.listen((event) {
+      final normalized = _normalizer.normalize(event);
       setState(() {
-        final newEvents = [
-          event,
+        final newEntries = <_EventEntry>[
+          if (normalized.isEmpty)
+            _EventEntry(raw: event)
+          else
+            for (final normalizedEvent in normalized)
+              _EventEntry(
+                normalized: normalizedEvent,
+                raw: event,
+              ),
           ..._lastEvents,
         ];
-        if (newEvents.length > 5) {
-          newEvents.removeRange(5, newEvents.length);
+        if (newEntries.length > 8) {
+          newEntries.removeRange(8, newEntries.length);
         }
-        _lastEvents = newEvents;
+        _lastEvents = newEntries;
       });
     });
   }
@@ -84,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Normalized Events:',
+                'Events:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               ..._lastEvents.map(_buildEventTile),
@@ -94,25 +113,21 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 16),
               TextButton(
-                onPressed: _getValue,
+                onPressed: _listGamepads,
                 child: const Text('List Gamepads'),
               ),
               const Text(
                 'Gamepads:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               if (loading)
                 const CircularProgressIndicator()
               else ...[
                 for (final gamepad in _gamepads) ...[
-                  Text('${gamepad.id} - ${gamepad.name}'),
                   Text(
-                    '  Analog inputs: '
-                    '${gamepad.state.analogInputs}',
-                  ),
-                  Text(
-                    '  Button inputs: '
-                    '${gamepad.state.buttonInputs}',
+                    '${gamepad.id} - ${gamepad.name}',
                   ),
                 ],
               ],
@@ -123,15 +138,33 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildEventTile(NormalizedGamepadEvent event) {
-    final normalized = event.button != null
-        ? '${event.button} = ${event.value}'
-        : '${event.axis} = ${event.value.toStringAsFixed(2)}';
-    final raw = event.rawEvent;
+  Widget _buildEventTile(_EventEntry entry) {
+    final normalized = entry.normalized;
+    final raw = entry.raw;
+
+    if (normalized != null) {
+      final label = normalized.button != null
+          ? '${normalized.button} = '
+              '${normalized.value}'
+          : '${normalized.axis} = '
+              '${normalized.value.toStringAsFixed(2)}';
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Text(
+          '$label  (raw: ${raw.key} ${raw.value})',
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Text(
-        '$normalized  (raw: ${raw.key} ${raw.value})',
+        '[unmapped] ${raw.type.name}: '
+        '${raw.key} = ${raw.value}',
+        style: const TextStyle(
+          color: Colors.grey,
+          fontStyle: FontStyle.italic,
+        ),
       ),
     );
   }
