@@ -91,7 +91,10 @@ Linux, `"button-0"` on Windows, `"buttonA"` on iOS, `"KEYCODE_BUTTON_A"` on Andr
 `"button 0"` on Web). Value ranges also differ across platforms.
 
 The normalization layer provides consistent button/axis identifiers and value ranges regardless of
-platform or controller type. To use it, set up a `GamepadNormalizer` at app startup:
+platform or controller type. It is fully opt-in — if you only use `Gamepads.events`, no
+normalization work is performed and there is zero overhead.
+
+To use it, set up a `GamepadNormalizer` at app startup:
 
 ```dart
 Gamepads.normalizer = GamepadNormalizer(
@@ -111,6 +114,9 @@ Gamepads.normalizedEvents.listen((event) {
   }
 });
 ```
+
+The `normalizedEvents` stream is lazy — normalization only runs while there is an active
+listener. When nobody is listening, no normalized events are created.
 
 ### Standard Gamepad Model
 
@@ -147,17 +153,28 @@ normalizer accordingly. You can also load additional mappings at runtime via
 
 ### Normalized State
 
-`GamepadController` also provides a `normalizedState` alongside the existing `state`, offering
-convenient `isPressed(GamepadButton)` and `axisValue(GamepadAxis)` methods:
+`GamepadController` provides a `normalizedState` alongside the existing `state`, offering
+convenient `isPressed(GamepadButton)` and `axisValue(GamepadAxis)` methods. To use it, pass a
+`GamepadNormalizer` when creating the controller:
 
 ```dart
-final controllers = await Gamepads.list();
-final controller = controllers.first;
+final normalizer = GamepadNormalizer(platform: GamepadPlatform.linux);
+final controller = GamepadController(
+  id: 'pad1',
+  name: 'My Controller',
+  plugin: GamepadsPlatformInterface.instance,
+  normalizer: normalizer,
+);
+
 if (controller.normalizedState.isPressed(GamepadButton.a)) {
   // A is currently held
 }
 final stickX = controller.normalizedState.axisValue(GamepadAxis.leftStickX);
 ```
+
+If no normalizer is passed (the default), the `normalizedState` is never updated and no
+normalization overhead is incurred. The raw `events` and `state` are always available regardless
+of whether normalization is enabled.
 
 The original raw events are always preserved via `NormalizedGamepadEvent.rawEvent`, so you can
 fall back to platform-specific handling when needed.
