@@ -105,12 +105,30 @@ void main() {
         expect(mapping.buttons['9'], GamepadButton.leftStick);
         expect(mapping.buttons['10'], GamepadButton.rightStick);
 
-        expect(mapping.axes['0'], GamepadAxis.leftStickX);
-        expect(mapping.axes['1'], GamepadAxis.leftStickY);
-        expect(mapping.axes['2'], GamepadAxis.leftTrigger);
-        expect(mapping.axes['3'], GamepadAxis.rightStickX);
-        expect(mapping.axes['4'], GamepadAxis.rightStickY);
-        expect(mapping.axes['5'], GamepadAxis.rightTrigger);
+        expect(
+          mapping.axes['0']?.first.axis,
+          GamepadAxis.leftStickX,
+        );
+        expect(
+          mapping.axes['1']?.first.axis,
+          GamepadAxis.leftStickY,
+        );
+        expect(
+          mapping.axes['2']?.first.axis,
+          GamepadAxis.leftTrigger,
+        );
+        expect(
+          mapping.axes['3']?.first.axis,
+          GamepadAxis.rightStickX,
+        );
+        expect(
+          mapping.axes['4']?.first.axis,
+          GamepadAxis.rightStickY,
+        );
+        expect(
+          mapping.axes['5']?.first.axis,
+          GamepadAxis.rightTrigger,
+        );
 
         // D-pad hat → axes (6 regular axes 0-5, hat 0 → 6,7)
         expect(mapping.dpadAxes['6'], isTrue);
@@ -181,7 +199,10 @@ void main() {
 
         final result = SdlMappingParser.parseLine(line);
         expect(result, isNotNull);
-        expect(result!.mapping.axes['0'], GamepadAxis.leftStickX);
+        expect(
+          result!.mapping.axes['0']?.first.axis,
+          GamepadAxis.leftStickX,
+        );
       });
 
       test('handles half-axis modifiers (+a, -a)', () {
@@ -194,10 +215,12 @@ void main() {
 
         final result = SdlMappingParser.parseLine(line);
         expect(result, isNotNull);
-        expect(
-          result!.mapping.axes['2'],
-          GamepadAxis.rightTrigger,
-        );
+        final axis2 = result!.mapping.axes['2']!;
+        expect(axis2.length, 2);
+        expect(axis2[0].axis, GamepadAxis.leftTrigger);
+        expect(axis2[0].half, AxisHalf.positive);
+        expect(axis2[1].axis, GamepadAxis.rightTrigger);
+        expect(axis2[1].half, AxisHalf.negative);
       });
     });
 

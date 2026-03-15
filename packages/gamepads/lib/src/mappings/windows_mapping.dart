@@ -74,20 +74,20 @@ class WindowsMapping extends PlatformMapping {
   }
 
   @override
-  NormalizedAxis? normalizeAxis(String key, double value) {
+  List<NormalizedAxis> normalizeAxis(String key, double value) {
     final controllerMapping = _controllerMapping;
     if (controllerMapping == null) {
-      return null;
+      return const [];
     }
 
     // Handle POV/d-pad specially — it's not a true axis.
     if (key == 'pov') {
-      return null;
+      return const [];
     }
 
     final axisInfo = controllerMapping.axes[key];
     if (axisInfo == null) {
-      return null;
+      return const [];
     }
 
     final normalized = _normalizeAxisValue(
@@ -97,7 +97,7 @@ class WindowsMapping extends PlatformMapping {
       axisInfo.max,
       axisInfo.inverted,
     );
-    return NormalizedAxis(axisInfo.axis, normalized);
+    return [NormalizedAxis(axisInfo.axis, normalized)];
   }
 
   @override

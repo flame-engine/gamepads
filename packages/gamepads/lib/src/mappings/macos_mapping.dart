@@ -78,15 +78,15 @@ class MacosMapping extends PlatformMapping {
   }
 
   @override
-  NormalizedAxis? normalizeAxis(String key, double value) {
+  List<NormalizedAxis> normalizeAxis(String key, double value) {
     if (!_axisCache.containsKey(key)) {
       _axisCache[key] = _findAxis(key);
     }
     final axis = _axisCache[key];
     if (axis == null) {
-      return null;
+      return const [];
     }
-    return NormalizedAxis(axis, value);
+    return [NormalizedAxis(axis, value)];
   }
 
   static GamepadAxis? _findAxis(String key) {

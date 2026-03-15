@@ -53,17 +53,17 @@ class AndroidMapping extends PlatformMapping {
   }
 
   @override
-  NormalizedAxis? normalizeAxis(String key, double value) {
+  List<NormalizedAxis> normalizeAxis(String key, double value) {
     final axis = _axisMap[key];
     if (axis == null) {
-      return null;
+      return const [];
     }
     // Android reports sticks in -1.0 to 1.0 and triggers in 0.0 to 1.0.
     // Y-axis is inverted on Android (up = negative).
     if (axis == GamepadAxis.leftStickY || axis == GamepadAxis.rightStickY) {
-      return NormalizedAxis(axis, -value);
+      return [NormalizedAxis(axis, -value)];
     }
-    return NormalizedAxis(axis, value);
+    return [NormalizedAxis(axis, value)];
   }
 
   @override

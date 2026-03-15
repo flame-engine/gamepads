@@ -62,16 +62,16 @@ class WebStandardMapping extends PlatformMapping {
   }
 
   @override
-  NormalizedAxis? normalizeAxis(String key, double value) {
+  List<NormalizedAxis> normalizeAxis(String key, double value) {
     final axis = _axisMap[key];
     if (axis == null) {
-      return null;
+      return const [];
     }
     // Web reports sticks in -1.0 to 1.0.
     // Y-axis is inverted in the Web Gamepad API (up = negative).
     if (axis == GamepadAxis.leftStickY || axis == GamepadAxis.rightStickY) {
-      return NormalizedAxis(axis, -value);
+      return [NormalizedAxis(axis, -value)];
     }
-    return NormalizedAxis(axis, value);
+    return [NormalizedAxis(axis, value)];
   }
 }

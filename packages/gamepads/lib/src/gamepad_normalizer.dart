@@ -191,20 +191,22 @@ class GamepadNormalizer {
         }
 
       case KeyType.analog:
-        final axisResult = mapping.normalizeAxis(
+        final axisResults = mapping.normalizeAxis(
           event.key,
           event.value,
         );
-        if (axisResult != null) {
-          emit(
-            NormalizedGamepadEvent(
-              gamepadId: event.gamepadId,
-              timestamp: event.timestamp,
-              value: axisResult.value,
-              rawEvent: event,
-              axis: axisResult.axis,
-            ),
-          );
+        if (axisResults.isNotEmpty) {
+          for (final axisResult in axisResults) {
+            emit(
+              NormalizedGamepadEvent(
+                gamepadId: event.gamepadId,
+                timestamp: event.timestamp,
+                value: axisResult.value,
+                rawEvent: event,
+                axis: axisResult.axis,
+              ),
+            );
+          }
           // If axis matched, this is not a d-pad axis — skip dpad
           // check.
           return;

@@ -45,13 +45,13 @@ class IosMapping extends PlatformMapping {
   }
 
   @override
-  NormalizedAxis? normalizeAxis(String key, double value) {
+  List<NormalizedAxis> normalizeAxis(String key, double value) {
     final axis = _axisMap[key];
     if (axis == null) {
-      return null;
+      return const [];
     }
     // iOS reports stick values in -1.0 to 1.0 already.
-    return NormalizedAxis(axis, value);
+    return [NormalizedAxis(axis, value)];
   }
 
   @override

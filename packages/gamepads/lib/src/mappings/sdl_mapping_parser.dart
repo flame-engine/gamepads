@@ -122,7 +122,7 @@ class SdlMappingParser {
 
     GamepadPlatform? platform;
     final buttons = <String, GamepadButton>{};
-    final axes = <String, GamepadAxis>{};
+    final axes = <String, List<AxisMapping>>{};
     final dpadAxes = <String, bool>{};
     var maxRegularAxisIndex = -1;
     final hatDpadEntries = <String, _HatEntry>{};
@@ -187,7 +187,7 @@ class SdlMappingParser {
     required String sdlName,
     required String binding,
     required Map<String, GamepadButton> buttons,
-    required Map<String, GamepadAxis> axes,
+    required Map<String, List<AxisMapping>> axes,
     required Map<String, _HatEntry> hatDpadEntries,
     required int maxRegularAxisIndex,
     required void Function(int) onMaxAxisUpdate,
@@ -212,12 +212,17 @@ class SdlMappingParser {
         binding.startsWith('+a') ||
         binding.startsWith('-a')) {
       var axisStr = binding;
-      // Strip modifiers for index extraction.
+      // Parse modifiers.
       final inverted = axisStr.endsWith('~');
       if (inverted) {
         axisStr = axisStr.substring(0, axisStr.length - 1);
       }
-      if (axisStr.startsWith('+') || axisStr.startsWith('-')) {
+      var half = AxisHalf.full;
+      if (axisStr.startsWith('+')) {
+        half = AxisHalf.positive;
+        axisStr = axisStr.substring(1);
+      } else if (axisStr.startsWith('-')) {
+        half = AxisHalf.negative;
         axisStr = axisStr.substring(1);
       }
       if (axisStr.startsWith('a')) {
@@ -237,7 +242,16 @@ class SdlMappingParser {
       // Check if this SDL name maps to a standard axis.
       final axis = _sdlAxisNames[sdlName];
       if (axis != null) {
-        axes[index.toString()] = axis;
+        final key = index.toString();
+        final entry = AxisMapping(
+          axis,
+          half: half,
+          inverted: inverted,
+        );
+        // Append to existing list for this key (supports split
+        // axes where two targets share the same raw axis).
+        axes.putIfAbsent(key, () => []);
+        axes[key]!.add(entry);
         return;
       }
 

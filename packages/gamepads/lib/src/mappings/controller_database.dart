@@ -4,14 +4,44 @@ import 'package:gamepads/src/gamepad_normalizer.dart';
 import 'package:gamepads/src/mappings/data/gamecontrollerdb_data.dart';
 import 'package:gamepads/src/mappings/sdl_mapping_parser.dart';
 
+/// Which half of a raw axis maps to a target axis.
+enum AxisHalf {
+  /// Full range of the raw axis maps to the target.
+  full,
+
+  /// Only the positive half (0 to max) maps to the target.
+  positive,
+
+  /// Only the negative half (min to 0) maps to the target.
+  negative,
+}
+
+/// Describes how a raw axis maps to a normalized [GamepadAxis],
+/// including half-axis and inversion modifiers.
+class AxisMapping {
+  final GamepadAxis axis;
+  final AxisHalf half;
+  final bool inverted;
+
+  const AxisMapping(
+    this.axis, {
+    this.half = AxisHalf.full,
+    this.inverted = false,
+  });
+}
+
 /// A database entry describing how a specific controller maps its raw
 /// key indices to standard gamepad buttons and axes.
 class ControllerMapping {
   /// Maps raw button key strings to [GamepadButton].
   final Map<String, GamepadButton> buttons;
 
-  /// Maps raw analog key strings to [GamepadAxis].
-  final Map<String, GamepadAxis> axes;
+  /// Maps raw analog key strings to axis mappings.
+  ///
+  /// Each key can map to multiple axes (e.g., a combined trigger
+  /// axis where positive half = left trigger and negative half =
+  /// right trigger).
+  final Map<String, List<AxisMapping>> axes;
 
   /// Maps raw analog key strings that represent d-pad axes.
   /// The value is `true` for X axis, `false` for Y axis.
@@ -124,12 +154,12 @@ class ControllerDatabase {
       '10': GamepadButton.rightStick,
     },
     axes: {
-      '0': GamepadAxis.leftStickX,
-      '1': GamepadAxis.leftStickY,
-      '2': GamepadAxis.leftTrigger,
-      '3': GamepadAxis.rightStickX,
-      '4': GamepadAxis.rightStickY,
-      '5': GamepadAxis.rightTrigger,
+      '0': [AxisMapping(GamepadAxis.leftStickX)],
+      '1': [AxisMapping(GamepadAxis.leftStickY)],
+      '2': [AxisMapping(GamepadAxis.leftTrigger)],
+      '3': [AxisMapping(GamepadAxis.rightStickX)],
+      '4': [AxisMapping(GamepadAxis.rightStickY)],
+      '5': [AxisMapping(GamepadAxis.rightTrigger)],
     },
     dpadAxes: {
       '6': true,

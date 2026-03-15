@@ -91,30 +91,38 @@ void main() {
 
     test('normalizes stick axes', () {
       expect(
-        mapping.normalizeAxis('leftStick - xAxis', 0.5)?.axis,
+        mapping.normalizeAxis('leftStick - xAxis', 0.5).firstOrNull?.axis,
         GamepadAxis.leftStickX,
       );
       expect(
-        mapping.normalizeAxis('leftStick - yAxis', -0.3)?.axis,
+        mapping.normalizeAxis('leftStick - yAxis', -0.3).firstOrNull?.axis,
         GamepadAxis.leftStickY,
       );
       expect(
-        mapping.normalizeAxis('rightStick - xAxis', 1.0)?.axis,
+        mapping.normalizeAxis('rightStick - xAxis', 1.0).firstOrNull?.axis,
         GamepadAxis.rightStickX,
       );
       expect(
-        mapping.normalizeAxis('rightStick - yAxis', -1.0)?.axis,
+        mapping.normalizeAxis('rightStick - yAxis', -1.0).firstOrNull?.axis,
         GamepadAxis.rightStickY,
       );
     });
 
     test('preserves stick axis values', () {
-      expect(mapping.normalizeAxis('leftStick - xAxis', 0.75)?.value, 0.75);
-      expect(mapping.normalizeAxis('leftStick - yAxis', -0.5)?.value, -0.5);
+      final leftX = mapping.normalizeAxis(
+        'leftStick - xAxis',
+        0.75,
+      );
+      expect(leftX.first.value, 0.75);
+      final leftY = mapping.normalizeAxis(
+        'leftStick - yAxis',
+        -0.5,
+      );
+      expect(leftY.first.value, -0.5);
     });
 
     test('returns null for unknown axes', () {
-      expect(mapping.normalizeAxis('unknown - xAxis', 0.5), isNull);
+      expect(mapping.normalizeAxis('unknown - xAxis', 0.5), isEmpty);
     });
 
     test('normalizes d-pad as buttons from axis events', () {
@@ -196,36 +204,36 @@ void main() {
 
     test('normalizes stick axes with Y inversion', () {
       final lx = mapping.normalizeAxis('AXIS_X', 0.5);
-      expect(lx?.axis, GamepadAxis.leftStickX);
-      expect(lx?.value, 0.5);
+      expect(lx.first.axis, GamepadAxis.leftStickX);
+      expect(lx.first.value, 0.5);
 
       // Y-axis should be inverted
       final ly = mapping.normalizeAxis('AXIS_Y', 0.5);
-      expect(ly?.axis, GamepadAxis.leftStickY);
-      expect(ly?.value, -0.5);
+      expect(ly.first.axis, GamepadAxis.leftStickY);
+      expect(ly.first.value, -0.5);
 
       final ry = mapping.normalizeAxis('AXIS_RZ', -1.0);
-      expect(ry?.axis, GamepadAxis.rightStickY);
-      expect(ry?.value, 1.0);
+      expect(ry.first.axis, GamepadAxis.rightStickY);
+      expect(ry.first.value, 1.0);
     });
 
     test('normalizes trigger axes', () {
       final lt = mapping.normalizeAxis('AXIS_LTRIGGER', 0.8);
-      expect(lt?.axis, GamepadAxis.leftTrigger);
-      expect(lt?.value, 0.8);
+      expect(lt.first.axis, GamepadAxis.leftTrigger);
+      expect(lt.first.value, 0.8);
 
       final rt = mapping.normalizeAxis('AXIS_RTRIGGER', 1.0);
-      expect(rt?.axis, GamepadAxis.rightTrigger);
-      expect(rt?.value, 1.0);
+      expect(rt.first.axis, GamepadAxis.rightTrigger);
+      expect(rt.first.value, 1.0);
     });
 
     test('normalizes alternate trigger axes', () {
       expect(
-        mapping.normalizeAxis('AXIS_BRAKE', 0.5)?.axis,
+        mapping.normalizeAxis('AXIS_BRAKE', 0.5).firstOrNull?.axis,
         GamepadAxis.leftTrigger,
       );
       expect(
-        mapping.normalizeAxis('AXIS_GAS', 0.5)?.axis,
+        mapping.normalizeAxis('AXIS_GAS', 0.5).firstOrNull?.axis,
         GamepadAxis.rightTrigger,
       );
     });
@@ -281,19 +289,19 @@ void main() {
 
     test('normalizes stick axes with Y inversion', () {
       expect(
-        mapping.normalizeAxis('analog 0', 0.5)?.axis,
+        mapping.normalizeAxis('analog 0', 0.5).firstOrNull?.axis,
         GamepadAxis.leftStickX,
       );
-      expect(mapping.normalizeAxis('analog 0', 0.5)?.value, 0.5);
+      expect(mapping.normalizeAxis('analog 0', 0.5).firstOrNull?.value, 0.5);
 
       // Y-axis inverted
-      expect(mapping.normalizeAxis('analog 1', 0.5)?.value, -0.5);
-      expect(mapping.normalizeAxis('analog 3', -1.0)?.value, 1.0);
+      expect(mapping.normalizeAxis('analog 1', 0.5).firstOrNull?.value, -0.5);
+      expect(mapping.normalizeAxis('analog 3', -1.0).firstOrNull?.value, 1.0);
     });
 
     test('returns null for unknown keys', () {
       expect(mapping.normalizeButton('button 99', 1.0), isNull);
-      expect(mapping.normalizeAxis('analog 99', 0.5), isNull);
+      expect(mapping.normalizeAxis('analog 99', 0.5), isEmpty);
     });
   });
 
@@ -329,15 +337,24 @@ void main() {
 
     test('normalizes stick axes', () {
       expect(
-        mapping.normalizeAxis('l.joystick.tilt.up - xAxis', 0.5)?.axis,
+        mapping
+            .normalizeAxis('l.joystick.tilt.up - xAxis', 0.5)
+            .firstOrNull
+            ?.axis,
         GamepadAxis.leftStickX,
       );
       expect(
-        mapping.normalizeAxis('l.joystick.tilt.up - yAxis', -0.3)?.axis,
+        mapping
+            .normalizeAxis('l.joystick.tilt.up - yAxis', -0.3)
+            .firstOrNull
+            ?.axis,
         GamepadAxis.leftStickY,
       );
       expect(
-        mapping.normalizeAxis('r.joystick.tilt.up - xAxis', 1.0)?.axis,
+        mapping
+            .normalizeAxis('r.joystick.tilt.up - xAxis', 1.0)
+            .firstOrNull
+            ?.axis,
         GamepadAxis.rightStickX,
       );
     });
@@ -351,7 +368,7 @@ void main() {
 
     test('returns null for unrecognized keys', () {
       expect(mapping.normalizeButton('totally.unknown', 1.0), isNull);
-      expect(mapping.normalizeAxis('something.else - xAxis', 0.5), isNull);
+      expect(mapping.normalizeAxis('something.else - xAxis', 0.5), isEmpty);
     });
   });
 
@@ -405,13 +422,13 @@ void main() {
 
       // Left stick X: -32768 to 32767 → -1.0 to 1.0
       final leftStickX = mapping.normalizeAxis('0', 0.0);
-      expect(leftStickX?.axis, GamepadAxis.leftStickX);
+      expect(leftStickX.first.axis, GamepadAxis.leftStickX);
       // 0 in [-32768, 32767] → ~0.0
-      expect(leftStickX!.value, closeTo(0.0, 0.01));
+      expect(leftStickX.first.value, closeTo(0.0, 0.01));
 
       // Full right
       final leftStickXMax = mapping.normalizeAxis('0', 32767.0);
-      expect(leftStickXMax!.value, closeTo(1.0, 0.01));
+      expect(leftStickXMax.first.value, closeTo(1.0, 0.01));
     });
 
     test('normalizes d-pad axes', () {
@@ -458,12 +475,12 @@ void main() {
 
       // Center value → ~0.0
       final center = mapping.normalizeAxis('dwXpos', 32767.0);
-      expect(center?.axis, GamepadAxis.leftStickX);
-      expect(center!.value, closeTo(0.0, 0.01));
+      expect(center.first.axis, GamepadAxis.leftStickX);
+      expect(center.first.value, closeTo(0.0, 0.01));
 
       // Full right
       final max = mapping.normalizeAxis('dwXpos', 65535.0);
-      expect(max!.value, closeTo(1.0, 0.01));
+      expect(max.first.value, closeTo(1.0, 0.01));
     });
 
     test('normalizes Y axis with inversion', () {
@@ -474,8 +491,8 @@ void main() {
 
       // dwYpos 0 = up (inverted), should become +1.0
       final up = mapping.normalizeAxis('dwYpos', 0.0);
-      expect(up?.axis, GamepadAxis.leftStickY);
-      expect(up!.value, closeTo(1.0, 0.01));
+      expect(up.first.axis, GamepadAxis.leftStickY);
+      expect(up.first.value, closeTo(1.0, 0.01));
     });
 
     test('normalizes POV d-pad', () {

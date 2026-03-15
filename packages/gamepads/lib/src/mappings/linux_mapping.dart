@@ -7,9 +7,9 @@ import 'package:gamepads/src/mappings/platform_mapping.dart';
 /// Mapping for Linux gamepad events.
 ///
 /// Linux uses numeric indices as strings (e.g., "0", "1", "2") for both
-/// buttons and axes. The mapping depends on the specific controller hardware,
-/// so this class requires VID/PID to select the correct mapping from the
-/// controller database.
+/// buttons and axes. The mapping depends on the specific controller
+/// hardware, so this class requires VID/PID to select the correct
+/// mapping from the controller database.
 ///
 /// When [UnknownControllerBehavior.bestEffort] is used, falls back to a
 /// default Xbox-like mapping for unrecognized controllers.
@@ -20,11 +20,11 @@ class LinuxMapping extends PlatformMapping {
   LinuxMapping({
     UnknownControllerBehavior unknownBehavior =
         UnknownControllerBehavior.bestEffort,
-  }) : _unknownBehavior = unknownBehavior,
-       _controllerMapping =
-           unknownBehavior == UnknownControllerBehavior.bestEffort
-           ? ControllerDatabase.defaultMapping
-           : null;
+  })  : _unknownBehavior = unknownBehavior,
+        _controllerMapping =
+            unknownBehavior == UnknownControllerBehavior.bestEffort
+                ? ControllerDatabase.defaultMapping
+                : null;
 
   @override
   bool get requiresDeviceId => true;
@@ -61,19 +61,29 @@ class LinuxMapping extends PlatformMapping {
   }
 
   @override
-  NormalizedAxis? normalizeAxis(String key, double value) {
+  List<NormalizedAxis> normalizeAxis(String key, double value) {
     final controllerMapping = _controllerMapping;
     if (controllerMapping == null) {
-      return null;
+      return const [];
     }
 
-    final axis = controllerMapping.axes[key];
-    if (axis == null) {
-      return null;
+    final axisMappings = controllerMapping.axes[key];
+    if (axisMappings == null) {
+      return const [];
     }
 
-    final normalized = _normalizeValue(axis, value, controllerMapping);
-    return NormalizedAxis(axis, normalized);
+    final results = <NormalizedAxis>[];
+    for (final axisMapping in axisMappings) {
+      final normalized = _normalizeValue(
+        axisMapping,
+        value,
+        controllerMapping,
+      );
+      if (normalized != null) {
+        results.add(NormalizedAxis(axisMapping.axis, normalized));
+      }
+    }
+    return results;
   }
 
   @override
@@ -88,8 +98,6 @@ class LinuxMapping extends PlatformMapping {
       return const [];
     }
 
-    // Linux d-pad axis values: -32768 to 32767 or -1 to 1 depending on
-    // driver.
     if (isXAxis) {
       return [
         NormalizedButton(
@@ -116,20 +124,53 @@ class LinuxMapping extends PlatformMapping {
     }
   }
 
-  double _normalizeValue(
-    GamepadAxis axis,
+  /// Normalizes a raw axis value according to the axis mapping.
+  ///
+  /// Returns `null` if the value is outside the active half for
+  /// split-axis mappings (the axis should emit 0 in that case, but
+  /// this is handled by producing a result for each half separately).
+  double? _normalizeValue(
+    AxisMapping axisMapping,
     double value,
     ControllerMapping controllerMapping,
   ) {
-    final isTrigger =
-        axis == GamepadAxis.leftTrigger || axis == GamepadAxis.rightTrigger;
-    final isYAxis =
-        axis == GamepadAxis.leftStickY || axis == GamepadAxis.rightStickY;
+    final axis = axisMapping.axis;
+    final isTrigger = axis == GamepadAxis.leftTrigger ||
+        axis == GamepadAxis.rightTrigger;
+    final isYAxis = axis == GamepadAxis.leftStickY ||
+        axis == GamepadAxis.rightStickY;
+
+    // Handle half-axis modifiers for split axes.
+    switch (axisMapping.half) {
+      case AxisHalf.positive:
+        if (value <= 0) {
+          return 0.0;
+        }
+        // Map positive half [0, max] to [0.0, 1.0].
+        final range = controllerMapping.stickRange;
+        if (range != null) {
+          return value / range.$2;
+        }
+        return value;
+
+      case AxisHalf.negative:
+        if (value >= 0) {
+          return 0.0;
+        }
+        // Map negative half [min, 0] to [0.0, 1.0].
+        final range = controllerMapping.stickRange;
+        if (range != null) {
+          return -value / -range.$1;
+        }
+        return -value;
+
+      case AxisHalf.full:
+        break;
+    }
 
     if (isTrigger) {
       final range = controllerMapping.triggerRange;
       if (range != null) {
-        // Normalize trigger from [min, max] to [0.0, 1.0].
         final (min, max) = range;
         return (value - min) / (max - min);
       }
@@ -138,25 +179,28 @@ class LinuxMapping extends PlatformMapping {
 
     final range = controllerMapping.stickRange;
     if (range != null) {
-      // Normalize stick from [min, max] to [-1.0, 1.0].
       final (min, max) = range;
-      final normalized = 2.0 * (value - min) / (max - min) - 1.0;
-      if (controllerMapping.yAxisInverted && isYAxis) {
-        return -normalized;
+      var normalized = 2.0 * (value - min) / (max - min) - 1.0;
+      if (axisMapping.inverted ||
+          (controllerMapping.yAxisInverted && isYAxis)) {
+        normalized = -normalized;
       }
       return normalized;
     }
 
-    if (controllerMapping.yAxisInverted && isYAxis) {
-      return -value;
+    var result = value;
+    if (axisMapping.inverted ||
+        (controllerMapping.yAxisInverted && isYAxis)) {
+      result = -result;
     }
-    return value;
+    return result;
   }
 }
 
 /// Behavior when encountering an unknown controller (no VID/PID match).
 enum UnknownControllerBehavior {
-  /// Return `null` for normalized fields — only exact matches are accepted.
+  /// Return `null` for normalized fields — only exact matches are
+  /// accepted.
   strict,
 
   /// Fall back to a default Xbox-like mapping.
