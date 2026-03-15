@@ -1,10 +1,34 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gamepads/gamepads.dart';
 
 void main() {
+  Gamepads.normalizer = GamepadNormalizer(
+    platform: _detectPlatform(),
+  );
   runApp(const MyApp());
+}
+
+GamepadPlatform _detectPlatform() {
+  if (kIsWeb) {
+    return GamepadPlatform.web;
+  }
+  switch (defaultTargetPlatform) {
+    case TargetPlatform.android:
+      return GamepadPlatform.android;
+    case TargetPlatform.iOS:
+      return GamepadPlatform.ios;
+    case TargetPlatform.macOS:
+      return GamepadPlatform.macos;
+    case TargetPlatform.linux:
+      return GamepadPlatform.linux;
+    case TargetPlatform.windows:
+      return GamepadPlatform.windows;
+    case TargetPlatform.fuchsia:
+      return GamepadPlatform.linux;
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -30,10 +54,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  StreamSubscription<GamepadEvent>? _subscription;
+  StreamSubscription<NormalizedGamepadEvent>? _subscription;
 
   List<GamepadController> _gamepads = [];
-  List<GamepadEvent> _lastEvents = [];
+  List<NormalizedGamepadEvent> _lastEvents = [];
   bool loading = false;
 
   Future<void> _getValue() async {
@@ -52,14 +76,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _subscription = Gamepads.events.listen((event) {
+    _subscription = Gamepads.normalizedEvents.listen((event) {
       setState(() {
         final newEvents = [
           event,
           ..._lastEvents,
         ];
-        if (newEvents.length > 3) {
-          newEvents.removeRange(3, newEvents.length);
+        if (newEvents.length > 5) {
+          newEvents.removeRange(5, newEvents.length);
         }
         _lastEvents = newEvents;
       });
@@ -79,32 +103,59 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Gamepads Example'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Last Events:'),
-            ..._lastEvents.map((e) => Text(e.toString())),
-            TextButton(
-              onPressed: _clear,
-              child: const Text('clear events'),
-            ),
-            const SizedBox(height: 16),
-            TextButton(
-              onPressed: _getValue,
-              child: const Text('listGamepads()'),
-            ),
-            const Text('Gamepads:'),
-            if (loading)
-              const CircularProgressIndicator()
-            else ...[
-              for (final gamepad in _gamepads) ...[
-                Text('${gamepad.id} - ${gamepad.name}'),
-                Text('  Analog inputs: ${gamepad.state.analogInputs}'),
-                Text('  Button inputs: ${gamepad.state.buttonInputs}'),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Normalized Events:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              ..._lastEvents.map(_buildEventTile),
+              TextButton(
+                onPressed: _clear,
+                child: const Text('Clear Events'),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: _getValue,
+                child: const Text('List Gamepads'),
+              ),
+              const Text(
+                'Gamepads:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              if (loading)
+                const CircularProgressIndicator()
+              else ...[
+                for (final gamepad in _gamepads) ...[
+                  Text('${gamepad.id} - ${gamepad.name}'),
+                  Text(
+                    '  Analog inputs: '
+                    '${gamepad.state.analogInputs}',
+                  ),
+                  Text(
+                    '  Button inputs: '
+                    '${gamepad.state.buttonInputs}',
+                  ),
+                ],
               ],
             ],
-          ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildEventTile(NormalizedGamepadEvent event) {
+    final normalized = event.button != null
+        ? '${event.button} = ${event.value}'
+        : '${event.axis} = ${event.value.toStringAsFixed(2)}';
+    final raw = event.rawEvent;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Text(
+        '$normalized  (raw: ${raw.key} ${raw.value})',
       ),
     );
   }
