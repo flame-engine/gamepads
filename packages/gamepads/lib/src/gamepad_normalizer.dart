@@ -189,6 +189,7 @@ class GamepadNormalizer {
             ),
           );
         }
+        return;
 
       case KeyType.analog:
         final axisResults = mapping.normalizeAxis(
