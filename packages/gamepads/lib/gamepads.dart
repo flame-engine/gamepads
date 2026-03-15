@@ -5,6 +5,12 @@ export 'package:gamepads_platform_interface/api/gamepad_event.dart';
 export 'package:gamepads_platform_interface/api/normalized_gamepad_event.dart';
 export 'package:gamepads_platform_interface/api/normalized_gamepad_state.dart';
 export 'package:gamepads_platform_interface/gamepads_platform_interface.dart'
-    show GamepadNormalizer, GamepadPlatform, UnknownControllerBehavior;
+    show
+        ControllerDb,
+        GamepadNormalizer,
+        GamepadPlatform,
+        SdlMappingParser,
+        SdlParsedMapping,
+        UnknownControllerBehavior;
 
 export 'src/gamepads.dart';

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
 import 'package:gamepads_platform_interface/api/gamepad_button.dart';
 import 'package:gamepads_platform_interface/src/mappings/android_mapping.dart';
+import 'package:gamepads_platform_interface/src/mappings/controller_db.dart';
 import 'package:gamepads_platform_interface/src/mappings/ios_mapping.dart';
 import 'package:gamepads_platform_interface/src/mappings/linux_mapping.dart';
 import 'package:gamepads_platform_interface/src/mappings/macos_mapping.dart';
@@ -380,7 +381,23 @@ void main() {
       expect(mapping.normalizeButton('0', 1.0), isNull);
     });
 
-    test('resolves known controller (Xbox 360)', () {
+    test('resolves SDL-loaded controller', () {
+      ControllerDb.loadSdlMappings(
+        '030000005e0400008e02000010010000,'
+        'Xbox 360 Controller,'
+        'a:b0,b:b1,x:b2,y:b3,'
+        'back:b6,start:b7,guide:b8,'
+        'leftshoulder:b4,rightshoulder:b5,'
+        'leftstick:b9,rightstick:b10,'
+        'leftx:a0,lefty:a1,rightx:a3,righty:a4,'
+        'lefttrigger:a2,righttrigger:a5,'
+        'dpup:h0.1,dpdown:h0.4,'
+        'dpleft:h0.8,dpright:h0.2,'
+        'platform:Linux,',
+        platform: 'Linux',
+      );
+      addTearDown(ControllerDb.clearMappings);
+
       final mapping = LinuxMapping().forDevice(
         vendorId: 0x045e,
         productId: 0x028e,
@@ -399,27 +416,29 @@ void main() {
       );
     });
 
-    test('normalizes Xbox 360 stick axis values from raw range', () {
+    test('normalizes stick axis values from raw range', () {
+      // Uses default best-effort mapping (Xbox-like)
       final mapping = LinuxMapping().forDevice(
-        vendorId: 0x045e,
-        productId: 0x028e,
+        vendorId: 0x9999,
+        productId: 0x9999,
       );
 
       // Left stick X: -32768 to 32767 → -1.0 to 1.0
-      final lx = mapping.normalizeAxis('0', 0.0);
-      expect(lx?.axis, GamepadAxis.leftStickX);
+      final leftStickX = mapping.normalizeAxis('0', 0.0);
+      expect(leftStickX?.axis, GamepadAxis.leftStickX);
       // 0 in [-32768, 32767] → ~0.0
-      expect(lx!.value, closeTo(0.0, 0.01));
+      expect(leftStickX!.value, closeTo(0.0, 0.01));
 
       // Full right
-      final lxMax = mapping.normalizeAxis('0', 32767.0);
-      expect(lxMax!.value, closeTo(1.0, 0.01));
+      final leftStickXMax = mapping.normalizeAxis('0', 32767.0);
+      expect(leftStickXMax!.value, closeTo(1.0, 0.01));
     });
 
     test('normalizes d-pad axes', () {
+      // Uses default best-effort mapping (Xbox-like)
       final mapping = LinuxMapping().forDevice(
-        vendorId: 0x045e,
-        productId: 0x028e,
+        vendorId: 0x9999,
+        productId: 0x9999,
       );
       final results = mapping.normalizeDpadAxis('6', -1.0);
       expect(results.length, 2);
