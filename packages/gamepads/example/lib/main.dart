@@ -145,9 +145,9 @@ class _MyHomePageState extends State<MyHomePage> {
     if (normalized != null) {
       final label = normalized.button != null
           ? '${normalized.button} = '
-              '${normalized.value}'
+                '${normalized.value}'
           : '${normalized.axis} = '
-              '${normalized.value.toStringAsFixed(2)}';
+                '${normalized.value.toStringAsFixed(2)}';
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 2),
         child: Text(

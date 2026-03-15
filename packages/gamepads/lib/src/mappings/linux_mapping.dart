@@ -19,11 +19,11 @@ class LinuxMapping extends PlatformMapping {
   LinuxMapping({
     UnknownControllerBehavior unknownBehavior =
         UnknownControllerBehavior.bestEffort,
-  })  : _unknownBehavior = unknownBehavior,
-        _controllerMapping =
-            unknownBehavior == UnknownControllerBehavior.bestEffort
-                ? ControllerDatabase.defaultMapping
-                : null;
+  }) : _unknownBehavior = unknownBehavior,
+       _controllerMapping =
+           unknownBehavior == UnknownControllerBehavior.bestEffort
+           ? ControllerDatabase.defaultMapping
+           : null;
 
   @override
   bool get requiresDeviceId => true;

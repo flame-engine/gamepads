@@ -8,7 +8,7 @@ import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 void main() {
   group('GamepadNormalizer', () {
     group('iOS platform', () {
-      final normalizer = GamepadNormalizer.forPlatform( GamepadPlatform.ios);
+      final normalizer = GamepadNormalizer.forPlatform(GamepadPlatform.ios);
 
       test('normalizes button event', () {
         final event = GamepadEvent(
@@ -110,7 +110,7 @@ void main() {
     });
 
     group('Web platform', () {
-      final normalizer = GamepadNormalizer.forPlatform( GamepadPlatform.web);
+      final normalizer = GamepadNormalizer.forPlatform(GamepadPlatform.web);
 
       test('normalizes Web button', () {
         final event = GamepadEvent(
@@ -142,7 +142,7 @@ void main() {
 
     group('stream transformer', () {
       test('transforms stream of events', () async {
-        final normalizer = GamepadNormalizer.forPlatform( GamepadPlatform.ios);
+        final normalizer = GamepadNormalizer.forPlatform(GamepadPlatform.ios);
 
         final events = [
           GamepadEvent(
