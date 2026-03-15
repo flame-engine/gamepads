@@ -14,6 +14,8 @@ struct GamepadInfo {
   std::string name;
   int file_descriptor;
   bool alive;
+  int vendor_id;
+  int product_id;
 };
 
 std::optional<GamepadInfo> get_gamepad_info(const std::string& device);

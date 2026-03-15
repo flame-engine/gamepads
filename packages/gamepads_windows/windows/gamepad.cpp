@@ -180,6 +180,8 @@ void Gamepads::on_gamepad_connected(IGameInputDevice* device) {
   gp->num_buttons = info->controllerButtonCount;
   gp->stop_thread = false;
   gp->alive = true;
+  gp->vendor_id = static_cast<int>(info->vendorId);
+  gp->product_id = static_cast<int>(info->productId);
   this->gamepads.push_back(gp);
 
   std::cout << "Gamepad connected: " << gp->id << " : " << gp->name

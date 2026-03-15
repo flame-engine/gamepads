@@ -4,6 +4,7 @@
 #include <cstdio>
 
 #include <cstring>
+#include <fstream>
 #include <functional>
 #include <iostream>
 #include <string>
@@ -31,6 +32,25 @@ static int read_event(int fd, struct js_event* event) {
   return -1;
 }
 
+static int read_sysfs_hex(const std::string& path) {
+  std::ifstream file(path);
+  if (!file.is_open()) {
+    return 0;
+  }
+  int value = 0;
+  file >> std::hex >> value;
+  return value;
+}
+
+static std::string extract_js_name(const std::string& device_id) {
+  // Extract "js0" from "/dev/input/js0"
+  auto pos = device_id.rfind('/');
+  if (pos == std::string::npos) {
+    return device_id;
+  }
+  return device_id.substr(pos + 1);
+}
+
 namespace gamepad {
 std::optional<GamepadInfo> get_gamepad_info(const std::string& device_id) {
   std::cout << "Listening to gamepad " << device_id << std::endl;
@@ -48,7 +68,12 @@ std::optional<GamepadInfo> get_gamepad_info(const std::string& device_id) {
     strcpy(name, "Unknown");
   }
 
-  return {{device_id, name, file_descriptor, true}};
+  std::string js_name = extract_js_name(device_id);
+  std::string sysfs_base = "/sys/class/input/" + js_name + "/device/id/";
+  int vendor_id = read_sysfs_hex(sysfs_base + "vendor");
+  int product_id = read_sysfs_hex(sysfs_base + "product");
+
+  return {{device_id, name, file_descriptor, true, vendor_id, product_id}};
 }
 
 void listen(GamepadInfo* gamepad,

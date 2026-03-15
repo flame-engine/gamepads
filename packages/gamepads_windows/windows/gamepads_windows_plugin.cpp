@@ -72,6 +72,10 @@ void GamepadsWindowsPlugin::emit_gamepad_event(GamepadData* gamepad,
     map[flutter::EncodableValue("key")] = flutter::EncodableValue(event.key);
     map[flutter::EncodableValue("value")] =
         flutter::EncodableValue(event.value);
+    map[flutter::EncodableValue("vendorId")] =
+        flutter::EncodableValue(gamepad->vendor_id);
+    map[flutter::EncodableValue("productId")] =
+        flutter::EncodableValue(gamepad->product_id);
     _channel->InvokeMethod("onGamepadEvent",
                            std::make_unique<flutter::EncodableValue>(
                                flutter::EncodableValue(map)));

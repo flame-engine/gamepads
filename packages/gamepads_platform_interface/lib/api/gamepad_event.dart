@@ -35,12 +35,20 @@ class GamepadEvent {
   /// The current value of the key.
   final double value;
 
+  /// The USB vendor ID of the controller, if available.
+  final int? vendorId;
+
+  /// The USB product ID of the controller, if available.
+  final int? productId;
+
   GamepadEvent({
     required this.gamepadId,
     required this.timestamp,
     required this.type,
     required this.key,
     required this.value,
+    this.vendorId,
+    this.productId,
   });
 
   @override
@@ -54,6 +62,8 @@ class GamepadEvent {
     final type = KeyType.values.byName(map['type'] as String);
     final key = map['key'] as String;
     final value = map['value'] as double;
+    final vendorId = map['vendorId'] as int?;
+    final productId = map['productId'] as int?;
 
     return GamepadEvent(
       gamepadId: gamepadId,
@@ -61,6 +71,8 @@ class GamepadEvent {
       type: type,
       key: key,
       value: value,
+      vendorId: vendorId,
+      productId: productId,
     );
   }
 }

@@ -1,5 +1,6 @@
 package org.flame_engine.gamepads_android
 
+import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
 
@@ -32,12 +33,15 @@ class EventListener {
     )
 
     fun onKeyEvent(keyEvent: KeyEvent, channel: MethodChannel): Boolean {
+        val device = InputDevice.getDevice(keyEvent.deviceId)
         val arguments = mapOf(
             "gamepadId" to keyEvent.deviceId.toString(),
             "time" to keyEvent.eventTime,
             "type" to "button",
             "key" to KeyEvent.keyCodeToString(keyEvent.keyCode),
-            "value" to keyEvent.action.toDouble()
+            "value" to keyEvent.action.toDouble(),
+            "vendorId" to (device?.vendorId ?: 0),
+            "productId" to (device?.productId ?: 0),
         )
         channel.invokeMethod("onGamepadEvent", arguments)
         return true
@@ -71,12 +75,15 @@ class EventListener {
         // Update last value
         lastAxisValue[axis.axisId] = value
 
+        val device = InputDevice.getDevice(motionEvent.deviceId)
         val arguments = mapOf(
             "gamepadId" to motionEvent.deviceId.toString(),
             "time" to motionEvent.eventTime,
             "type" to "analog",
             "key" to MotionEvent.axisToString(axis.axisId),
             "value" to value,
+            "vendorId" to (device?.vendorId ?: 0),
+            "productId" to (device?.productId ?: 0),
         )
         channel.invokeMethod("onGamepadEvent", arguments)
         return true

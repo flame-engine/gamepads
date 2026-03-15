@@ -128,6 +128,16 @@ class GamepadNormalizer {
     GamepadEvent event,
     void Function(NormalizedGamepadEvent) emit,
   ) {
+    // Auto-configure device mapping from VID/PID on first event.
+    if (event.vendorId != null &&
+        event.productId != null &&
+        !_deviceMappings.containsKey(event.gamepadId)) {
+      setDeviceInfo(
+        event.gamepadId,
+        vendorId: event.vendorId!,
+        productId: event.productId!,
+      );
+    }
     final mapping = _mappingFor(event.gamepadId);
 
     switch (event.type) {

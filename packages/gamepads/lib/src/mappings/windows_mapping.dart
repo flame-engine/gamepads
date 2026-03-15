@@ -27,7 +27,11 @@ class WindowsMapping extends PlatformMapping {
   WindowsMapping({
     UnknownControllerBehavior unknownBehavior =
         UnknownControllerBehavior.bestEffort,
-  }) : _unknownBehavior = unknownBehavior;
+  })  : _unknownBehavior = unknownBehavior,
+        _controllerMapping =
+            unknownBehavior == UnknownControllerBehavior.bestEffort
+                ? _WindowsControllerMapping.defaultMapping
+                : null;
 
   @override
   bool get requiresDeviceId => true;
