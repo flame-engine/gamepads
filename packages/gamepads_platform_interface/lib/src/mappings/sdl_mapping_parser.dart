@@ -315,18 +315,24 @@ class SdlMappingParser {
     return results;
   }
 
-  /// Parses SDL mapping lines and returns a map of
-  /// (vendorId, productId) to [ControllerMapping].
+  /// Parses SDL mapping lines directly into a VID/PID-keyed map,
+  /// avoiding intermediate list allocation.
   ///
   /// If multiple entries exist for the same VID/PID, the last one wins.
   static Map<(int, int), ControllerMapping> parseToDb(
     String content, {
     String? platform,
   }) {
-    final mappings = parseLines(content, platform: platform);
     final database = <(int, int), ControllerMapping>{};
-    for (final mapping in mappings) {
-      database[(mapping.vendorId, mapping.productId)] = mapping.mapping;
+    for (final line in content.split('\n')) {
+      final parsed = parseLine(line);
+      if (parsed == null) {
+        continue;
+      }
+      if (platform != null && parsed.platform != platform) {
+        continue;
+      }
+      database[(parsed.vendorId, parsed.productId)] = parsed.mapping;
     }
     return database;
   }

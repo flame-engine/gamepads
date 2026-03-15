@@ -38,6 +38,13 @@ class GamepadNormalizer {
   final PlatformMapping _mapping;
   final Map<String, PlatformMapping> _deviceMappings = {};
 
+  late final StreamTransformer<GamepadEvent, NormalizedGamepadEvent>
+      _transformer = StreamTransformer.fromHandlers(
+    handleData: (event, sink) {
+      _normalizeInto(event, sink.add);
+    },
+  );
+
   GamepadNormalizer({required GamepadPlatform platform})
       : _mapping = _createMapping(platform);
 
@@ -80,75 +87,81 @@ class GamepadNormalizer {
 
   /// Normalizes a single [GamepadEvent].
   ///
-  /// Returns a list of [NormalizedGamepadEvent]s. Most events produce a single
-  /// normalized event, but d-pad axis events may produce multiple button events
-  /// (e.g., dpadLeft pressed + dpadRight released).
+  /// Returns a list of [NormalizedGamepadEvent]s. Most events produce a
+  /// single normalized event, but d-pad axis events may produce multiple
+  /// button events (e.g., dpadLeft pressed + dpadRight released).
   ///
   /// Returns an empty list if the event could not be normalized.
   List<NormalizedGamepadEvent> normalize(GamepadEvent event) {
-    final mapping = _mappingFor(event.gamepadId);
     final results = <NormalizedGamepadEvent>[];
+    _normalizeInto(event, results.add);
+    return results;
+  }
+
+  /// Normalizes an event and passes each result to [emit], avoiding
+  /// intermediate list allocation when used with a stream sink.
+  void _normalizeInto(
+    GamepadEvent event,
+    void Function(NormalizedGamepadEvent) emit,
+  ) {
+    final mapping = _mappingFor(event.gamepadId);
 
     switch (event.type) {
       case KeyType.button:
         final result = mapping.normalizeButton(event.key, event.value);
         if (result != null) {
-          results.add(
+          emit(
             NormalizedGamepadEvent(
               gamepadId: event.gamepadId,
               timestamp: event.timestamp,
-              button: result.button,
               value: result.value,
               rawEvent: event,
+              button: result.button,
             ),
           );
         }
 
       case KeyType.analog:
-        // First check if this is a recognized axis.
-        final axisResult = mapping.normalizeAxis(event.key, event.value);
+        final axisResult = mapping.normalizeAxis(
+          event.key,
+          event.value,
+        );
         if (axisResult != null) {
-          results.add(
+          emit(
             NormalizedGamepadEvent(
               gamepadId: event.gamepadId,
               timestamp: event.timestamp,
-              axis: axisResult.axis,
               value: axisResult.value,
               rawEvent: event,
+              axis: axisResult.axis,
             ),
           );
+          // If axis matched, this is not a d-pad axis — skip dpad
+          // check.
+          return;
         }
 
-        // Also check if this is a d-pad axis (produces button events).
+        // Only check d-pad if the axis was not recognized above.
         final dpadResults = mapping.normalizeDpadAxis(
           event.key,
           event.value,
         );
         for (final dpad in dpadResults) {
-          results.add(
+          emit(
             NormalizedGamepadEvent(
               gamepadId: event.gamepadId,
               timestamp: event.timestamp,
-              button: dpad.button,
               value: dpad.value,
               rawEvent: event,
+              button: dpad.button,
             ),
           );
         }
     }
-
-    return results;
   }
 
-  /// A [StreamTransformer] that converts a stream of [GamepadEvent]s
-  /// into a stream of [NormalizedGamepadEvent]s.
-  StreamTransformer<GamepadEvent, NormalizedGamepadEvent> get transformer {
-    return StreamTransformer<GamepadEvent, NormalizedGamepadEvent>.fromHandlers(
-      handleData: (event, sink) {
-        for (final normalized in normalize(event)) {
-          sink.add(normalized);
-        }
-      },
-    );
-  }
+  /// A cached [StreamTransformer] that converts a stream of
+  /// [GamepadEvent]s into a stream of [NormalizedGamepadEvent]s.
+  StreamTransformer<GamepadEvent, NormalizedGamepadEvent> get transformer =>
+      _transformer;
 }

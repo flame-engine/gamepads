@@ -68,6 +68,6 @@ class IosMapping extends PlatformMapping {
         NormalizedButton(GamepadButton.dpadUp, value > 0 ? 1.0 : 0.0),
       ];
     }
-    return [];
+    return const [];
   }
 }

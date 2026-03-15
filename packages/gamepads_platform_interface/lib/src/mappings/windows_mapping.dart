@@ -97,7 +97,7 @@ class WindowsMapping extends PlatformMapping {
   @override
   List<NormalizedButton> normalizeDpadAxis(String key, double value) {
     if (key != 'pov') {
-      return [];
+      return const [];
     }
 
     // POV is reported as an angle in hundredths of degrees.

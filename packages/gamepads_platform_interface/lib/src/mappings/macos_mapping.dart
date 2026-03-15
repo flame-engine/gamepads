@@ -22,7 +22,7 @@ import 'package:gamepads_platform_interface/src/mappings/platform_mapping.dart';
 /// - "r.joystick.press.down" - right stick click
 class MacosMapping extends PlatformMapping {
   // SF Symbols names can vary by controller, so we use contains-based
-  // matching.
+  // matching on first encounter, then cache the result.
   static const _buttonPatterns = <String, GamepadButton>{
     'a.circle': GamepadButton.a,
     'b.circle': GamepadButton.b,
@@ -39,18 +39,35 @@ class MacosMapping extends PlatformMapping {
     'r.joystick.press': GamepadButton.rightStick,
   };
 
-  // Axis keys: "<sfSymbolsName> - xAxis" or "<sfSymbolsName> - yAxis"
-  // The stick element names typically contain "l.joystick" or "r.joystick"
-  // or "dpad" patterns.
   static const _leftStickPattern = 'l.joystick';
   static const _rightStickPattern = 'r.joystick';
   static const _dpadPattern = 'dpad';
 
+  // Caches for resolved key → result mappings, avoiding repeated
+  // pattern scans for keys already seen.
+  final _buttonCache = <String, GamepadButton?>{};
+  final _axisCache = <String, GamepadAxis?>{};
+
+  // Tracks whether a key is a d-pad axis (true = X, false = Y,
+  // absent = not d-pad).
+  final _dpadAxisCache = <String, bool?>{};
+
   @override
   NormalizedButton? normalizeButton(String key, double value) {
+    if (!_buttonCache.containsKey(key)) {
+      _buttonCache[key] = _findButton(key);
+    }
+    final button = _buttonCache[key];
+    if (button == null) {
+      return null;
+    }
+    return NormalizedButton(button, value != 0 ? 1.0 : 0.0);
+  }
+
+  static GamepadButton? _findButton(String key) {
     for (final entry in _buttonPatterns.entries) {
       if (key.contains(entry.key)) {
-        return NormalizedButton(entry.value, value != 0 ? 1.0 : 0.0);
+        return entry.value;
       }
     }
     return null;
@@ -58,21 +75,31 @@ class MacosMapping extends PlatformMapping {
 
   @override
   NormalizedAxis? normalizeAxis(String key, double value) {
-    // macOS reports stick values in -1.0 to 1.0 or 0.0 to 1.0 range.
+    if (!_axisCache.containsKey(key)) {
+      _axisCache[key] = _findAxis(key);
+    }
+    final axis = _axisCache[key];
+    if (axis == null) {
+      return null;
+    }
+    return NormalizedAxis(axis, value);
+  }
+
+  static GamepadAxis? _findAxis(String key) {
     if (key.contains(_leftStickPattern)) {
       if (key.endsWith('xAxis')) {
-        return NormalizedAxis(GamepadAxis.leftStickX, value);
+        return GamepadAxis.leftStickX;
       }
       if (key.endsWith('yAxis')) {
-        return NormalizedAxis(GamepadAxis.leftStickY, value);
+        return GamepadAxis.leftStickY;
       }
     }
     if (key.contains(_rightStickPattern)) {
       if (key.endsWith('xAxis')) {
-        return NormalizedAxis(GamepadAxis.rightStickX, value);
+        return GamepadAxis.rightStickX;
       }
       if (key.endsWith('yAxis')) {
-        return NormalizedAxis(GamepadAxis.rightStickY, value);
+        return GamepadAxis.rightStickY;
       }
     }
     return null;
@@ -80,11 +107,15 @@ class MacosMapping extends PlatformMapping {
 
   @override
   List<NormalizedButton> normalizeDpadAxis(String key, double value) {
-    if (!key.contains(_dpadPattern)) {
-      return [];
+    if (!_dpadAxisCache.containsKey(key)) {
+      _dpadAxisCache[key] = _findDpadAxis(key);
+    }
+    final isXAxis = _dpadAxisCache[key];
+    if (isXAxis == null) {
+      return const [];
     }
 
-    if (key.endsWith('xAxis')) {
+    if (isXAxis) {
       return [
         NormalizedButton(
           GamepadButton.dpadLeft,
@@ -96,18 +127,28 @@ class MacosMapping extends PlatformMapping {
         ),
       ];
     }
-    if (key.endsWith('yAxis')) {
-      return [
-        NormalizedButton(
-          GamepadButton.dpadDown,
-          value < 0 ? 1.0 : 0.0,
-        ),
-        NormalizedButton(
-          GamepadButton.dpadUp,
-          value > 0 ? 1.0 : 0.0,
-        ),
-      ];
+    return [
+      NormalizedButton(
+        GamepadButton.dpadDown,
+        value < 0 ? 1.0 : 0.0,
+      ),
+      NormalizedButton(
+        GamepadButton.dpadUp,
+        value > 0 ? 1.0 : 0.0,
+      ),
+    ];
+  }
+
+  static bool? _findDpadAxis(String key) {
+    if (!key.contains(_dpadPattern)) {
+      return null;
     }
-    return [];
+    if (key.endsWith('xAxis')) {
+      return true;
+    }
+    if (key.endsWith('yAxis')) {
+      return false;
+    }
+    return null;
   }
 }

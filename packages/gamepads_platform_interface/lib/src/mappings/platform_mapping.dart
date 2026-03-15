@@ -40,7 +40,8 @@ abstract class PlatformMapping {
   ///
   /// Returns a list of button events (e.g., dpadLeft pressed and
   /// dpadRight released when axis goes negative).
-  List<NormalizedButton> normalizeDpadAxis(String key, double value) => [];
+  List<NormalizedButton> normalizeDpadAxis(String key, double value) =>
+      const [];
 
   /// Whether this mapping requires VID/PID to select the correct mapping.
   bool get requiresDeviceId => false;

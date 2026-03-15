@@ -74,12 +74,12 @@ class LinuxMapping extends PlatformMapping {
   List<NormalizedButton> normalizeDpadAxis(String key, double value) {
     final controllerMapping = _controllerMapping;
     if (controllerMapping == null) {
-      return [];
+      return const [];
     }
 
     final isXAxis = controllerMapping.dpadAxes[key];
     if (isXAxis == null) {
-      return [];
+      return const [];
     }
 
     // Linux d-pad axis values: -32768 to 32767 or -1 to 1 depending on
