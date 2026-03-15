@@ -3,14 +3,6 @@ import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 import 'package:gamepads_platform_interface/method_channel_gamepads_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-export 'package:gamepads_platform_interface/src/gamepad_normalizer.dart';
-export 'package:gamepads_platform_interface/src/mappings/controller_database.dart'
-    show ControllerDatabase;
-export 'package:gamepads_platform_interface/src/mappings/linux_mapping.dart'
-    show UnknownControllerBehavior;
-export 'package:gamepads_platform_interface/src/mappings/sdl_mapping_parser.dart'
-    show SdlMappingParser, SdlParsedMapping;
-
 abstract class GamepadsPlatformInterface extends PlatformInterface {
   static final Object _token = Object();
 

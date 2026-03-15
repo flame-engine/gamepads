@@ -1,5 +1,5 @@
-import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
-import 'package:gamepads_platform_interface/api/gamepad_button.dart';
+import 'package:gamepads/src/api/gamepad_axis.dart';
+import 'package:gamepads/src/api/gamepad_button.dart';
 import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 
 /// A gamepad event with platform-independent button/axis identifiers and

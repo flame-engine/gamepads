@@ -18,10 +18,10 @@ jobs:
         run: |
           curl -sL \
             https://raw.githubusercontent.com/gabomdq/SDL_GameControllerDB/master/gamecontrollerdb.txt \
-            -o packages/gamepads_platform_interface/lib/src/mappings/data/gamecontrollerdb.txt
+            -o packages/gamepads/lib/src/mappings/data/gamecontrollerdb.txt
 
       - name: Regenerate Dart file
-        working-directory: packages/gamepads_platform_interface
+        working-directory: packages/gamepads
         run: dart run tool/update_controller_database.dart
 
       - name: Check for changes

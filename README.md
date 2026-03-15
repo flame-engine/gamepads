@@ -155,34 +155,9 @@ You can switch to strict mode (returns `null` for unrecognized inputs) by config
 normalizer accordingly. You can also load additional mappings at runtime via
 `ControllerDatabase.loadSdlMappings()`.
 
-
-### Normalized State
-
-`GamepadController` provides a `normalizedState` alongside the existing `state`, offering
-convenient `isPressed(GamepadButton)` and `axisValue(GamepadAxis)` methods. To use it, pass a
-`GamepadNormalizer` when creating the controller:
-
-```dart
-final normalizer = GamepadNormalizer(platform: GamepadPlatform.linux);
-final controller = GamepadController(
-  id: 'pad1',
-  name: 'My Controller',
-  plugin: GamepadsPlatformInterface.instance,
-  normalizer: normalizer,
-);
-
-if (controller.normalizedState.isPressed(GamepadButton.a)) {
-  // A is currently held
-}
-final stickX = controller.normalizedState.axisValue(GamepadAxis.leftStickX);
-```
-
-If no normalizer is passed (the default), the `normalizedState` is never updated and no
-normalization overhead is incurred. The raw `events` and `state` are always available regardless
-of whether normalization is enabled.
-
-The original raw events are always preserved via `NormalizedGamepadEvent.rawEvent`, so you can
-fall back to platform-specific handling when needed.
+The original raw events are always preserved via
+`NormalizedGamepadEvent.rawEvent`, so you can fall back to
+platform-specific handling when needed.
 
 
 ## Next Steps

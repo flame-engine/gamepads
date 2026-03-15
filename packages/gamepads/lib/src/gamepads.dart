@@ -1,8 +1,9 @@
 library gamepads;
 
+import 'package:gamepads/src/api/normalized_gamepad_event.dart';
+import 'package:gamepads/src/gamepad_normalizer.dart';
 import 'package:gamepads_platform_interface/api/gamepad_controller.dart';
 import 'package:gamepads_platform_interface/api/gamepad_event.dart';
-import 'package:gamepads_platform_interface/api/normalized_gamepad_event.dart';
 import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
 
 class Gamepads {

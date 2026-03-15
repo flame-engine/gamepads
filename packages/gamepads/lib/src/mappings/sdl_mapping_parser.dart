@@ -1,6 +1,6 @@
-import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
-import 'package:gamepads_platform_interface/api/gamepad_button.dart';
-import 'package:gamepads_platform_interface/src/mappings/controller_database.dart';
+import 'package:gamepads/src/api/gamepad_axis.dart';
+import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/mappings/controller_database.dart';
 
 /// Parses SDL GameController DB format mapping strings into
 /// [ControllerMapping] objects.

@@ -1,8 +1,8 @@
-import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
-import 'package:gamepads_platform_interface/api/gamepad_button.dart';
-import 'package:gamepads_platform_interface/src/mappings/controller_database.dart';
-import 'package:gamepads_platform_interface/src/mappings/linux_mapping.dart';
-import 'package:gamepads_platform_interface/src/mappings/platform_mapping.dart';
+import 'package:gamepads/src/api/gamepad_axis.dart';
+import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/mappings/controller_database.dart';
+import 'package:gamepads/src/mappings/linux_mapping.dart';
+import 'package:gamepads/src/mappings/platform_mapping.dart';
 
 /// Mapping for Windows gamepad events.
 ///

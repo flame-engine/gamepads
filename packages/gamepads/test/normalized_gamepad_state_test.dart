@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
-import 'package:gamepads_platform_interface/api/gamepad_button.dart';
+import 'package:gamepads/src/api/gamepad_axis.dart';
+import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/api/normalized_gamepad_event.dart';
+import 'package:gamepads/src/api/normalized_gamepad_state.dart';
 import 'package:gamepads_platform_interface/api/gamepad_event.dart';
-import 'package:gamepads_platform_interface/api/normalized_gamepad_event.dart';
-import 'package:gamepads_platform_interface/api/normalized_gamepad_state.dart';
 
 void main() {
   group('NormalizedGamepadState', () {

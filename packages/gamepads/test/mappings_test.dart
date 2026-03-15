@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
-import 'package:gamepads_platform_interface/api/gamepad_button.dart';
-import 'package:gamepads_platform_interface/src/mappings/android_mapping.dart';
-import 'package:gamepads_platform_interface/src/mappings/ios_mapping.dart';
-import 'package:gamepads_platform_interface/src/mappings/linux_mapping.dart';
-import 'package:gamepads_platform_interface/src/mappings/macos_mapping.dart';
-import 'package:gamepads_platform_interface/src/mappings/web_standard_mapping.dart';
-import 'package:gamepads_platform_interface/src/mappings/windows_mapping.dart';
+import 'package:gamepads/src/api/gamepad_axis.dart';
+import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/mappings/android_mapping.dart';
+import 'package:gamepads/src/mappings/ios_mapping.dart';
+import 'package:gamepads/src/mappings/linux_mapping.dart';
+import 'package:gamepads/src/mappings/macos_mapping.dart';
+import 'package:gamepads/src/mappings/web_standard_mapping.dart';
+import 'package:gamepads/src/mappings/windows_mapping.dart';
 
 void main() {
   group('IosMapping', () {

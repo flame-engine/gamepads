@@ -1,7 +1,7 @@
-import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
-import 'package:gamepads_platform_interface/api/gamepad_button.dart';
-import 'package:gamepads_platform_interface/src/mappings/data/gamecontrollerdb_data.dart';
-import 'package:gamepads_platform_interface/src/mappings/sdl_mapping_parser.dart';
+import 'package:gamepads/src/api/gamepad_axis.dart';
+import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/mappings/data/gamecontrollerdb_data.dart';
+import 'package:gamepads/src/mappings/sdl_mapping_parser.dart';
 
 /// A database entry describing how a specific controller maps its raw
 /// key indices to standard gamepad buttons and axes.

@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
-import 'package:gamepads_platform_interface/api/gamepad_button.dart';
-import 'package:gamepads_platform_interface/src/mappings/controller_database.dart';
-import 'package:gamepads_platform_interface/src/mappings/sdl_mapping_parser.dart';
+import 'package:gamepads/src/api/gamepad_axis.dart';
+import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/mappings/controller_database.dart';
+import 'package:gamepads/src/mappings/sdl_mapping_parser.dart';
 
 const _xboxGuid = '030000005e0400008e02000010010000';
 const _sonyGuid = '030000004c050000cc09000011010000';
