@@ -155,15 +155,14 @@ You can switch to strict mode (returns `null` for unrecognized inputs) by config
 normalizer accordingly. You can also load additional mappings at runtime via
 `ControllerDatabase.loadSdlMappings()`.
 
-The original raw events are always preserved via
-`NormalizedGamepadEvent.rawEvent`, so you can fall back to
-platform-specific handling when needed.
+The original raw events are always preserved via `NormalizedGamepadEvent.rawEvent`, so you can
+fall back to platform-specific handling when needed.
 
 
 ## Next Steps
 
 As mentioned, this is still a WIP library. Not only APIs are expected to change if needed, but we
- plan to add more features, like:
+plan to add more features, like:
 
 - stream to listen for connecting/disconnecting gamepads
 - get current state of a gamepad
