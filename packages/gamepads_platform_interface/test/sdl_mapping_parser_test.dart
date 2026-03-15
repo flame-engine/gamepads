@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
 import 'package:gamepads_platform_interface/api/gamepad_button.dart';
-import 'package:gamepads_platform_interface/src/mappings/controller_db.dart';
+import 'package:gamepads_platform_interface/src/mappings/controller_database.dart';
 import 'package:gamepads_platform_interface/src/mappings/sdl_mapping_parser.dart';
 
 const _xboxGuid = '030000005e0400008e02000010010000';
@@ -244,7 +244,7 @@ void main() {
         expect(windowsMappings.length, 1);
       });
 
-      test('parseToDb creates VID/PID keyed map', () {
+      test('parseToDatabase creates VID/PID keyed map', () {
         final lines = [
           _sdlLine(_xboxGuid, [
             'Xbox 360',
@@ -265,7 +265,7 @@ void main() {
         ];
         final content = lines.join('\n');
 
-        final database = SdlMappingParser.parseToDb(
+        final database = SdlMappingParser.parseToDatabase(
           content,
           platform: 'Linux',
         );

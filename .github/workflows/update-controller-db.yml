@@ -22,7 +22,7 @@ jobs:
 
       - name: Regenerate Dart file
         working-directory: packages/gamepads_platform_interface
-        run: dart run tool/update_controller_db.dart
+        run: dart run tool/update_controller_database.dart
 
       - name: Check for changes
         id: diff

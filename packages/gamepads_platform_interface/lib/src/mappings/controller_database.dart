@@ -50,11 +50,11 @@ class ControllerDatabase {
 
   static Map<(int, int), ControllerMapping>? _mappings;
 
-  static Map<(int, int), ControllerMapping> get _db {
+  static Map<(int, int), ControllerMapping> get _database {
     if (_mappings == null) {
       _mappings = {};
       _mappings!.addAll(
-        SdlMappingParser.parseToDb(gamecontrollerDbData),
+        SdlMappingParser.parseToDatabase(gamecontrollerDbData),
       );
     }
     return _mappings!;
@@ -68,7 +68,7 @@ class ControllerDatabase {
     required int vendorId,
     required int productId,
   }) {
-    return _db[(vendorId, productId)];
+    return _database[(vendorId, productId)];
   }
 
   /// Loads additional controller mappings from an SDL GameController DB
@@ -79,11 +79,11 @@ class ControllerDatabase {
   ///
   /// Returns the number of mappings loaded.
   static int loadSdlMappings(String content, {String? platform}) {
-    final parsed = SdlMappingParser.parseToDb(
+    final parsed = SdlMappingParser.parseToDatabase(
       content,
       platform: platform,
     );
-    _db.addAll(parsed);
+    _database.addAll(parsed);
     return parsed.length;
   }
 

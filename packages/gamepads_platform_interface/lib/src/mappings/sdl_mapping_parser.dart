@@ -1,6 +1,6 @@
 import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
 import 'package:gamepads_platform_interface/api/gamepad_button.dart';
-import 'package:gamepads_platform_interface/src/mappings/controller_db.dart';
+import 'package:gamepads_platform_interface/src/mappings/controller_database.dart';
 
 /// Parses SDL GameController DB format mapping strings into
 /// [ControllerMapping] objects.
@@ -319,7 +319,7 @@ class SdlMappingParser {
   /// avoiding intermediate list allocation.
   ///
   /// If multiple entries exist for the same VID/PID, the last one wins.
-  static Map<(int, int), ControllerMapping> parseToDb(
+  static Map<(int, int), ControllerMapping> parseToDatabase(
     String content, {
     String? platform,
   }) {

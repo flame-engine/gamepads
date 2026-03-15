@@ -1,6 +1,6 @@
 import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
 import 'package:gamepads_platform_interface/api/gamepad_button.dart';
-import 'package:gamepads_platform_interface/src/mappings/controller_db.dart';
+import 'package:gamepads_platform_interface/src/mappings/controller_database.dart';
 import 'package:gamepads_platform_interface/src/mappings/linux_mapping.dart';
 import 'package:gamepads_platform_interface/src/mappings/platform_mapping.dart';
 
@@ -36,13 +36,13 @@ class WindowsMapping extends PlatformMapping {
   PlatformMapping forDevice({int? vendorId, int? productId}) {
     final mapping = WindowsMapping(unknownBehavior: _unknownBehavior);
     if (vendorId != null && productId != null) {
-      final dbMapping = ControllerDatabase.lookup(
+      final databaseMapping = ControllerDatabase.lookup(
         vendorId: vendorId,
         productId: productId,
       );
-      if (dbMapping != null) {
+      if (databaseMapping != null) {
         mapping._controllerMapping =
-            _WindowsControllerMapping.fromDb(dbMapping);
+            _WindowsControllerMapping.fromDatabase(databaseMapping);
       }
     }
     if (mapping._controllerMapping == null &&
@@ -233,7 +233,7 @@ class _WindowsControllerMapping {
   );
 
   // ignore: avoid_unused_constructor_parameters
-  factory _WindowsControllerMapping.fromDb(ControllerMapping db) {
+  factory _WindowsControllerMapping.fromDatabase(ControllerMapping database) {
     // For Windows, we primarily use the default mapping since the Windows
     // joystick API normalizes button indices. The DB mapping is used for
     // button name resolution.

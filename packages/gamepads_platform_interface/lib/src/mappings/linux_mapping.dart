@@ -1,6 +1,6 @@
 import 'package:gamepads_platform_interface/api/gamepad_axis.dart';
 import 'package:gamepads_platform_interface/api/gamepad_button.dart';
-import 'package:gamepads_platform_interface/src/mappings/controller_db.dart';
+import 'package:gamepads_platform_interface/src/mappings/controller_database.dart';
 import 'package:gamepads_platform_interface/src/mappings/platform_mapping.dart';
 
 /// Mapping for Linux gamepad events.
