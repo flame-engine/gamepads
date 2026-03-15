@@ -1,34 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gamepads/gamepads.dart';
 
 void main() {
-  Gamepads.normalizer = GamepadNormalizer(
-    platform: _detectPlatform(),
-  );
+  Gamepads.normalizer = GamepadNormalizer();
   runApp(const MyApp());
-}
-
-GamepadPlatform _detectPlatform() {
-  if (kIsWeb) {
-    return GamepadPlatform.web;
-  }
-  switch (defaultTargetPlatform) {
-    case TargetPlatform.android:
-      return GamepadPlatform.android;
-    case TargetPlatform.iOS:
-      return GamepadPlatform.ios;
-    case TargetPlatform.macOS:
-      return GamepadPlatform.macos;
-    case TargetPlatform.linux:
-      return GamepadPlatform.linux;
-    case TargetPlatform.windows:
-      return GamepadPlatform.windows;
-    case TargetPlatform.fuchsia:
-      return GamepadPlatform.linux;
-  }
 }
 
 class MyApp extends StatelessWidget {

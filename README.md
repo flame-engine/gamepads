@@ -83,6 +83,92 @@ class GamepadEvent {
 ```
 
 
+## Normalized Events
+
+By default, `GamepadEvent` exposes raw, platform-specific key
+strings and value ranges. The same physical button produces
+different identifiers on each platform (e.g., the A button is
+`"0"` on Linux, `"button-0"` on Windows, `"buttonA"` on iOS,
+`"KEYCODE_BUTTON_A"` on Android, and `"button 0"` on Web).
+Value ranges also differ across platforms.
+
+The normalization layer provides consistent button/axis
+identifiers and value ranges regardless of platform or
+controller type. It is fully opt-in — if you only use
+`Gamepads.events`, no normalization work is performed and
+there is zero overhead.
+
+To use it, set up a `GamepadNormalizer` at app startup:
+
+```dart
+Gamepads.normalizer = GamepadNormalizer();
+```
+
+The platform is auto-detected. To override it, use
+`GamepadNormalizer.forPlatform(GamepadPlatform.linux)`.
+
+Then listen to `normalizedEvents` instead of `events`:
+
+```dart
+Gamepads.normalizedEvents.listen((event) {
+  if (event.button == GamepadButton.a) {
+    print('A button pressed!');
+  }
+  if (event.axis == GamepadAxis.leftStickX) {
+    print('Left stick X: ${event.value}');
+  }
+});
+```
+
+The `normalizedEvents` stream is lazy — normalization only
+runs while there is an active listener. When nobody is
+listening, no normalized events are created.
+
+
+### Standard Gamepad Model
+
+Buttons and axes follow the Xbox/standard gamepad layout:
+
+| Type     | Values                       | Range       |
+|----------|------------------------------|-------------|
+| `Button` | `a`, `b`, `x`, `y`          | 0.0 or 1.0  |
+| `Button` | `leftBumper`, `rightBumper`  | 0.0 or 1.0  |
+| `Button` | `leftTrigger`, `rightTrigger`| 0.0 or 1.0  |
+| `Button` | `back`, `start`, `home`      | 0.0 or 1.0  |
+| `Button` | `leftStick`, `rightStick`    | 0.0 or 1.0  |
+| `Button` | `dpadUp/Down/Left/Right`     | 0.0 or 1.0  |
+| `Axis`   | `leftStickX`, `leftStickY`   | -1.0 to 1.0 |
+| `Axis`   | `rightStickX`, `rightStickY` | -1.0 to 1.0 |
+| `Axis`   | `leftTrigger`, `rightTrigger`| 0.0 to 1.0  |
+
+Buttons use 0.0 (released) and 1.0 (pressed).
+Stick conventions: Left/Down = -1, Right/Up = +1.
+
+
+### Platform Mapping Tiers
+
+**Tier 1 (no VID/PID needed):** iOS, macOS, Android, and
+Web provide semantic key names, so normalization works out
+of the box.
+
+**Tier 2 (VID/PID required):** Linux and Windows use raw
+numeric indices that vary by controller hardware. For these
+platforms, the normalizer uses a bundled copy of the
+community-maintained
+[SDL GameController DB](https://github.com/gabomdq/SDL_GameControllerDB)
+to select the correct mapping by vendor/product ID. This
+database includes mappings for over 1500 controllers.
+
+For unknown controllers, the default behavior is best-effort
+mapping using an Xbox-like layout. You can also load
+additional mappings at runtime via
+`ControllerDatabase.loadSdlMappings()`.
+
+The original raw events are always preserved via
+`NormalizedGamepadEvent.rawEvent`, so you can fall back to
+platform-specific handling when needed.
+
+
 ## Next Steps
 
 As mentioned, this is still a WIP library. Not only APIs are expected to change if needed, but we

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:gamepads/src/api/normalized_gamepad_event.dart';
 import 'package:gamepads/src/mappings/android_mapping.dart';
 import 'package:gamepads/src/mappings/ios_mapping.dart';
@@ -23,10 +24,9 @@ enum GamepadPlatform {
 /// Transforms raw [GamepadEvent]s into [NormalizedGamepadEvent]s using
 /// platform-specific mappings.
 ///
-/// Usage:
+/// The platform is auto-detected by default. You can override it:
 /// ```dart
 /// final normalizer = GamepadNormalizer(platform: GamepadPlatform.linux);
-/// final normalized = normalizer.normalize(rawEvent);
 /// ```
 ///
 /// For stream transformation:
@@ -39,17 +39,41 @@ class GamepadNormalizer {
   final Map<String, PlatformMapping> _deviceMappings = {};
 
   late final StreamTransformer<GamepadEvent, NormalizedGamepadEvent>
-  _transformer = StreamTransformer.fromHandlers(
+      _transformer = StreamTransformer.fromHandlers(
     handleData: (event, sink) {
       _normalizeInto(event, sink.add);
     },
   );
 
-  GamepadNormalizer({required GamepadPlatform platform})
-    : _mapping = _createMapping(platform);
+  /// Creates a normalizer that auto-detects the current platform.
+  GamepadNormalizer() : _mapping = _createMapping(_detectPlatform());
+
+  /// Creates a normalizer for a specific platform.
+  GamepadNormalizer.forPlatform(GamepadPlatform platform)
+      : _mapping = _createMapping(platform);
 
   /// Creates a normalizer with a custom mapping (useful for testing).
   GamepadNormalizer.withMapping(this._mapping);
+
+  static GamepadPlatform _detectPlatform() {
+    if (kIsWeb) {
+      return GamepadPlatform.web;
+    }
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return GamepadPlatform.android;
+      case TargetPlatform.iOS:
+        return GamepadPlatform.ios;
+      case TargetPlatform.macOS:
+        return GamepadPlatform.macos;
+      case TargetPlatform.linux:
+        return GamepadPlatform.linux;
+      case TargetPlatform.windows:
+        return GamepadPlatform.windows;
+      case TargetPlatform.fuchsia:
+        return GamepadPlatform.linux;
+    }
+  }
 
   static PlatformMapping _createMapping(GamepadPlatform platform) {
     switch (platform) {

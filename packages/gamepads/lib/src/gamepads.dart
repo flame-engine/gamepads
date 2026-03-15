@@ -16,9 +16,7 @@ class Gamepads {
   /// Must be set before accessing [normalizedEvents]. Typically set once
   /// at app startup:
   /// ```dart
-  /// Gamepads.normalizer = GamepadNormalizer(
-  ///   platform: GamepadPlatform.linux,
-  /// );
+  /// Gamepads.normalizer = GamepadNormalizer();
   /// ```
   static GamepadNormalizer? normalizer;
 

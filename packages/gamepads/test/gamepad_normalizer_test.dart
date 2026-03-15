@@ -8,7 +8,7 @@ import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 void main() {
   group('GamepadNormalizer', () {
     group('iOS platform', () {
-      final normalizer = GamepadNormalizer(platform: GamepadPlatform.ios);
+      final normalizer = GamepadNormalizer.forPlatform( GamepadPlatform.ios);
 
       test('normalizes button event', () {
         final event = GamepadEvent(
@@ -76,7 +76,9 @@ void main() {
     });
 
     group('Android platform', () {
-      final normalizer = GamepadNormalizer(platform: GamepadPlatform.android);
+      final normalizer = GamepadNormalizer.forPlatform(
+        GamepadPlatform.android,
+      );
 
       test('normalizes Android button', () {
         final event = GamepadEvent(
@@ -108,7 +110,7 @@ void main() {
     });
 
     group('Web platform', () {
-      final normalizer = GamepadNormalizer(platform: GamepadPlatform.web);
+      final normalizer = GamepadNormalizer.forPlatform( GamepadPlatform.web);
 
       test('normalizes Web button', () {
         final event = GamepadEvent(
@@ -140,7 +142,7 @@ void main() {
 
     group('stream transformer', () {
       test('transforms stream of events', () async {
-        final normalizer = GamepadNormalizer(platform: GamepadPlatform.ios);
+        final normalizer = GamepadNormalizer.forPlatform( GamepadPlatform.ios);
 
         final events = [
           GamepadEvent(
@@ -180,7 +182,9 @@ void main() {
 
     group('device-specific mappings', () {
       test('setDeviceInfo selects controller-specific mapping', () {
-        final normalizer = GamepadNormalizer(platform: GamepadPlatform.linux);
+        final normalizer = GamepadNormalizer.forPlatform(
+          GamepadPlatform.linux,
+        );
         normalizer.setDeviceInfo(
           'pad1',
           vendorId: 0x045e,
