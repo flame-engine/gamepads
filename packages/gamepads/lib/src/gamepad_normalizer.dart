@@ -153,6 +153,24 @@ class GamepadNormalizer {
               button: result.button,
             ),
           );
+          return;
+        }
+        // Some platforms (macOS) report d-pad as button type with
+        // axis-style keys. Check d-pad for unmatched button events.
+        final buttonDpadResults = mapping.normalizeDpadAxis(
+          event.key,
+          event.value,
+        );
+        for (final dpad in buttonDpadResults) {
+          emit(
+            NormalizedGamepadEvent(
+              gamepadId: event.gamepadId,
+              timestamp: event.timestamp,
+              value: dpad.value,
+              rawEvent: event,
+              button: dpad.button,
+            ),
+          );
         }
 
       case KeyType.analog:

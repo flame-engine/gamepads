@@ -39,6 +39,10 @@ class MacosMapping extends PlatformMapping {
     'r.joystick.press': GamepadButton.rightStick,
   };
 
+  // Trigger patterns for analog trigger axes.
+  static const _leftTriggerPattern = 'l2.rectangle';
+  static const _rightTriggerPattern = 'r2.rectangle';
+
   static const _leftStickPattern = 'l.joystick';
   static const _rightStickPattern = 'r.joystick';
   static const _dpadPattern = 'dpad';
@@ -101,6 +105,13 @@ class MacosMapping extends PlatformMapping {
       if (key.endsWith('yAxis')) {
         return GamepadAxis.rightStickY;
       }
+    }
+    // Triggers are reported as analog with their SF Symbol name.
+    if (key.contains(_leftTriggerPattern)) {
+      return GamepadAxis.leftTrigger;
+    }
+    if (key.contains(_rightTriggerPattern)) {
+      return GamepadAxis.rightTrigger;
     }
     return null;
   }
