@@ -20,12 +20,13 @@ void main() {
   );
 
   if (!inputFile.existsSync()) {
+    const url = 'https://raw.githubusercontent.com/'
+        'gabomdq/SDL_GameControllerDB/master/'
+        'gamecontrollerdb.txt';
     stderr.writeln(
       'Error: gamecontrollerdb.txt not found. '
       'Download it first:\n'
-      '  curl -sL https://raw.githubusercontent.com/'
-      'gabomdq/SDL_GameControllerDB/master/'
-      'gamecontrollerdb.txt -o ${inputFile.path}',
+      '  curl -sL $url -o ${inputFile.path}',
     );
     exit(1);
   }
@@ -45,7 +46,7 @@ void main() {
   }
 
   final escapedLines = filteredLines
-      .map((line) => line.replaceAll(r"'", r"\'"))
+      .map((line) => line.replaceAll("'", r"\'"))
       .join('\n');
 
   final output = StringBuffer()
@@ -63,8 +64,8 @@ void main() {
     )
     ..writeln()
     ..writeln(
-      "/// Embedded SDL GameController DB entries for Linux and "
-      "Windows.",
+      '/// Embedded SDL GameController DB entries for Linux and '
+      'Windows.',
     )
     ..writeln("const gamecontrollerDbData = '''")
     ..writeln(escapedLines)

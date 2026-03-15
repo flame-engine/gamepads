@@ -136,12 +136,14 @@ Stick conventions: Left/Down = -1, Right/Up = +1.
 normalization works out of the box.
 
 **Tier 2 (VID/PID required):** Linux and Windows use raw numeric indices that vary by controller
-hardware. For these platforms, the normalizer can use vendor/product IDs to select the correct
-mapping from a built-in controller database (Xbox 360/One/Series, PS4/PS5, Nintendo Switch Pro).
+hardware. For these platforms, the normalizer uses a bundled copy of the community-maintained
+[SDL GameController DB](https://github.com/gabomdq/SDL_GameControllerDB) to select the correct
+mapping by vendor/product ID. This database includes mappings for over 1500 controllers.
 
 For unknown controllers, the default behavior is best-effort mapping using an Xbox-like layout.
 You can switch to strict mode (returns `null` for unrecognized inputs) by configuring the
-normalizer accordingly.
+normalizer accordingly. You can also load additional mappings at runtime via
+`ControllerDb.loadSdlMappings()`.
 
 ### Normalized State
 

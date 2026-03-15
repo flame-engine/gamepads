@@ -6,9 +6,12 @@ import 'package:gamepads_platform_interface/src/mappings/sdl_mapping_parser.dart
 
 const _xboxGuid = '030000005e0400008e02000010010000';
 const _sonyGuid = '030000004c050000cc09000011010000';
+const _windowsGuid = '030000005e0400008e02000000000000';
 
-String _xboxLine(String mappings) => '$_xboxGuid,Test,$mappings';
-String _sonyLine(String mappings) => '$_sonyGuid,Test,$mappings';
+/// Builds an SDL mapping line from a GUID and individual mapping fields.
+String _sdlLine(String guid, List<String> fields) {
+  return '$guid,${fields.join(',')}';
+}
 
 void main() {
   group('SdlMappingParser', () {
@@ -55,19 +58,31 @@ void main() {
 
     group('line parsing', () {
       test('parses Xbox 360 Linux mapping', () {
-        final line = _xboxLine(
-          'Xbox 360 Controller,'
-          'a:b0,b:b1,x:b2,y:b3,'
-          'back:b6,start:b7,guide:b8,'
-          'leftshoulder:b4,rightshoulder:b5,'
-          'leftstick:b9,rightstick:b10,'
-          'leftx:a0,lefty:a1,'
-          'rightx:a3,righty:a4,'
-          'lefttrigger:a2,righttrigger:a5,'
-          'dpup:h0.1,dpdown:h0.4,'
-          'dpleft:h0.8,dpright:h0.2,'
-          'platform:Linux,',
-        );
+        final line = _sdlLine(_xboxGuid, [
+          'Xbox 360 Controller',
+          'a:b0',
+          'b:b1',
+          'x:b2',
+          'y:b3',
+          'back:b6',
+          'start:b7',
+          'guide:b8',
+          'leftshoulder:b4',
+          'rightshoulder:b5',
+          'leftstick:b9',
+          'rightstick:b10',
+          'leftx:a0',
+          'lefty:a1',
+          'rightx:a3',
+          'righty:a4',
+          'lefttrigger:a2',
+          'righttrigger:a5',
+          'dpup:h0.1',
+          'dpdown:h0.4',
+          'dpleft:h0.8',
+          'dpright:h0.2',
+          'platform:Linux',
+        ]);
 
         final result = SdlMappingParser.parseLine(line);
         expect(result, isNotNull);
@@ -102,19 +117,31 @@ void main() {
       });
 
       test('parses DualShock 4 Linux mapping', () {
-        final line = _sonyLine(
-          'Sony DualShock 4 V2,'
-          'a:b1,b:b2,x:b0,y:b3,'
-          'back:b8,start:b9,guide:b12,'
-          'leftshoulder:b4,rightshoulder:b5,'
-          'leftstick:b10,rightstick:b11,'
-          'leftx:a0,lefty:a1,'
-          'rightx:a2,righty:a5,'
-          'lefttrigger:a3,righttrigger:a4,'
-          'dpup:h0.1,dpdown:h0.4,'
-          'dpleft:h0.8,dpright:h0.2,'
-          'platform:Linux,',
-        );
+        final line = _sdlLine(_sonyGuid, [
+          'Sony DualShock 4 V2',
+          'a:b1',
+          'b:b2',
+          'x:b0',
+          'y:b3',
+          'back:b8',
+          'start:b9',
+          'guide:b12',
+          'leftshoulder:b4',
+          'rightshoulder:b5',
+          'leftstick:b10',
+          'rightstick:b11',
+          'leftx:a0',
+          'lefty:a1',
+          'rightx:a2',
+          'righty:a5',
+          'lefttrigger:a3',
+          'righttrigger:a4',
+          'dpup:h0.1',
+          'dpdown:h0.4',
+          'dpleft:h0.8',
+          'dpright:h0.2',
+          'platform:Linux',
+        ]);
 
         final result = SdlMappingParser.parseLine(line);
         expect(result, isNotNull);
@@ -145,9 +172,11 @@ void main() {
       });
 
       test('handles axis modifiers (inverted ~)', () {
-        final line = _xboxLine(
-          'Test Controller,leftx:a0~,platform:Linux,',
-        );
+        final line = _sdlLine(_xboxGuid, [
+          'Test Controller',
+          'leftx:a0~',
+          'platform:Linux',
+        ]);
 
         final result = SdlMappingParser.parseLine(line);
         expect(result, isNotNull);
@@ -155,11 +184,12 @@ void main() {
       });
 
       test('handles half-axis modifiers (+a, -a)', () {
-        final line = _xboxLine(
-          'Test Controller,'
-          'lefttrigger:+a2,righttrigger:-a2,'
-          'platform:Linux,',
-        );
+        final line = _sdlLine(_xboxGuid, [
+          'Test Controller',
+          'lefttrigger:+a2',
+          'righttrigger:-a2',
+          'platform:Linux',
+        ]);
 
         final result = SdlMappingParser.parseLine(line);
         expect(result, isNotNull);
@@ -172,14 +202,34 @@ void main() {
 
     group('multi-line parsing', () {
       test('parses multiple lines with platform filter', () {
-        final content = '# Test DB\n'
-            '$_xboxGuid,Xbox 360,a:b0,b:b1,'
-            'leftx:a0,lefty:a1,platform:Linux,\n'
-            '030000005e0400008e02000000000000,Xbox 360,'
-            'a:b0,b:b1,leftx:a0,lefty:a1,'
-            'platform:Windows,\n'
-            '$_sonyGuid,DS4,a:b1,b:b2,'
-            'leftx:a0,lefty:a1,platform:Linux,\n';
+        final lines = [
+          '# Test DB',
+          _sdlLine(_xboxGuid, [
+            'Xbox 360',
+            'a:b0',
+            'b:b1',
+            'leftx:a0',
+            'lefty:a1',
+            'platform:Linux',
+          ]),
+          _sdlLine(_windowsGuid, [
+            'Xbox 360',
+            'a:b0',
+            'b:b1',
+            'leftx:a0',
+            'lefty:a1',
+            'platform:Windows',
+          ]),
+          _sdlLine(_sonyGuid, [
+            'DS4',
+            'a:b1',
+            'b:b2',
+            'leftx:a0',
+            'lefty:a1',
+            'platform:Linux',
+          ]),
+        ];
+        final content = lines.join('\n');
 
         final linuxMappings = SdlMappingParser.parseLines(
           content,
@@ -195,11 +245,25 @@ void main() {
       });
 
       test('parseToDb creates VID/PID keyed map', () {
-        final content =
-            '$_xboxGuid,Xbox 360,a:b0,b:b1,'
-            'leftx:a0,lefty:a1,platform:Linux,\n'
-            '$_sonyGuid,DS4,a:b1,b:b2,'
-            'leftx:a0,lefty:a1,platform:Linux,\n';
+        final lines = [
+          _sdlLine(_xboxGuid, [
+            'Xbox 360',
+            'a:b0',
+            'b:b1',
+            'leftx:a0',
+            'lefty:a1',
+            'platform:Linux',
+          ]),
+          _sdlLine(_sonyGuid, [
+            'DS4',
+            'a:b1',
+            'b:b2',
+            'leftx:a0',
+            'lefty:a1',
+            'platform:Linux',
+          ]),
+        ];
+        final content = lines.join('\n');
 
         final database = SdlMappingParser.parseToDb(
           content,
@@ -215,30 +279,43 @@ void main() {
       tearDown(ControllerDb.resetMappings);
 
       test('loadSdlMappings adds to database', () {
-        final validContent = _xboxLine(
-          'Custom Controller,'
-          'a:b0,b:b1,x:b2,y:b3,'
-          'leftx:a0,lefty:a1,'
-          'platform:Linux,',
-        );
+        final content = _sdlLine(_xboxGuid, [
+          'Custom Controller',
+          'a:b0',
+          'b:b1',
+          'x:b2',
+          'y:b3',
+          'leftx:a0',
+          'lefty:a1',
+          'platform:Linux',
+        ]);
 
         final count = ControllerDb.loadSdlMappings(
-          validContent,
+          content,
           platform: 'Linux',
         );
         expect(count, greaterThanOrEqualTo(0));
       });
 
-      test('SDL-loaded mappings override built-in', () {
-        final overrideContent = _xboxLine(
-          'Xbox 360 Override,'
-          'a:b1,b:b0,x:b2,y:b3,'
-          'leftx:a0,lefty:a1,rightx:a3,righty:a4,'
-          'lefttrigger:a2,righttrigger:a5,'
-          'dpup:h0.1,dpdown:h0.4,'
-          'dpleft:h0.8,dpright:h0.2,'
-          'platform:Linux,',
-        );
+      test('SDL-loaded mappings override bundled', () {
+        final overrideContent = _sdlLine(_xboxGuid, [
+          'Xbox 360 Override',
+          'a:b1',
+          'b:b0',
+          'x:b2',
+          'y:b3',
+          'leftx:a0',
+          'lefty:a1',
+          'rightx:a3',
+          'righty:a4',
+          'lefttrigger:a2',
+          'righttrigger:a5',
+          'dpup:h0.1',
+          'dpdown:h0.4',
+          'dpleft:h0.8',
+          'dpright:h0.2',
+          'platform:Linux',
+        ]);
 
         ControllerDb.loadSdlMappings(
           overrideContent,
@@ -255,12 +332,14 @@ void main() {
       });
 
       test('resetMappings restores bundled DB', () {
-        final overrideContent = _xboxLine(
-          'Xbox 360 Override,'
-          'a:b1,b:b0,'
-          'leftx:a0,lefty:a1,'
-          'platform:Linux,',
-        );
+        final overrideContent = _sdlLine(_xboxGuid, [
+          'Xbox 360 Override',
+          'a:b1',
+          'b:b0',
+          'leftx:a0',
+          'lefty:a1',
+          'platform:Linux',
+        ]);
 
         ControllerDb.loadSdlMappings(
           overrideContent,
