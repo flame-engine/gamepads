@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gamepads/src/api/gamepad_axis.dart';
 import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/gamepad_normalizer.dart';
 import 'package:gamepads/src/mappings/controller_database.dart';
 import 'package:gamepads/src/mappings/sdl_mapping_parser.dart';
 
@@ -88,7 +89,7 @@ void main() {
         expect(result, isNotNull);
         expect(result!.vendorId, 0x045e);
         expect(result.productId, 0x028e);
-        expect(result.platform, 'Linux');
+        expect(result.platform, GamepadPlatform.linux);
 
         final mapping = result.mapping;
 
@@ -233,18 +234,18 @@ void main() {
 
         final linuxMappings = SdlMappingParser.parseLines(
           content,
-          platform: 'Linux',
+          platform: GamepadPlatform.linux,
         );
         expect(linuxMappings.length, 2);
 
         final windowsMappings = SdlMappingParser.parseLines(
           content,
-          platform: 'Windows',
+          platform: GamepadPlatform.windows,
         );
         expect(windowsMappings.length, 1);
       });
 
-      test('parseToDatabase creates VID/PID keyed map', () {
+      test('parseToPlatformDatabase creates keyed map', () {
         final lines = [
           _sdlLine(_xboxGuid, [
             'Xbox 360',
@@ -265,13 +266,16 @@ void main() {
         ];
         final content = lines.join('\n');
 
-        final database = SdlMappingParser.parseToDatabase(
+        final database =
+            SdlMappingParser.parseToPlatformDatabase(
           content,
-          platform: 'Linux',
+          platform: GamepadPlatform.linux,
         );
         expect(database.length, 2);
-        expect(database[(0x045e, 0x028e)], isNotNull);
-        expect(database[(0x054c, 0x09cc)], isNotNull);
+        const xboxKey = (0x045e, 0x028e, GamepadPlatform.linux);
+        const sonyKey = (0x054c, 0x09cc, GamepadPlatform.linux);
+        expect(database[xboxKey], isNotNull);
+        expect(database[sonyKey], isNotNull);
       });
     });
 
@@ -292,7 +296,7 @@ void main() {
 
         final count = ControllerDatabase.loadSdlMappings(
           content,
-          platform: 'Linux',
+          platform: GamepadPlatform.linux,
         );
         expect(count, greaterThanOrEqualTo(0));
       });
@@ -319,12 +323,13 @@ void main() {
 
         ControllerDatabase.loadSdlMappings(
           overrideContent,
-          platform: 'Linux',
+          platform: GamepadPlatform.linux,
         );
 
         final mapping = ControllerDatabase.lookup(
           vendorId: 0x045e,
           productId: 0x028e,
+          platform: GamepadPlatform.linux,
         );
         expect(mapping, isNotNull);
         expect(mapping!.buttons['1'], GamepadButton.a);
@@ -343,7 +348,7 @@ void main() {
 
         ControllerDatabase.loadSdlMappings(
           overrideContent,
-          platform: 'Linux',
+          platform: GamepadPlatform.linux,
         );
         ControllerDatabase.resetMappings();
 
@@ -351,6 +356,7 @@ void main() {
         final mapping = ControllerDatabase.lookup(
           vendorId: 0x045e,
           productId: 0x028e,
+          platform: GamepadPlatform.linux,
         );
         expect(mapping, isNotNull);
         expect(mapping!.buttons['0'], GamepadButton.a);

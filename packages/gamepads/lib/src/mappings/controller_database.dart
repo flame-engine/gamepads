@@ -1,5 +1,6 @@
 import 'package:gamepads/src/api/gamepad_axis.dart';
 import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/gamepad_normalizer.dart';
 import 'package:gamepads/src/mappings/data/gamecontrollerdb_data.dart';
 import 'package:gamepads/src/mappings/sdl_mapping_parser.dart';
 
@@ -35,7 +36,8 @@ class ControllerMapping {
   });
 }
 
-/// Database of controller mappings, keyed by (vendorId, productId).
+/// Database of controller mappings, keyed by
+/// (vendorId, productId, platform).
 ///
 /// On first access, the bundled SDL GameController DB is automatically
 /// parsed and loaded. Additional mappings can be added at runtime via
@@ -48,38 +50,49 @@ class ControllerMapping {
 class ControllerDatabase {
   ControllerDatabase._();
 
-  static Map<(int, int), ControllerMapping>? _mappings;
+  static Map<(int, int, GamepadPlatform), ControllerMapping>?
+      _mappings;
 
-  static Map<(int, int), ControllerMapping> get _database {
+  static Map<(int, int, GamepadPlatform), ControllerMapping>
+      get _database {
     if (_mappings == null) {
       _mappings = {};
       _mappings!.addAll(
-        SdlMappingParser.parseToDatabase(gamecontrollerDbData),
+        SdlMappingParser.parseToPlatformDatabase(
+          gamecontrollerDbData,
+        ),
       );
     }
     return _mappings!;
   }
 
-  /// Looks up a controller mapping by vendor and product ID.
+  /// Looks up a controller mapping by vendor ID, product ID, and
+  /// platform.
   ///
-  /// On first call, the bundled SDL GameController DB is automatically
-  /// parsed. Returns `null` if the controller is not in the database.
+  /// On first call, the bundled SDL GameController DB is
+  /// automatically parsed. Returns `null` if the controller is not
+  /// in the database for the given platform.
   static ControllerMapping? lookup({
     required int vendorId,
     required int productId,
+    required GamepadPlatform platform,
   }) {
-    return _database[(vendorId, productId)];
+    return _database[(vendorId, productId, platform)];
   }
 
-  /// Loads additional controller mappings from an SDL GameController DB
-  /// format string.
+  /// Loads additional controller mappings from an SDL GameController
+  /// DB format string.
   ///
+  /// Only entries matching [platform] are loaded.
   /// Loaded mappings are merged with (and can override) the bundled
   /// database.
   ///
   /// Returns the number of mappings loaded.
-  static int loadSdlMappings(String content, {String? platform}) {
-    final parsed = SdlMappingParser.parseToDatabase(
+  static int loadSdlMappings(
+    String content, {
+    required GamepadPlatform platform,
+  }) {
+    final parsed = SdlMappingParser.parseToPlatformDatabase(
       content,
       platform: platform,
     );
@@ -87,8 +100,8 @@ class ControllerDatabase {
     return parsed.length;
   }
 
-  /// Resets the database to its initial state. The bundled SDL database
-  /// will be re-parsed on the next lookup.
+  /// Resets the database to its initial state. The bundled SDL
+  /// database will be re-parsed on the next lookup.
   static void resetMappings() {
     _mappings = null;
   }

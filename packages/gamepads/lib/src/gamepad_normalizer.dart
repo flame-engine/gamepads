@@ -13,12 +13,29 @@ import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 
 /// The platform this normalizer should use for mapping.
 enum GamepadPlatform {
-  android,
-  ios,
-  macos,
-  linux,
-  windows,
-  web,
+  android('Android'),
+  ios('iOS'),
+  macos('Mac OS X'),
+  linux('Linux'),
+  windows('Windows'),
+  web('Web');
+
+  const GamepadPlatform(this.sdlName);
+
+  /// The platform name as used in SDL GameController DB entries.
+  final String sdlName;
+
+  /// Looks up a [GamepadPlatform] by its SDL platform name string.
+  ///
+  /// Returns `null` if the name is not recognized.
+  static GamepadPlatform? fromSdlName(String name) {
+    for (final platform in values) {
+      if (platform.sdlName == name) {
+        return platform;
+      }
+    }
+    return null;
+  }
 }
 
 /// Transforms raw [GamepadEvent]s into [NormalizedGamepadEvent]s using

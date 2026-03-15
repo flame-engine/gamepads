@@ -1,5 +1,6 @@
 import 'package:gamepads/src/api/gamepad_axis.dart';
 import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/gamepad_normalizer.dart';
 import 'package:gamepads/src/mappings/controller_database.dart';
 import 'package:gamepads/src/mappings/linux_mapping.dart';
 import 'package:gamepads/src/mappings/platform_mapping.dart';
@@ -43,6 +44,7 @@ class WindowsMapping extends PlatformMapping {
       final databaseMapping = ControllerDatabase.lookup(
         vendorId: vendorId,
         productId: productId,
+        platform: GamepadPlatform.windows,
       );
       if (databaseMapping != null) {
         mapping._controllerMapping = _WindowsControllerMapping.fromDatabase(

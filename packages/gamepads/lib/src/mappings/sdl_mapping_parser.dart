@@ -1,5 +1,6 @@
 import 'package:gamepads/src/api/gamepad_axis.dart';
 import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/gamepad_normalizer.dart';
 import 'package:gamepads/src/mappings/controller_database.dart';
 
 /// Parses SDL GameController DB format mapping strings into
@@ -119,7 +120,7 @@ class SdlMappingParser {
       return null;
     }
 
-    String? platform;
+    GamepadPlatform? platform;
     final buttons = <String, GamepadButton>{};
     final axes = <String, GamepadAxis>{};
     final dpadAxes = <String, bool>{};
@@ -141,7 +142,7 @@ class SdlMappingParser {
       final binding = part.substring(colonIndex + 1);
 
       if (sdlName == 'platform') {
-        platform = binding;
+        platform = GamepadPlatform.fromSdlName(binding);
         continue;
       }
 
@@ -298,10 +299,10 @@ class SdlMappingParser {
 
   /// Parses multiple SDL mapping lines and returns all valid mappings.
   ///
-  /// Optionally filters by [platform] (e.g., "Linux", "Windows").
+  /// Only entries matching [platform] are included.
   static List<SdlParsedMapping> parseLines(
     String content, {
-    String? platform,
+    required GamepadPlatform platform,
   }) {
     final results = <SdlParsedMapping>[];
     for (final line in content.split('\n')) {
@@ -309,7 +310,7 @@ class SdlMappingParser {
       if (parsed == null) {
         continue;
       }
-      if (platform != null && parsed.platform != platform) {
+      if (parsed.platform != platform) {
         continue;
       }
       results.add(parsed);
@@ -317,24 +318,32 @@ class SdlMappingParser {
     return results;
   }
 
-  /// Parses SDL mapping lines directly into a VID/PID-keyed map,
-  /// avoiding intermediate list allocation.
+  /// Parses SDL mapping lines into a (VID, PID, platform)-keyed map,
+  /// preserving per-platform mappings so Linux and Windows entries for
+  /// the same controller don't overwrite each other.
   ///
-  /// If multiple entries exist for the same VID/PID, the last one wins.
-  static Map<(int, int), ControllerMapping> parseToDatabase(
+  /// If [platform] is specified, only entries for that platform are
+  /// included. If omitted, all platforms are loaded.
+  static Map<(int, int, GamepadPlatform), ControllerMapping>
+      parseToPlatformDatabase(
     String content, {
-    String? platform,
+    GamepadPlatform? platform,
   }) {
-    final database = <(int, int), ControllerMapping>{};
+    final database =
+        <(int, int, GamepadPlatform), ControllerMapping>{};
     for (final line in content.split('\n')) {
       final parsed = parseLine(line);
-      if (parsed == null) {
+      if (parsed == null || parsed.platform == null) {
         continue;
       }
       if (platform != null && parsed.platform != platform) {
         continue;
       }
-      database[(parsed.vendorId, parsed.productId)] = parsed.mapping;
+      database[(
+        parsed.vendorId,
+        parsed.productId,
+        parsed.platform!,
+      )] = parsed.mapping;
     }
     return database;
   }
@@ -346,7 +355,7 @@ class SdlParsedMapping {
   final String name;
   final int vendorId;
   final int productId;
-  final String? platform;
+  final GamepadPlatform? platform;
   final ControllerMapping mapping;
 
   const SdlParsedMapping({

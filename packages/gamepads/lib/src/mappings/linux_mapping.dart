@@ -1,5 +1,6 @@
 import 'package:gamepads/src/api/gamepad_axis.dart';
 import 'package:gamepads/src/api/gamepad_button.dart';
+import 'package:gamepads/src/gamepad_normalizer.dart';
 import 'package:gamepads/src/mappings/controller_database.dart';
 import 'package:gamepads/src/mappings/platform_mapping.dart';
 
@@ -35,6 +36,7 @@ class LinuxMapping extends PlatformMapping {
       mapping._controllerMapping = ControllerDatabase.lookup(
         vendorId: vendorId,
         productId: productId,
+        platform: GamepadPlatform.linux,
       );
     }
     if (mapping._controllerMapping == null &&
