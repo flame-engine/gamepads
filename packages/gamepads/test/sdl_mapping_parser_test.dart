@@ -289,8 +289,7 @@ void main() {
         ];
         final content = lines.join('\n');
 
-        final database =
-            SdlMappingParser.parseToPlatformDatabase(
+        final database = SdlMappingParser.parseToPlatformDatabase(
           content,
           platform: GamepadPlatform.linux,
         );

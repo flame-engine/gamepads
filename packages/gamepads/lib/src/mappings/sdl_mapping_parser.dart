@@ -339,12 +339,11 @@ class SdlMappingParser {
   /// If [platform] is specified, only entries for that platform are
   /// included. If omitted, all platforms are loaded.
   static Map<(int, int, GamepadPlatform), ControllerMapping>
-      parseToPlatformDatabase(
+  parseToPlatformDatabase(
     String content, {
     GamepadPlatform? platform,
   }) {
-    final database =
-        <(int, int, GamepadPlatform), ControllerMapping>{};
+    final database = <(int, int, GamepadPlatform), ControllerMapping>{};
     for (final line in content.split('\n')) {
       final parsed = parseLine(line);
       if (parsed == null || parsed.platform == null) {
@@ -354,10 +353,11 @@ class SdlMappingParser {
         continue;
       }
       database[(
-        parsed.vendorId,
-        parsed.productId,
-        parsed.platform!,
-      )] = parsed.mapping;
+            parsed.vendorId,
+            parsed.productId,
+            parsed.platform!,
+          )] =
+          parsed.mapping;
     }
     return database;
   }

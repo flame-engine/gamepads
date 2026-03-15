@@ -80,11 +80,9 @@ class ControllerMapping {
 class ControllerDatabase {
   ControllerDatabase._();
 
-  static Map<(int, int, GamepadPlatform), ControllerMapping>?
-      _mappings;
+  static Map<(int, int, GamepadPlatform), ControllerMapping>? _mappings;
 
-  static Map<(int, int, GamepadPlatform), ControllerMapping>
-      get _database {
+  static Map<(int, int, GamepadPlatform), ControllerMapping> get _database {
     if (_mappings == null) {
       _mappings = {};
       _mappings!.addAll(

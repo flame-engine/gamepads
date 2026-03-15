@@ -20,11 +20,11 @@ class LinuxMapping extends PlatformMapping {
   LinuxMapping({
     UnknownControllerBehavior unknownBehavior =
         UnknownControllerBehavior.bestEffort,
-  })  : _unknownBehavior = unknownBehavior,
-        _controllerMapping =
-            unknownBehavior == UnknownControllerBehavior.bestEffort
-                ? ControllerDatabase.defaultMapping
-                : null;
+  }) : _unknownBehavior = unknownBehavior,
+       _controllerMapping =
+           unknownBehavior == UnknownControllerBehavior.bestEffort
+           ? ControllerDatabase.defaultMapping
+           : null;
 
   @override
   bool get requiresDeviceId => true;
@@ -135,10 +135,10 @@ class LinuxMapping extends PlatformMapping {
     ControllerMapping controllerMapping,
   ) {
     final axis = axisMapping.axis;
-    final isTrigger = axis == GamepadAxis.leftTrigger ||
-        axis == GamepadAxis.rightTrigger;
-    final isYAxis = axis == GamepadAxis.leftStickY ||
-        axis == GamepadAxis.rightStickY;
+    final isTrigger =
+        axis == GamepadAxis.leftTrigger || axis == GamepadAxis.rightTrigger;
+    final isYAxis =
+        axis == GamepadAxis.leftStickY || axis == GamepadAxis.rightStickY;
 
     // Handle half-axis modifiers for split axes.
     switch (axisMapping.half) {
@@ -189,8 +189,7 @@ class LinuxMapping extends PlatformMapping {
     }
 
     var result = value;
-    if (axisMapping.inverted ||
-        (controllerMapping.yAxisInverted && isYAxis)) {
+    if (axisMapping.inverted || (controllerMapping.yAxisInverted && isYAxis)) {
       result = -result;
     }
     return result;
