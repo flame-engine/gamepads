@@ -167,8 +167,9 @@ void main() {
         ];
 
         final stream = Stream.fromIterable(events);
-        final normalized =
-            await stream.transform(normalizer.transformer).toList();
+        final normalized = await stream
+            .transform(normalizer.transformer)
+            .toList();
 
         // The unknown key event should be dropped
         expect(normalized.length, 2);

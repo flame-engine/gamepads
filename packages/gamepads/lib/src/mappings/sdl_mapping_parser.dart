@@ -279,9 +279,11 @@ class SdlMappingParser {
     }
 
     // Find the hat indices used for d-pad.
-    final hatIndices = hatDpadEntries.values.map(
-      (entry) => entry.hatIndex,
-    ).toSet();
+    final hatIndices = hatDpadEntries.values
+        .map(
+          (entry) => entry.hatIndex,
+        )
+        .toSet();
 
     for (final hatIndex in hatIndices) {
       // On Linux js API, hat N maps to axes:

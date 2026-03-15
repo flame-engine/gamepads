@@ -60,8 +60,7 @@ class AndroidMapping extends PlatformMapping {
     }
     // Android reports sticks in -1.0 to 1.0 and triggers in 0.0 to 1.0.
     // Y-axis is inverted on Android (up = negative).
-    if (axis == GamepadAxis.leftStickY ||
-        axis == GamepadAxis.rightStickY) {
+    if (axis == GamepadAxis.leftStickY || axis == GamepadAxis.rightStickY) {
       return NormalizedAxis(axis, -value);
     }
     return NormalizedAxis(axis, value);

@@ -41,14 +41,14 @@ class WindowsMapping extends PlatformMapping {
         productId: productId,
       );
       if (databaseMapping != null) {
-        mapping._controllerMapping =
-            _WindowsControllerMapping.fromDatabase(databaseMapping);
+        mapping._controllerMapping = _WindowsControllerMapping.fromDatabase(
+          databaseMapping,
+        );
       }
     }
     if (mapping._controllerMapping == null &&
         _unknownBehavior == UnknownControllerBehavior.bestEffort) {
-      mapping._controllerMapping =
-          _WindowsControllerMapping.defaultMapping;
+      mapping._controllerMapping = _WindowsControllerMapping.defaultMapping;
     }
     return mapping;
   }
@@ -141,8 +141,8 @@ class WindowsMapping extends PlatformMapping {
     double max,
     bool inverted,
   ) {
-    final isTrigger = axis == GamepadAxis.leftTrigger ||
-        axis == GamepadAxis.rightTrigger;
+    final isTrigger =
+        axis == GamepadAxis.leftTrigger || axis == GamepadAxis.rightTrigger;
 
     if (isTrigger) {
       // Normalize from [min, max] to [0.0, 1.0].

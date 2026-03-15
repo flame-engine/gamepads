@@ -39,14 +39,14 @@ class GamepadNormalizer {
   final Map<String, PlatformMapping> _deviceMappings = {};
 
   late final StreamTransformer<GamepadEvent, NormalizedGamepadEvent>
-      _transformer = StreamTransformer.fromHandlers(
+  _transformer = StreamTransformer.fromHandlers(
     handleData: (event, sink) {
       _normalizeInto(event, sink.add);
     },
   );
 
   GamepadNormalizer({required GamepadPlatform platform})
-      : _mapping = _createMapping(platform);
+    : _mapping = _createMapping(platform);
 
   /// Creates a normalizer with a custom mapping (useful for testing).
   GamepadNormalizer.withMapping(this._mapping);

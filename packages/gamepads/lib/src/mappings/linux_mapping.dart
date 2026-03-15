@@ -115,10 +115,10 @@ class LinuxMapping extends PlatformMapping {
     double value,
     ControllerMapping controllerMapping,
   ) {
-    final isTrigger = axis == GamepadAxis.leftTrigger ||
-        axis == GamepadAxis.rightTrigger;
-    final isYAxis = axis == GamepadAxis.leftStickY ||
-        axis == GamepadAxis.rightStickY;
+    final isTrigger =
+        axis == GamepadAxis.leftTrigger || axis == GamepadAxis.rightTrigger;
+    final isYAxis =
+        axis == GamepadAxis.leftStickY || axis == GamepadAxis.rightStickY;
 
     if (isTrigger) {
       final range = controllerMapping.triggerRange;

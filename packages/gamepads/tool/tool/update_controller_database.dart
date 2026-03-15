@@ -20,7 +20,8 @@ void main() {
   );
 
   if (!inputFile.existsSync()) {
-    const url = 'https://raw.githubusercontent.com/'
+    const url =
+        'https://raw.githubusercontent.com/'
         'gabomdq/SDL_GameControllerDB/master/'
         'gamecontrollerdb.txt';
     stderr.writeln(

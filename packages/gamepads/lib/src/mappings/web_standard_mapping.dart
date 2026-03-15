@@ -69,8 +69,7 @@ class WebStandardMapping extends PlatformMapping {
     }
     // Web reports sticks in -1.0 to 1.0.
     // Y-axis is inverted in the Web Gamepad API (up = negative).
-    if (axis == GamepadAxis.leftStickY ||
-        axis == GamepadAxis.rightStickY) {
+    if (axis == GamepadAxis.leftStickY || axis == GamepadAxis.rightStickY) {
       return NormalizedAxis(axis, -value);
     }
     return NormalizedAxis(axis, value);

@@ -14,12 +14,12 @@ void main() {
     });
 
     GamepadEvent createRawEvent() => GamepadEvent(
-          gamepadId: 'pad1',
-          timestamp: 1000,
-          type: KeyType.button,
-          key: 'test',
-          value: 0.0,
-        );
+      gamepadId: 'pad1',
+      timestamp: 1000,
+      type: KeyType.button,
+      key: 'test',
+      value: 0.0,
+    );
 
     test('tracks button presses', () {
       state.update(
