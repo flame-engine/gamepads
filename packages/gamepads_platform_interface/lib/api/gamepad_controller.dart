@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 import 'package:gamepads_platform_interface/api/gamepad_state.dart';
+import 'package:gamepads_platform_interface/api/normalized_gamepad_state.dart';
 import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
 
 /// Represents a single, currently connected joystick controller (or gamepad).
@@ -21,23 +22,45 @@ class GamepadController {
 
   final state = GamepadState();
 
+  /// The normalized state of this gamepad, updated automatically when a
+  /// [GamepadNormalizer] is provided.
+  final normalizedState = NormalizedGamepadState();
+
   StreamSubscription<GamepadEvent>? _subscription;
+  GamepadNormalizer? _normalizer;
 
   GamepadController({
     required this.id,
     required this.name,
     required GamepadsPlatformInterface plugin,
-  }) {
-    _subscription = plugin.eventsByGamepad(id).listen(state.update);
+    GamepadNormalizer? normalizer,
+  }) : _normalizer = normalizer {
+    _subscription = plugin.eventsByGamepad(id).listen(_handleEvent);
   }
 
   factory GamepadController.parse(
     Map<dynamic, dynamic> map,
-    GamepadsPlatformInterface plugin,
-  ) {
+    GamepadsPlatformInterface plugin, {
+    GamepadNormalizer? normalizer,
+  }) {
     final id = map['id'] as String;
     final name = map['name'] as String;
-    return GamepadController(id: id, name: name, plugin: plugin);
+    return GamepadController(
+      id: id,
+      name: name,
+      plugin: plugin,
+      normalizer: normalizer,
+    );
+  }
+
+  void _handleEvent(GamepadEvent event) {
+    state.update(event);
+    final normalizer = _normalizer;
+    if (normalizer != null) {
+      for (final normalized in normalizer.normalize(event)) {
+        normalizedState.update(normalized);
+      }
+    }
   }
 
   /// Stops listening for new inputs.
