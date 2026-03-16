@@ -75,6 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     final dir = await getTemporaryDirectory();
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
     final file = File('${dir.path}/gamepad_log.txt');
     await file.writeAsString(_eventLog.join('\n'));
     if (Platform.isLinux) {
