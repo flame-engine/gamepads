@@ -346,10 +346,38 @@ void main() {
       );
     });
 
-    test('normalizes DualSense touchpad as back button', () {
+    test('normalizes back/select buttons', () {
       expect(
         mapping.normalizeButton('capsule.portrait', 1.0)?.button,
         GamepadButton.back,
+      );
+      expect(
+        mapping.normalizeButton('minus.circle', 1.0)?.button,
+        GamepadButton.back,
+      );
+      expect(
+        mapping
+            .normalizeButton(
+              'rectangle.fill.on.rectangle.fill.circle',
+              1.0,
+            )
+            ?.button,
+        GamepadButton.back,
+      );
+      expect(
+        mapping.normalizeButton('square.and.arrow.up', 1.0)?.button,
+        GamepadButton.back,
+      );
+    });
+
+    test('normalizes start/menu buttons', () {
+      expect(
+        mapping.normalizeButton('line.3.horizontal.circle', 1.0)?.button,
+        GamepadButton.start,
+      );
+      expect(
+        mapping.normalizeButton('plus.circle', 1.0)?.button,
+        GamepadButton.start,
       );
     });
 
@@ -361,6 +389,36 @@ void main() {
       expect(
         mapping.normalizeButton('r1.rectangle.roundedbottom', 1.0)?.button,
         GamepadButton.rightBumper,
+      );
+      expect(
+        mapping.normalizeButton('l.rectangle.roundedbottom', 1.0)?.button,
+        GamepadButton.leftBumper,
+      );
+      expect(
+        mapping.normalizeButton('r.rectangle.roundedbottom', 1.0)?.button,
+        GamepadButton.rightBumper,
+      );
+    });
+
+    test('normalizes trigger buttons', () {
+      expect(
+        mapping.normalizeButton('zl.rectangle.roundedtop', 1.0)?.button,
+        GamepadButton.leftTrigger,
+      );
+      expect(
+        mapping.normalizeButton('zr.rectangle.roundedtop', 1.0)?.button,
+        GamepadButton.rightTrigger,
+      );
+    });
+
+    test('normalizes stick click variants', () {
+      expect(
+        mapping.normalizeButton('l.joystick.down', 1.0)?.button,
+        GamepadButton.leftStick,
+      );
+      expect(
+        mapping.normalizeButton('r.joystick.down', 1.0)?.button,
+        GamepadButton.rightStick,
       );
     });
 

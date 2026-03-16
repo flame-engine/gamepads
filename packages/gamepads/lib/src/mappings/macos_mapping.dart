@@ -13,15 +13,18 @@ import 'package:gamepads/src/mappings/platform_mapping.dart';
 /// - Xbox: "a.circle" / "b.circle" / "x.circle" / "y.circle" - face buttons
 /// - DualSense: "xmark.circle" / "circle.circle" / "square.circle" /
 ///   "triangle.circle" - face buttons
-/// - "l1.rectangle.roundedbottom" - left bumper
-/// - "r1.rectangle.roundedbottom" - right bumper
-/// - "l2.rectangle.roundedtop" - left trigger
-/// - "r2.rectangle.roundedtop" - right trigger
-/// - "line.3.horizontal.circle" - menu/start
-/// - "capsule.portrait" - back/select (DualSense touchpad)
+/// - PS/Xbox: "l1.rectangle" / "lb.rectangle" - left bumper
+/// - PS/Xbox: "r1.rectangle" / "rb.rectangle" - right bumper
+/// - Nintendo: "l.rectangle.roundedbottom" / "r.rectangle.roundedbottom"
+/// - PS/Xbox: "l2.rectangle" / "lt.rectangle" - left trigger
+/// - PS/Xbox: "r2.rectangle" / "rt.rectangle" - right trigger
+/// - Nintendo: "zl.rectangle.roundedtop" / "zr.rectangle.roundedtop"
+/// - "line.3.horizontal.circle" / "plus.circle" - menu/start
+/// - "capsule.portrait" / "minus.circle" - back/select
+/// - "rectangle.fill.on.rectangle.fill.circle" / "square.and.arrow.up" - share
 /// - "house.circle" - home
-/// - "l.joystick.press.down" - left stick click
-/// - "r.joystick.press.down" - right stick click
+/// - "l.joystick.press.down" / "l.joystick.down" - left stick click
+/// - "r.joystick.press.down" / "r.joystick.down" - right stick click
 class MacosMapping extends PlatformMapping {
   // SF Symbols names can vary by controller, so we use contains-based
   // matching on first encounter, then cache the result.
@@ -37,33 +40,47 @@ class MacosMapping extends PlatformMapping {
     'square.circle': GamepadButton.x,
     'triangle.circle': GamepadButton.y,
     // PlayStation-style: l1/r1, Xbox-style: lb/rb
+    // Nintendo-style: l.rectangle/r.rectangle
     'l1.rectangle': GamepadButton.leftBumper,
     'r1.rectangle': GamepadButton.rightBumper,
     'lb.rectangle': GamepadButton.leftBumper,
     'rb.rectangle': GamepadButton.rightBumper,
+    'l.rectangle.roundedbottom': GamepadButton.leftBumper,
+    'r.rectangle.roundedbottom': GamepadButton.rightBumper,
     // PlayStation-style: l2/r2, Xbox-style: lt/rt
+    // Nintendo-style: zl/zr
     'l2.rectangle': GamepadButton.leftTrigger,
     'r2.rectangle': GamepadButton.rightTrigger,
     'lt.rectangle': GamepadButton.leftTrigger,
     'rt.rectangle': GamepadButton.rightTrigger,
-    // Menu button varies: "line.3.horizontal" or
-    // "line.horizontal.3"
+    'zl.rectangle': GamepadButton.leftTrigger,
+    'zr.rectangle': GamepadButton.rightTrigger,
+    // Menu/start: "line.3.horizontal", "line.horizontal.3", "plus.circle"
     'line.3.horizontal': GamepadButton.start,
     'line.horizontal.3': GamepadButton.start,
-    // Back/select/share — DualSense touchpad: "capsule.portrait"
+    'plus.circle': GamepadButton.start,
+    // Back/select/share
     'capsule.portrait': GamepadButton.back,
+    'minus.circle': GamepadButton.back,
+    'rectangle.fill.on.rectangle.fill': GamepadButton.back,
+    'square.and.arrow.up': GamepadButton.back,
     'house': GamepadButton.home,
+    // Stick clicks: "l.joystick.press" or "l.joystick.down"
     'l.joystick.press': GamepadButton.leftStick,
     'r.joystick.press': GamepadButton.rightStick,
+    'l.joystick.down': GamepadButton.leftStick,
+    'r.joystick.down': GamepadButton.rightStick,
   };
 
   // Trigger patterns for analog trigger axes.
-  // PlayStation-style: l2/r2, Xbox-style: lt/rt
+  // PlayStation-style: l2/r2, Xbox-style: lt/rt, Nintendo-style: zl/zr
   static const _triggerPatterns = <String, GamepadAxis>{
     'l2.rectangle': GamepadAxis.leftTrigger,
     'r2.rectangle': GamepadAxis.rightTrigger,
     'lt.rectangle': GamepadAxis.leftTrigger,
     'rt.rectangle': GamepadAxis.rightTrigger,
+    'zl.rectangle': GamepadAxis.leftTrigger,
+    'zr.rectangle': GamepadAxis.rightTrigger,
   };
 
   static const _leftStickPattern = 'l.joystick';
