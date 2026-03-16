@@ -10,13 +10,15 @@ import 'package:gamepads/src/mappings/platform_mapping.dart';
 /// "`<element.sfSymbolsName>` - xAxis/yAxis".
 ///
 /// Common SF Symbol button names observed:
-/// - "a.circle" / "b.circle" / "x.circle" / "y.circle" - face buttons
+/// - Xbox: "a.circle" / "b.circle" / "x.circle" / "y.circle" - face buttons
+/// - DualSense: "xmark.circle" / "circle.circle" / "square.circle" /
+///   "triangle.circle" - face buttons
 /// - "l1.rectangle.roundedbottom" - left bumper
 /// - "r1.rectangle.roundedbottom" - right bumper
 /// - "l2.rectangle.roundedtop" - left trigger
 /// - "r2.rectangle.roundedtop" - right trigger
 /// - "line.3.horizontal.circle" - menu/start
-/// - "circle.circle" - options/back
+/// - "capsule.portrait" - back/select (DualSense touchpad)
 /// - "house.circle" - home
 /// - "l.joystick.press.down" - left stick click
 /// - "r.joystick.press.down" - right stick click
@@ -24,10 +26,16 @@ class MacosMapping extends PlatformMapping {
   // SF Symbols names can vary by controller, so we use contains-based
   // matching on first encounter, then cache the result.
   static const _buttonPatterns = <String, GamepadButton>{
+    // Xbox-style face buttons
     'a.circle': GamepadButton.a,
     'b.circle': GamepadButton.b,
     'x.circle': GamepadButton.x,
     'y.circle': GamepadButton.y,
+    // PlayStation-style face buttons (DualSense SF Symbols)
+    'xmark.circle': GamepadButton.a,
+    'circle.circle': GamepadButton.b,
+    'square.circle': GamepadButton.x,
+    'triangle.circle': GamepadButton.y,
     // PlayStation-style: l1/r1, Xbox-style: lb/rb
     'l1.rectangle': GamepadButton.leftBumper,
     'r1.rectangle': GamepadButton.rightBumper,
@@ -42,7 +50,8 @@ class MacosMapping extends PlatformMapping {
     // "line.horizontal.3"
     'line.3.horizontal': GamepadButton.start,
     'line.horizontal.3': GamepadButton.start,
-    'circle.circle': GamepadButton.back,
+    // Back/select/share — DualSense touchpad: "capsule.portrait"
+    'capsule.portrait': GamepadButton.back,
     'house': GamepadButton.home,
     'l.joystick.press': GamepadButton.leftStick,
     'r.joystick.press': GamepadButton.rightStick,

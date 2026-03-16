@@ -308,7 +308,7 @@ void main() {
   group('MacosMapping', () {
     final mapping = MacosMapping();
 
-    test('normalizes buttons by SF Symbol pattern matching', () {
+    test('normalizes Xbox-style face buttons', () {
       expect(
         mapping.normalizeButton('a.circle', 1.0)?.button,
         GamepadButton.a,
@@ -325,6 +325,35 @@ void main() {
         mapping.normalizeButton('y.circle', 1.0)?.button,
         GamepadButton.y,
       );
+    });
+
+    test('normalizes DualSense PlayStation-style face buttons', () {
+      expect(
+        mapping.normalizeButton('xmark.circle', 1.0)?.button,
+        GamepadButton.a,
+      );
+      expect(
+        mapping.normalizeButton('circle.circle', 1.0)?.button,
+        GamepadButton.b,
+      );
+      expect(
+        mapping.normalizeButton('square.circle', 1.0)?.button,
+        GamepadButton.x,
+      );
+      expect(
+        mapping.normalizeButton('triangle.circle', 1.0)?.button,
+        GamepadButton.y,
+      );
+    });
+
+    test('normalizes DualSense touchpad as back button', () {
+      expect(
+        mapping.normalizeButton('capsule.portrait', 1.0)?.button,
+        GamepadButton.back,
+      );
+    });
+
+    test('normalizes shoulder buttons', () {
       expect(
         mapping.normalizeButton('l1.rectangle.roundedbottom', 1.0)?.button,
         GamepadButton.leftBumper,
