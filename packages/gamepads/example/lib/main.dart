@@ -77,7 +77,15 @@ class _MyHomePageState extends State<MyHomePage> {
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/gamepad_log.txt');
     await file.writeAsString(_eventLog.join('\n'));
-    await Share.shareXFiles([XFile(file.path)]);
+    if (Platform.isLinux) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Log saved to ${file.path}')),
+        );
+      }
+    } else {
+      await Share.shareXFiles([XFile(file.path)]);
+    }
   }
 
   @override
