@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gamepads/gamepads.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,11 +47,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<GamepadController> _gamepads = [];
   List<_EventEntry> _lastEvents = [];
+  final List<String> _eventLog = [];
+  final Map<String, String> _gamepadNames = {};
   bool loading = false;
 
   Future<void> _listGamepads() async {
     setState(() => loading = true);
     final response = await Gamepads.list();
+    for (final gamepad in response) {
+      _gamepadNames[gamepad.id] = gamepad.name;
+    }
     setState(() {
       _gamepads = response;
       loading = false;
@@ -56,7 +64,20 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _clear() {
-    setState(() => _lastEvents = []);
+    setState(() {
+      _lastEvents = [];
+      _eventLog.clear();
+    });
+  }
+
+  Future<void> _shareLog() async {
+    if (_eventLog.isEmpty) {
+      return;
+    }
+    final dir = await getTemporaryDirectory();
+    final file = File('${dir.path}/gamepad_log.txt');
+    await file.writeAsString(_eventLog.join('\n'));
+    await Share.shareXFiles([XFile(file.path)]);
   }
 
   @override
@@ -64,7 +85,32 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _normalizer = GamepadNormalizer();
     _subscription = Gamepads.events.listen((event) {
+      if (!_gamepadNames.containsKey(event.gamepadId)) {
+        _listGamepads();
+      }
       final normalized = _normalizer.normalize(event);
+      final timestamp = DateTime.now().toIso8601String();
+      final name = _gamepadNames[event.gamepadId];
+      final device =
+          name ??
+          'vendor:${event.vendorId ?? "?"} '
+              'product:${event.productId ?? "?"}';
+      if (normalized.isEmpty) {
+        _eventLog.add(
+          '$timestamp [$device] [unmapped] ${event.type.name}: '
+          '${event.key} = ${event.value}',
+        );
+      } else {
+        for (final n in normalized) {
+          final label = n.button != null
+              ? '${n.button} = ${n.value}'
+              : '${n.axis} = ${n.value.toStringAsFixed(2)}';
+          _eventLog.add(
+            '$timestamp [$device] $label '
+            '(raw: ${event.key} ${event.value})',
+          );
+        }
+      }
       setState(() {
         final newEntries = <_EventEntry>[
           if (normalized.isEmpty)
@@ -110,6 +156,10 @@ class _MyHomePageState extends State<MyHomePage> {
               TextButton(
                 onPressed: _clear,
                 child: const Text('Clear Events'),
+              ),
+              TextButton(
+                onPressed: _eventLog.isEmpty ? null : _shareLog,
+                child: const Text('Share Log'),
               ),
               const SizedBox(height: 16),
               TextButton(

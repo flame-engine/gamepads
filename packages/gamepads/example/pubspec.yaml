@@ -12,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   gamepads: ^0.1.9
+  path_provider: ^2.1.0
+  share_plus: ^10.0.0
 
 dev_dependencies:
   flame_lint: ^1.4.1
