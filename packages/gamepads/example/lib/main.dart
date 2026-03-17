@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:gamepads/gamepads.dart';
-import 'package:share_plus/share_plus.dart';
+
+import 'package:gamepads_example/share_log.dart'
+    if (dart.library.js_interop) 'package:gamepads_example/share_log_web.dart';
 
 void main() {
   runApp(const MyApp());
@@ -74,13 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_eventLog.isEmpty) {
       return;
     }
-    final bytes = Uint8List.fromList(utf8.encode(_eventLog.join('\n')));
-    final xFile = XFile.fromData(
-      bytes,
-      name: 'gamepad_log.txt',
-      mimeType: 'text/plain',
-    );
-    await Share.shareXFiles([xFile]);
+    await shareLog(_eventLog);
   }
 
   @override
