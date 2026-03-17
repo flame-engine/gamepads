@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:gamepads/gamepads.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 void main() {
@@ -74,21 +74,13 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_eventLog.isEmpty) {
       return;
     }
-    final dir = await getTemporaryDirectory();
-    if (!dir.existsSync()) {
-      dir.createSync(recursive: true);
-    }
-    final file = File('${dir.path}/gamepad_log.txt');
-    await file.writeAsString(_eventLog.join('\n'));
-    if (Platform.isLinux) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Log saved to ${file.path}')),
-        );
-      }
-    } else {
-      await Share.shareXFiles([XFile(file.path)]);
-    }
+    final bytes = Uint8List.fromList(utf8.encode(_eventLog.join('\n')));
+    final xFile = XFile.fromData(
+      bytes,
+      name: 'gamepad_log.txt',
+      mimeType: 'text/plain',
+    );
+    await Share.shareXFiles([xFile]);
   }
 
   @override
