@@ -85,6 +85,19 @@ class WindowsMapping extends PlatformMapping {
       return const [];
     }
 
+    // Special handling for Xbox controllers reporting both triggers on dwZpos
+    if (key == 'dwZpos' &&
+        controllerMapping.axes.containsKey('dwZpos') &&
+        controllerMapping.axes.containsKey('dwVpos')) {
+      // dwZpos: 0-65535, right trigger: 0-32767, left trigger: 32768-65535
+      final rightValue = value <= 32767 ? 1.0 - (value / 32767) : 0.0;
+      final leftValue = value > 32767 ? (value - 32768) / 32767 : 0.0;
+      return [
+        NormalizedAxis(GamepadAxis.leftTrigger, leftValue.clamp(0.0, 1.0)),
+        NormalizedAxis(GamepadAxis.rightTrigger, rightValue.clamp(0.0, 1.0)),
+      ];
+    }
+
     final axisInfo = controllerMapping.axes[key];
     if (axisInfo == null) {
       return const [];
