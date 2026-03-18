@@ -150,9 +150,9 @@ void Gamepads::stop() {
 
   // Stop/cleanup threads
   for (auto gp : this->gamepads) {
-    if (!gp->stop_thead) {
+    if (!gp->stop_thread) {
       if (gp->alive) {
-        gp->stop_thead = true;
+        gp->stop_thread = true;
       } else {
         // Cleanup data of threads that exited due to error state.
         delete gp;
@@ -178,7 +178,7 @@ void Gamepads::on_gamepad_connected(IGameInputDevice* device) {
                  ? info->displayName->data
                  : "";
   gp->num_buttons = info->controllerButtonCount;
-  gp->stop_thead = false;
+  gp->stop_thread = false;
   gp->alive = true;
   this->gamepads.push_back(gp);
 
@@ -201,7 +201,7 @@ void Gamepads::on_gamepad_disconnected(IGameInputDevice* device) {
   GamepadData* removeGp = nullptr;
   for (auto gp : this->gamepads) {
     if (gp->id == removeId) {
-      gp->stop_thead = true;
+      gp->stop_thread = true;
       removeGp = gp;
       break;
     }
@@ -214,7 +214,7 @@ void Gamepads::on_gamepad_disconnected(IGameInputDevice* device) {
 
 void Gamepads::read_gamepad(GamepadData* gamepad, IGameInputDevice* device) {
   GameInputGamepadState previous_state;
-  while (!gamepad->stop_thead && g_gameInput != nullptr) {
+  while (!gamepad->stop_thread && g_gameInput != nullptr) {
     IGameInputReading* reading;
     GameInputGamepadState state;
     g_gameInput->GetCurrentReading(GameInputKindGamepad, device, &reading);
@@ -236,7 +236,7 @@ void Gamepads::read_gamepad(GamepadData* gamepad, IGameInputDevice* device) {
     Sleep(1);
   }
 
-  if (gamepad->stop_thead) {
+  if (gamepad->stop_thread) {
     std::cout << "Gamepad thread exit (via signal) " << gamepad->id
               << std::endl;
     delete gamepad;

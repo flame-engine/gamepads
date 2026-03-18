@@ -14,7 +14,7 @@ struct GamepadData {
   std::string id;
   std::string name;
   int num_buttons;
-  bool stop_thead;
+  bool stop_thread;
   bool alive;
 };
 
