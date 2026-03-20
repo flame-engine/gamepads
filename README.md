@@ -38,6 +38,18 @@ It supports multiple simultaneously connected gamepads, and will automatically d
 new connections.
 
 
+## Platform Support
+
+| Platform | Status |
+|----------|--------|
+| Android  | Supported |
+| iOS      | Supported |
+| macOS    | Supported |
+| Linux    | Supported |
+| Windows  | Supported |
+| Web      | Supported |
+
+
 ## Getting Started
 
 The `list` method will list all currently connected gamepads:
@@ -49,7 +61,42 @@ The `list` method will list all currently connected gamepads:
 
 This uses the data class `GamepadController`, which has an `id` and a user-facing `name`.
 
-And the `events` stream will broadcast input events from all gamepads:
+Listen to `normalizedEvents` for gamepad input with consistent
+button/axis names and value ranges across all platforms:
+
+```dart
+Gamepads.normalizedEvents.listen((event) {
+  if (event.button == GamepadButton.a) {
+    print('A button pressed!');
+  }
+  if (event.axis == GamepadAxis.leftStickX) {
+    print('Left stick X: ${event.value}');
+  }
+});
+```
+
+The platform is auto-detected. The `normalizedEvents` stream
+is lazy — normalization only runs while there is an active
+listener. When nobody is listening, no normalized events are
+created.
+
+To override the auto-detected platform, set a custom
+normalizer before accessing `normalizedEvents`:
+
+```dart
+Gamepads.normalizer = GamepadNormalizer.forPlatform(
+  GamepadPlatform.linux,
+);
+```
+
+
+## Raw Events
+
+If you need access to the underlying platform-specific events,
+use the `events` stream instead. Note that raw key names and
+value ranges differ across platforms (e.g., the A button is
+`"0"` on Linux, `"button-0"` on Windows, `"buttonA"` on iOS,
+`"KEYCODE_BUTTON_A"` on Android, and `"button 0"` on Web).
 
 ```dart
   Gamepads.events.listen((event) {
@@ -82,51 +129,12 @@ class GamepadEvent {
 }
 ```
 
-
-## Normalized Events
-
-By default, `GamepadEvent` exposes raw, platform-specific key
-strings and value ranges. The same physical button produces
-different identifiers on each platform (e.g., the A button is
-`"0"` on Linux, `"button-0"` on Windows, `"buttonA"` on iOS,
-`"KEYCODE_BUTTON_A"` on Android, and `"button 0"` on Web).
-Value ranges also differ across platforms.
-
-The normalization layer provides consistent button/axis
-identifiers and value ranges regardless of platform or
-controller type. It is fully opt-in — if you only use
-`Gamepads.events`, no normalization work is performed and
-there is zero overhead.
-
-Just listen to `normalizedEvents` instead of `events`:
-
-```dart
-Gamepads.normalizedEvents.listen((event) {
-  if (event.button == GamepadButton.a) {
-    print('A button pressed!');
-  }
-  if (event.axis == GamepadAxis.leftStickX) {
-    print('Left stick X: ${event.value}');
-  }
-});
-```
-
-The platform is auto-detected. The `normalizedEvents` stream
-is lazy — normalization only runs while there is an active
-listener. When nobody is listening, no normalized events are
-created.
-
-To override the auto-detected platform, set a custom
-normalizer before accessing `normalizedEvents`:
-
-```dart
-Gamepads.normalizer = GamepadNormalizer.forPlatform(
-  GamepadPlatform.linux,
-);
-```
+Normalized events always preserve the original raw event via
+`NormalizedGamepadEvent.rawEvent`, so you can fall back to
+platform-specific handling when needed.
 
 
-### Standard Gamepad Model
+## Standard Gamepad Model
 
 Buttons and axes follow the Xbox/standard gamepad layout:
 
@@ -146,7 +154,7 @@ Buttons use 0.0 (released) and 1.0 (pressed).
 Stick conventions: Left/Down = -1, Right/Up = +1.
 
 
-### Platform Mapping Tiers
+## Platform Mapping Tiers
 
 **Tier 1 (no VID/PID needed):** iOS, macOS, Android, and
 Web provide semantic key names, so normalization works out
@@ -165,20 +173,10 @@ mapping using an Xbox-like layout. You can also load
 additional mappings at runtime via
 `ControllerDatabase.loadSdlMappings()`.
 
-The original raw events are always preserved via
-`NormalizedGamepadEvent.rawEvent`, so you can fall back to
-platform-specific handling when needed.
 
+## Contributing
 
-## Next Steps
-
-As mentioned, this is still a WIP library. Not only APIs are expected to change if needed, but we
-plan to add more features, like:
-
-- stream to listen for connecting/disconnecting gamepads
-- get current state of a gamepad
-
-If you are interested in helping, please reach out!
+This plugin is still in beta. If you are interested in helping, please reach out!
 You can use GitHub or our [Discord server](https://discord.gg/pxrBmy4).
 
 
