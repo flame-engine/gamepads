@@ -1,14 +1,19 @@
+
+#include <wtypes.h>
+
 #include <windows.h>
 #include <functional>
 #include <iostream>
 #include <list>
 #include <map>
 #include <optional>
+#include <GameInput.h>
 
-struct Gamepad {
-  UINT joy_id;
+struct GamepadData {
+  std::string id;
   std::string name;
   int num_buttons;
+  bool stop_thread;
   bool alive;
 };
 
@@ -16,28 +21,25 @@ struct Event {
   int time;
   std::string type;
   std::string key;
-  int value;
+  double value;
 };
 
 class Gamepads {
  private:
-  std::list<Event> diff_states(Gamepad* gamepad,
-                               const JOYINFOEX& old,
-                               const JOYINFOEX& current);
-  bool are_states_different(const JOYINFOEX& a, const JOYINFOEX& b);
-  void read_gamepad(Gamepad* gamepad);
-  void connect_gamepad(UINT joy_id, std::string name, int num_buttons);
+  std::list<GamepadData*> gamepads;
+
+  GameInputCallbackToken* deviceCallbackToken;
+  void read_gamepad(GamepadData* gamepad, IGameInputDevice* device);
+
+  void on_gamepad_connected(IGameInputDevice* device);
+  void on_gamepad_disconnected(IGameInputDevice* device);
 
  public:
-  std::map<UINT, Gamepad> gamepads;
-  std::optional<std::function<void(Gamepad* gamepad, const Event& event)>>
+  std::optional<std::function<void(GamepadData* gamepad, const Event& event)>>
       event_emitter;
-  void update_gamepads();
+  void init();
+  void stop();
+  std::list<GamepadData*> get_gamepads();
 };
 
 extern Gamepads gamepads;
-
-std::optional<LRESULT> CALLBACK GamepadListenerProc(HWND hwnd,
-                                                    UINT uMsg,
-                                                    WPARAM wParam,
-                                                    LPARAM lParam);
