@@ -95,7 +95,7 @@ Gamepads.normalizer = GamepadNormalizer.forPlatform(
 If you need access to the underlying platform-specific events,
 use the `events` stream instead. Note that raw key names and
 value ranges differ across platforms (e.g., the A button is
-`"0"` on Linux, `"button-0"` on Windows, `"buttonA"` on iOS,
+`"0"` on Linux, `"a"` on Windows, `"buttonA"` on iOS,
 `"KEYCODE_BUTTON_A"` on Android, and `"button 0"` on Web).
 
 ```dart
