@@ -90,7 +90,6 @@ As mentioned, this is still a WIP library. Not only APIs are expected to change 
 
 - stream to listen for connecting/disconnecting gamepads
 - get current state of a gamepad
-- add support for web and even mobile
 
 If you are interested in helping, please reach out!
 You can use GitHub or our [Discord server](https://discord.gg/pxrBmy4).

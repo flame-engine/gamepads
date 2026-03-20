@@ -1,3 +1,7 @@
+## 0.1.9
+
+ - **FEAT**: Support for Web ([#48](https://github.com/flame-engine/gamepads/issues/48)). ([eae56125](https://github.com/flame-engine/gamepads/commit/eae56125423acd3beea7387dbae0085a24ea5995))
+
 ## 0.1.8+2
 
  - Update a dependency to the latest release.
