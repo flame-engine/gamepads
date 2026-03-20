@@ -545,72 +545,64 @@ void main() {
         productId: 0x9999,
       );
       expect(
-        mapping.normalizeButton('button-0', 1.0)?.button,
+        mapping.normalizeButton('a', 1.0)?.button,
         GamepadButton.a,
       );
       expect(
-        mapping.normalizeButton('button-1', 1.0)?.button,
+        mapping.normalizeButton('b', 1.0)?.button,
         GamepadButton.b,
       );
     });
 
-    test('normalizes axis values from 0-65535 range', () {
+    test('normalizes axis values from -1.0 to 1.0 range', () {
       final mapping = WindowsMapping().forDevice(
         vendorId: 0x9999,
         productId: 0x9999,
       );
 
       // Center value → ~0.0
-      final center = mapping.normalizeAxis('dwXpos', 32767.0);
+      final center = mapping.normalizeAxis('leftThumbstickX', 0.0);
       expect(center.first.axis, GamepadAxis.leftStickX);
       expect(center.first.value, closeTo(0.0, 0.01));
 
       // Full right
-      final max = mapping.normalizeAxis('dwXpos', 65535.0);
+      final max = mapping.normalizeAxis('leftThumbstickX', 1.0);
       expect(max.first.value, closeTo(1.0, 0.01));
     });
 
-    test('normalizes Y axis with inversion', () {
+    test('normalizes trigger axis', () {
       final mapping = WindowsMapping().forDevice(
         vendorId: 0x9999,
         productId: 0x9999,
       );
 
       // dwYpos 0 = up (inverted), should become +1.0
-      final up = mapping.normalizeAxis('dwYpos', 0.0);
-      expect(up.first.axis, GamepadAxis.leftStickY);
-      expect(up.first.value, closeTo(1.0, 0.01));
+      final up = mapping.normalizeAxis('leftTrigger', 0.0);
+      expect(up.first.axis, GamepadAxis.leftTrigger);
+      expect(up.first.value, closeTo(0.0, 0.01));
     });
 
-    test('normalizes POV d-pad', () {
+    test('normalizes d-pad', () {
       final mapping = WindowsMapping().forDevice(
         vendorId: 0x9999,
         productId: 0x9999,
       );
-
-      // Up: 0 degrees
-      final up = mapping.normalizeDpadAxis('pov', 0.0);
-      expect(up.length, 4);
-      expect(up.firstWhere((b) => b.button == GamepadButton.dpadUp).value, 1.0);
       expect(
-        up.firstWhere((b) => b.button == GamepadButton.dpadDown).value,
-        0.0,
-      );
-
-      // Right: 9000 (90 degrees)
-      final right = mapping.normalizeDpadAxis('pov', 9000.0);
-      expect(
-        right.firstWhere((b) => b.button == GamepadButton.dpadRight).value,
-        1.0,
+        mapping.normalizeButton('dpadUp', 1.0)?.button,
+        GamepadButton.dpadUp,
       );
       expect(
-        right.firstWhere((b) => b.button == GamepadButton.dpadUp).value,
-        0.0,
+        mapping.normalizeButton('dpadRight', 1.0)?.button,
+        GamepadButton.dpadRight,
       );
-
-      // Centered: -1
-      final centered = mapping.normalizeDpadAxis('pov', -1.0);
-      expect(centered.every((b) => b.value == 0.0), isTrue);
+      expect(
+        mapping.normalizeButton('dpadDown', 1.0)?.button,
+        GamepadButton.dpadDown,
+      );
+      expect(
+        mapping.normalizeButton('dpadLeft', 1.0)?.button,
+        GamepadButton.dpadLeft,
+      );
     });
   });
 }
