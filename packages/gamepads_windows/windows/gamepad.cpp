@@ -213,7 +213,8 @@ void Gamepads::on_gamepad_disconnected(IGameInputDevice* device) {
 }
 
 void Gamepads::read_gamepad(GamepadData* gamepad, IGameInputDevice* device) {
-  GameInputGamepadState previous_state = {GameInputGamepadNone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  GameInputGamepadState previous_state = {
+      GameInputGamepadNone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   while (!gamepad->stop_thread && g_gameInput != nullptr) {
     IGameInputReading* reading;
     GameInputGamepadState state;
