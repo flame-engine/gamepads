@@ -39,7 +39,7 @@ class EventListener {
             "time" to keyEvent.eventTime,
             "type" to "button",
             "key" to KeyEvent.keyCodeToString(keyEvent.keyCode),
-            "value" to keyEvent.action.toDouble(),
+            "value" to if (keyEvent.action == KeyEvent.ACTION_DOWN) 1.0 else 0.0,
         )
         if (device != null) {
             arguments["vendorId"] = device.vendorId
