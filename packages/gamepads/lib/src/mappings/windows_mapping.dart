@@ -7,20 +7,16 @@ import 'package:gamepads/src/mappings/platform_mapping.dart';
 
 /// Mapping for Windows gamepad events.
 ///
-/// Windows uses "button-N" for buttons and named strings for axes:
-/// "dwXpos", "dwYpos", "dwZpos", "dwRpos", "dwUpos", "dwVpos", "pov".
-///
-/// The button indices depend on the controller, so VID/PID is needed for
-/// accurate mapping. The axis names are from the Windows joyGetPosEx API.
+/// Windows uses "a", "b" etc. for buttons and named strings for axes:
+/// "leftThumbstickX, "leftThumbstickY", ...
 ///
 /// Default axis mapping (most common for XInput-compatible controllers):
-/// - dwXpos: Left stick X (0-65535, center 32767)
-/// - dwYpos: Left stick Y (0-65535, center 32767, inverted)
-/// - dwZpos: Triggers combined or left trigger
-/// - dwRpos: Right stick Y (0-65535, center 32767, inverted)
-/// - dwUpos: Right stick X (0-65535, center 32767)
-/// - dwVpos: Right trigger
-/// - pov: D-pad (angle in degrees * 100, -1 = centered)
+/// - leftThumbstickX: Left stick X (-1 to 1, center 0)
+/// - leftThumbstickY: Left stick Y (-1 to 1, center 0)
+/// - rightThumbstickX: Left stick X (-1 to 1, center 0)
+/// - rightThumbstickY: Left stick Y (-1 to 1, center 0)
+/// - leftTrigger: Left trigger (0 to 1)
+/// - rightTrigger: Right trigger (0 to 1)
 class WindowsMapping extends PlatformMapping {
   final UnknownControllerBehavior _unknownBehavior;
   _WindowsControllerMapping? _controllerMapping;
@@ -80,24 +76,6 @@ class WindowsMapping extends PlatformMapping {
       return const [];
     }
 
-    // Handle POV/d-pad specially — it's not a true axis.
-    if (key == 'pov') {
-      return const [];
-    }
-
-    // Special handling for Xbox controllers reporting both triggers on dwZpos
-    if (key == 'dwZpos' &&
-        controllerMapping.axes.containsKey('dwZpos') &&
-        controllerMapping.axes.containsKey('dwVpos')) {
-      // dwZpos: 0-65535, right trigger: 0-32767, left trigger: 32768-65535
-      final rightValue = value <= 32767 ? 1.0 - (value / 32767) : 0.0;
-      final leftValue = value > 32767 ? (value - 32768) / 32767 : 0.0;
-      return [
-        NormalizedAxis(GamepadAxis.leftTrigger, leftValue.clamp(0.0, 1.0)),
-        NormalizedAxis(GamepadAxis.rightTrigger, rightValue.clamp(0.0, 1.0)),
-      ];
-    }
-
     final axisInfo = controllerMapping.axes[key];
     if (axisInfo == null) {
       return const [];
@@ -111,46 +89,6 @@ class WindowsMapping extends PlatformMapping {
       axisInfo.inverted,
     );
     return [NormalizedAxis(axisInfo.axis, normalized)];
-  }
-
-  @override
-  List<NormalizedButton> normalizeDpadAxis(String key, double value) {
-    if (key != 'pov') {
-      return const [];
-    }
-
-    // POV is reported as an angle in hundredths of degrees.
-    // -1 (or 65535) = centered, 0 = up, 9000 = right, 18000 = down,
-    // 27000 = left. Diagonals are intermediate values.
-    final pov = value.toInt();
-    if (pov < 0 || pov > 36000) {
-      // Centered — all d-pad buttons released.
-      return [
-        const NormalizedButton(GamepadButton.dpadUp, 0.0),
-        const NormalizedButton(GamepadButton.dpadRight, 0.0),
-        const NormalizedButton(GamepadButton.dpadDown, 0.0),
-        const NormalizedButton(GamepadButton.dpadLeft, 0.0),
-      ];
-    }
-
-    return [
-      NormalizedButton(
-        GamepadButton.dpadUp,
-        (pov >= 31500 || pov <= 4500) ? 1.0 : 0.0,
-      ),
-      NormalizedButton(
-        GamepadButton.dpadRight,
-        (pov >= 4500 && pov <= 13500) ? 1.0 : 0.0,
-      ),
-      NormalizedButton(
-        GamepadButton.dpadDown,
-        (pov >= 13500 && pov <= 22500) ? 1.0 : 0.0,
-      ),
-      NormalizedButton(
-        GamepadButton.dpadLeft,
-        (pov >= 22500 && pov <= 31500) ? 1.0 : 0.0,
-      ),
-    ];
   }
 
   static double _normalizeAxisValue(
@@ -204,49 +142,53 @@ class _WindowsControllerMapping {
   /// API.
   static const defaultMapping = _WindowsControllerMapping(
     buttons: {
-      'button-0': GamepadButton.a,
-      'button-1': GamepadButton.b,
-      'button-2': GamepadButton.x,
-      'button-3': GamepadButton.y,
-      'button-4': GamepadButton.leftBumper,
-      'button-5': GamepadButton.rightBumper,
-      'button-6': GamepadButton.back,
-      'button-7': GamepadButton.start,
-      'button-8': GamepadButton.leftStick,
-      'button-9': GamepadButton.rightStick,
+      'a': GamepadButton.a,
+      'b': GamepadButton.b,
+      'x': GamepadButton.x,
+      'y': GamepadButton.y,
+      'dpadUp': GamepadButton.dpadUp,
+      'dpadRight': GamepadButton.dpadRight,
+      'dpadDown': GamepadButton.dpadDown,
+      'dpadLeft': GamepadButton.dpadLeft,
+      'leftShoulder': GamepadButton.leftBumper,
+      'rightShoulder': GamepadButton.rightBumper,
+      'view': GamepadButton.back,
+      'menu': GamepadButton.start,
+      'leftThumbstick': GamepadButton.leftStick,
+      'rightThumbstick': GamepadButton.rightStick,
     },
     axes: {
-      'dwXpos': _WindowsAxisInfo(
+      'leftThumbstickX': _WindowsAxisInfo(
         GamepadAxis.leftStickX,
-        0,
-        65535,
+        -1.0,
+        1.0,
       ),
-      'dwYpos': _WindowsAxisInfo(
+      'leftThumbstickY': _WindowsAxisInfo(
         GamepadAxis.leftStickY,
-        0,
-        65535,
-        inverted: true,
+        -1.0,
+        1.0,
       ),
-      'dwZpos': _WindowsAxisInfo(
+      'leftTrigger': _WindowsAxisInfo(
         GamepadAxis.leftTrigger,
-        0,
-        65535,
-      ),
-      'dwRpos': _WindowsAxisInfo(
-        GamepadAxis.rightStickY,
-        0,
-        65535,
+        0.0,
+        1.0,
         inverted: true,
       ),
-      'dwUpos': _WindowsAxisInfo(
+      'rightThumbstickX': _WindowsAxisInfo(
         GamepadAxis.rightStickX,
-        0,
-        65535,
+        -1.0,
+        1.0,
       ),
-      'dwVpos': _WindowsAxisInfo(
+      'rightThumbstickY': _WindowsAxisInfo(
+        GamepadAxis.rightStickY,
+        -1.0,
+        1.0,
+      ),
+      'rightTrigger': _WindowsAxisInfo(
         GamepadAxis.rightTrigger,
-        0,
-        65535,
+        0.0,
+        1.0,
+        inverted: true,
       ),
     },
   );
