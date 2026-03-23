@@ -15,6 +15,8 @@ struct GamepadData {
   int num_buttons;
   bool stop_thread;
   bool alive;
+  int vendor_id;
+  int product_id;
 };
 
 struct Event {

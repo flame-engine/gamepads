@@ -1,0 +1,46 @@
+name: Update SDL GameController DB
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run monthly on the 1st at 06:00 UTC
+    - cron: '0 6 1 * *'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+
+      - name: Download latest gamecontrollerdb.txt
+        run: |
+          curl -sL \
+            https://raw.githubusercontent.com/gabomdq/SDL_GameControllerDB/master/gamecontrollerdb.txt \
+            -o packages/gamepads/lib/src/mappings/data/gamecontrollerdb.txt
+
+      - name: Regenerate Dart file
+        working-directory: packages/gamepads
+        run: dart run tool/update_controller_database.dart
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore: Update SDL GameController DB'
+          title: 'chore: Update SDL GameController DB'
+          body: |
+            Automated update of the bundled SDL GameController DB from
+            [SDL_GameControllerDB](https://github.com/gabomdq/SDL_GameControllerDB).
+          branch: chore/update-controller-db
+          delete-branch: true

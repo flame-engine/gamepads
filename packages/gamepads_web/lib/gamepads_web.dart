@@ -19,12 +19,43 @@ class _GamepadState {
   final List<double> axesStates;
 }
 
+/// Parses vendor/product IDs from the Web Gamepad API id string.
+///
+/// Common formats:
+/// - "Xbox 360 Controller (Vendor: 045e Product: 028e)"
+/// - "045e-028e-Xbox 360 Controller"
+({int? vendorId, int? productId}) _parseGamepadIds(String id) {
+  // Try "Vendor: XXXX Product: XXXX" format
+  final vendorMatch = RegExp(r'Vendor:\s*([0-9a-fA-F]{4})').firstMatch(id);
+  final productMatch = RegExp(r'Product:\s*([0-9a-fA-F]{4})').firstMatch(id);
+  if (vendorMatch != null && productMatch != null) {
+    return (
+      vendorId: int.parse(vendorMatch.group(1)!, radix: 16),
+      productId: int.parse(productMatch.group(1)!, radix: 16),
+    );
+  }
+
+  // Try "XXXX-XXXX-Name" format
+  final dashMatch = RegExp(
+    '^([0-9a-fA-F]{4})-([0-9a-fA-F]{4})',
+  ).firstMatch(id);
+  if (dashMatch != null) {
+    return (
+      vendorId: int.parse(dashMatch.group(1)!, radix: 16),
+      productId: int.parse(dashMatch.group(2)!, radix: 16),
+    );
+  }
+
+  return (vendorId: null, productId: null);
+}
+
 /// A web implementation of the GamepadsWebPlatform of the GamepadsWeb plugin.
 class GamepadsWeb extends GamepadsPlatformInterface {
   int _gamepadCount = 0;
   Timer? _gamepadPollingTimer;
 
   final Map<String, _GamepadState> _lastGamepadStates = {};
+  final Map<String, ({int? vendorId, int? productId})> _gamepadIds = {};
 
   void updateGamepadsStatus() {
     final gamepads = getGamepadList();
@@ -32,6 +63,10 @@ class GamepadsWeb extends GamepadsPlatformInterface {
       final buttons = gamepad.buttons.toDart;
       final axes = gamepad.axes.toDart;
       final gamepadId = gamepad.index.toString();
+      final ids = _gamepadIds.putIfAbsent(
+        gamepadId,
+        () => _parseGamepadIds(gamepad.id),
+      );
       final _GamepadState lastState;
       if (_lastGamepadStates.containsKey(gamepadId) &&
           _lastGamepadStates[gamepadId]?.keyStates.length == buttons.length) {
@@ -43,13 +78,18 @@ class GamepadsWeb extends GamepadsPlatformInterface {
       for (var i = 0; i < buttons.length; i++) {
         if (lastState.keyStates[i] != buttons[i].value) {
           lastState.keyStates[i] = buttons[i].value;
+          // Triggers (buttons 6/7) report analog 0.0-1.0 values,
+          // so emit them as analog events for proper axis mapping.
+          final isTrigger = i == 6 || i == 7;
           emitGamepadEvent(
             GamepadEvent(
               gamepadId: gamepadId,
               timestamp: DateTime.now().millisecondsSinceEpoch,
-              type: KeyType.button,
-              key: 'button $i',
+              type: isTrigger ? KeyType.analog : KeyType.button,
+              key: isTrigger ? 'trigger $i' : 'button $i',
               value: buttons[i].value,
+              vendorId: ids.vendorId,
+              productId: ids.productId,
             ),
           );
         }
@@ -64,6 +104,8 @@ class GamepadsWeb extends GamepadsPlatformInterface {
               type: KeyType.analog,
               key: 'analog $i',
               value: axes[i].toDartDouble,
+              vendorId: ids.vendorId,
+              productId: ids.productId,
             ),
           );
         }
@@ -94,6 +136,10 @@ class GamepadsWeb extends GamepadsPlatformInterface {
       'gamepaddisconnected',
       (web.Event event) {
         _gamepadCount--;
+        final jsGamepad = (event as web.GamepadEvent).gamepad;
+        final gamepadId = jsGamepad.index.toString();
+        _gamepadIds.remove(gamepadId);
+        _lastGamepadStates.remove(gamepadId);
         if (_gamepadCount == 0) {
           _gamepadPollingTimer?.cancel();
         }
