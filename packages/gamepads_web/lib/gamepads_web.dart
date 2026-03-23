@@ -78,12 +78,15 @@ class GamepadsWeb extends GamepadsPlatformInterface {
       for (var i = 0; i < buttons.length; i++) {
         if (lastState.keyStates[i] != buttons[i].value) {
           lastState.keyStates[i] = buttons[i].value;
+          // Triggers (buttons 6/7) report analog 0.0-1.0 values,
+          // so emit them as analog events for proper axis mapping.
+          final isTrigger = i == 6 || i == 7;
           emitGamepadEvent(
             GamepadEvent(
               gamepadId: gamepadId,
               timestamp: DateTime.now().millisecondsSinceEpoch,
-              type: KeyType.button,
-              key: 'button $i',
+              type: isTrigger ? KeyType.analog : KeyType.button,
+              key: isTrigger ? 'trigger $i' : 'button $i',
               value: buttons[i].value,
               vendorId: ids.vendorId,
               productId: ids.productId,

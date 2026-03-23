@@ -265,8 +265,6 @@ void main() {
         'button 3': GamepadButton.y,
         'button 4': GamepadButton.leftBumper,
         'button 5': GamepadButton.rightBumper,
-        'button 6': GamepadButton.leftTrigger,
-        'button 7': GamepadButton.rightTrigger,
         'button 8': GamepadButton.back,
         'button 9': GamepadButton.start,
         'button 10': GamepadButton.leftStick,
@@ -297,6 +295,16 @@ void main() {
       // Y-axis inverted
       expect(mapping.normalizeAxis('analog 1', 0.5).firstOrNull?.value, -0.5);
       expect(mapping.normalizeAxis('analog 3', -1.0).firstOrNull?.value, 1.0);
+    });
+
+    test('normalizes trigger axes with analog values', () {
+      final left = mapping.normalizeAxis('trigger 6', 0.75);
+      expect(left.first.axis, GamepadAxis.leftTrigger);
+      expect(left.first.value, 0.75);
+
+      final right = mapping.normalizeAxis('trigger 7', 0.5);
+      expect(right.first.axis, GamepadAxis.rightTrigger);
+      expect(right.first.value, 0.5);
     });
 
     test('returns null for unknown keys', () {

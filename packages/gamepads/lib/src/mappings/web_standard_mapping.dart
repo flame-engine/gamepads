@@ -13,11 +13,13 @@ import 'package:gamepads/src/mappings/platform_mapping.dart';
 /// Button indices:
 ///   0: A (bottom), 1: B (right), 2: X (left), 3: Y (top)
 ///   4: Left bumper, 5: Right bumper
-///   6: Left trigger, 7: Right trigger
 ///   8: Back/Select, 9: Start
 ///   10: Left stick click, 11: Right stick click
 ///   12: D-pad up, 13: D-pad down, 14: D-pad left, 15: D-pad right
 ///   16: Home/Guide
+///
+/// Trigger indices (emitted as analog by the web plugin):
+///   6: Left trigger (0.0 to 1.0), 7: Right trigger (0.0 to 1.0)
 ///
 /// Axis indices:
 ///   0: Left stick X, 1: Left stick Y
@@ -30,8 +32,6 @@ class WebStandardMapping extends PlatformMapping {
     'button 3': GamepadButton.y,
     'button 4': GamepadButton.leftBumper,
     'button 5': GamepadButton.rightBumper,
-    'button 6': GamepadButton.leftTrigger,
-    'button 7': GamepadButton.rightTrigger,
     'button 8': GamepadButton.back,
     'button 9': GamepadButton.start,
     'button 10': GamepadButton.leftStick,
@@ -48,6 +48,8 @@ class WebStandardMapping extends PlatformMapping {
     'analog 1': GamepadAxis.leftStickY,
     'analog 2': GamepadAxis.rightStickX,
     'analog 3': GamepadAxis.rightStickY,
+    'trigger 6': GamepadAxis.leftTrigger,
+    'trigger 7': GamepadAxis.rightTrigger,
   };
 
   @override
@@ -56,8 +58,6 @@ class WebStandardMapping extends PlatformMapping {
     if (button == null) {
       return null;
     }
-    // Web API reports button values as 0.0 to 1.0.
-    // For triggers the value can be analog, for others it's 0 or 1.
     return NormalizedButton(button, value != 0 ? 1.0 : 0.0);
   }
 
