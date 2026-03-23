@@ -22,6 +22,13 @@ class NormalizedAxis {
 /// Each platform provides a concrete implementation that maps raw
 /// platform-specific key strings and values to normalized
 /// [GamepadButton]/[GamepadAxis] enums and standard value ranges.
+///
+/// **Y-axis convention**: Normalized stick Y values use up = +1.0,
+/// down = -1.0. Platforms where the native API reports the opposite
+/// (e.g., iOS, Android, Web) must negate Y in their [normalizeAxis].
+/// macOS GCController already reports up = positive natively, so no
+/// inversion is needed there. Linux/Windows handle inversion via the
+/// `yAxisInverted` flag in `ControllerMapping`.
 abstract class PlatformMapping {
   /// Attempts to normalize a button event.
   ///

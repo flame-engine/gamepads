@@ -11,6 +11,9 @@ class Gamepads {
 
   static final _platform = GamepadsPlatformInterface.instance;
 
+  static GamepadNormalizer? _normalizer;
+  static Stream<NormalizedGamepadEvent>? _normalizedEvents;
+
   /// The normalizer used to convert raw events to normalized events.
   ///
   /// Set automatically when [normalizedEvents] is first accessed.
@@ -21,7 +24,12 @@ class Gamepads {
   ///   GamepadPlatform.linux,
   /// );
   /// ```
-  static GamepadNormalizer? normalizer;
+  static GamepadNormalizer? get normalizer => _normalizer;
+  static set normalizer(GamepadNormalizer? value) {
+    _normalizer = value;
+    // Invalidate cached stream so next access uses the new normalizer.
+    _normalizedEvents = null;
+  }
 
   static Future<List<GamepadController>> list() => _platform.listGamepads();
 
@@ -36,8 +44,12 @@ class Gamepads {
   /// Events that cannot be normalized (unrecognized keys) are silently
   /// dropped.
   static Stream<NormalizedGamepadEvent> get normalizedEvents {
-    normalizer ??= GamepadNormalizer();
-    return events.transform(normalizer!.transformer);
+    if (_normalizedEvents != null) {
+      return _normalizedEvents!;
+    }
+    _normalizer ??= GamepadNormalizer();
+    _normalizedEvents = events.transform(_normalizer!.transformer);
+    return _normalizedEvents!;
   }
 
   static Stream<GamepadEvent> eventsByGamepad(String gamepadId) {
