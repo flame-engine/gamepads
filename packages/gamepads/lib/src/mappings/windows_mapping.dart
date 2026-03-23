@@ -39,7 +39,6 @@ class WindowsMapping extends PlatformMapping {
       axisInfo.axis,
       axisInfo.min,
       axisInfo.max,
-      axisInfo.inverted,
     );
     return [NormalizedAxis(axisInfo.axis, normalized)];
   }
@@ -49,7 +48,6 @@ class WindowsMapping extends PlatformMapping {
     GamepadAxis axis,
     double min,
     double max,
-    bool inverted,
   ) {
     final isTrigger =
         axis == GamepadAxis.leftTrigger || axis == GamepadAxis.rightTrigger;
@@ -60,11 +58,7 @@ class WindowsMapping extends PlatformMapping {
     }
 
     // Normalize from [min, max] to [-1.0, 1.0].
-    var normalized = 2.0 * (value - min) / (max - min) - 1.0;
-    if (inverted) {
-      normalized = -normalized;
-    }
-    return normalized;
+    return 2.0 * (value - min) / (max - min) - 1.0;
   }
 }
 
@@ -72,14 +66,8 @@ class _WindowsAxisInfo {
   final GamepadAxis axis;
   final double min;
   final double max;
-  final bool inverted;
 
-  const _WindowsAxisInfo(
-    this.axis,
-    this.min,
-    this.max, {
-    this.inverted = false,
-  });
+  const _WindowsAxisInfo(this.axis, this.min, this.max);
 }
 
 class _WindowsControllerMapping {
@@ -91,8 +79,7 @@ class _WindowsControllerMapping {
     required this.axes,
   });
 
-  /// Default mapping for Xbox-like controllers via the Windows joystick
-  /// API.
+  /// Default mapping matching the GameInput API key strings.
   static const defaultMapping = _WindowsControllerMapping(
     buttons: {
       'a': GamepadButton.a,
@@ -125,7 +112,6 @@ class _WindowsControllerMapping {
         GamepadAxis.leftTrigger,
         0.0,
         1.0,
-        inverted: true,
       ),
       'rightThumbstickX': _WindowsAxisInfo(
         GamepadAxis.rightStickX,
@@ -141,7 +127,6 @@ class _WindowsControllerMapping {
         GamepadAxis.rightTrigger,
         0.0,
         1.0,
-        inverted: true,
       ),
     },
   );
