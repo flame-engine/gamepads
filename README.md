@@ -250,6 +250,9 @@ Make sure you have setup [Windows target for Flutter](https://docs.flutter.dev/p
 It is specifically the step to setup C++ for desktop development
 that installs Windows SDK.
 
+Neither you nor end users needs GameInput redistributable. This is
+because gamepads uses GameInput API v0 which is statically linked.
+
 
 ## Support
 
