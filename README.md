@@ -152,27 +152,31 @@ Buttons use 0.0 (released) and 1.0 (pressed).
 Stick conventions: Left/Down = -1, Right/Up = +1.
 
 
-## Platform Mapping Tiers
+## Platform Details
 
-**Tier 1 (no VID/PID needed):** iOS, macOS, Android, and
-Web provide semantic key names, so normalization works out
-of the box.
+**iOS / macOS** — Uses the GCController API. Button and axis
+names are SF Symbols strings (e.g. `a.circle`, `l.joystick`),
+which the normalizer matches by pattern.
 
-**Tier 2 (VID/PID required):** Linux uses raw numeric
-indices that vary by controller hardware. The normalizer
-uses a bundled copy of the community-maintained
+**Android** — Uses `KeyEvent` and `MotionEvent` with
+platform-defined key codes (e.g. `KEYCODE_BUTTON_A`,
+`AXIS_X`). No device-specific lookup needed.
+
+**Web** — Uses the W3C Gamepad API with the standard mapping.
+Buttons and axes are reported as numeric indices (`button 0`,
+`analog 0`).
+
+**Windows** — Uses the GameInput API which provides consistent
+named keys (e.g. `a`, `leftThumbstickX`) for all controllers.
+
+**Linux** — Uses raw numeric joystick indices that vary by
+controller hardware. The normalizer uses a bundled copy of
+the community-maintained
 [SDL GameController DB](https://github.com/gabomdq/SDL_GameControllerDB)
-to select the correct mapping by vendor/product ID. This
-database includes mappings for over 1500 controllers.
-
-For unknown controllers, the default behavior is best-effort
-mapping using an Xbox-like layout. You can also load
-additional mappings at runtime via
+to select the correct mapping by vendor/product ID (1500+
+controllers). Unknown controllers fall back to an Xbox-like
+layout. You can load additional mappings at runtime via
 `ControllerDatabase.loadSdlMappings()`.
-
-**Windows** uses the GameInput API which provides consistent
-named keys for all controllers, so no VID/PID lookup is
-needed.
 
 
 ## Contributing
