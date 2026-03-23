@@ -169,8 +169,10 @@ Buttons and axes are reported as numeric indices (`button 0`,
 **Windows** — Uses the
 [GameInput API](https://learn.microsoft.com/en-us/gaming/gdk/docs/reference/input/gameinput/gameinput_members)
 v0 which provides consistent named keys (e.g. `a`, `leftThumbstickX`)
-for all controllers. To compile you need [Windows SDK](https://learn.microsoft.com/en-us/windows/apps/windows-sdk/)
-which gets installed when you setup [Windows target for Flutter](https://docs.flutter.dev/platform-integration/windows/setup).
+for all controllers. To compile for windows you need
+[Windows SDK](https://learn.microsoft.com/en-us/windows/apps/windows-sdk/)
+which gets installed when you setup
+[Windows target for Flutter](https://docs.flutter.dev/platform-integration/windows/setup).
 End users do not need Windows SDK.
 
 **Linux** — Uses raw numeric joystick indices that vary by
