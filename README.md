@@ -30,8 +30,6 @@
 
 ---
 
-> **Note**: This plugin is still in beta. All APIs are subject to change. Any feedback is appreciated.
-
 Gamepads is a Flutter plugin to handle gamepad (or joystick) input across multiple platforms.
 
 It supports multiple simultaneously connected gamepads, and will automatically detect and listen to
@@ -160,10 +158,9 @@ Stick conventions: Left/Down = -1, Right/Up = +1.
 Web provide semantic key names, so normalization works out
 of the box.
 
-**Tier 2 (VID/PID required):** Linux and Windows use raw
-numeric indices that vary by controller hardware. For these
-platforms, the normalizer uses a bundled copy of the
-community-maintained
+**Tier 2 (VID/PID required):** Linux uses raw numeric
+indices that vary by controller hardware. The normalizer
+uses a bundled copy of the community-maintained
 [SDL GameController DB](https://github.com/gabomdq/SDL_GameControllerDB)
 to select the correct mapping by vendor/product ID. This
 database includes mappings for over 1500 controllers.
@@ -173,10 +170,14 @@ mapping using an Xbox-like layout. You can also load
 additional mappings at runtime via
 `ControllerDatabase.loadSdlMappings()`.
 
+**Windows** uses the GameInput API which provides consistent
+named keys for all controllers, so no VID/PID lookup is
+needed.
+
 
 ## Contributing
 
-This plugin is still in beta. If you are interested in helping, please reach out!
+If you are interested in helping, please reach out!
 You can use GitHub or our [Discord server](https://discord.gg/pxrBmy4).
 
 
