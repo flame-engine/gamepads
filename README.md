@@ -166,8 +166,12 @@ platform-defined key codes (e.g. `KEYCODE_BUTTON_A`,
 Buttons and axes are reported as numeric indices (`button 0`,
 `analog 0`).
 
-**Windows** — Uses the GameInput API which provides consistent
-named keys (e.g. `a`, `leftThumbstickX`) for all controllers.
+**Windows** — Uses the
+[GameInput API](https://learn.microsoft.com/en-us/gaming/gdk/docs/reference/input/gameinput/gameinput_members)
+v0 which provides consistent named keys (e.g. `a`, `leftThumbstickX`)
+for all controllers. To compile for windows you need Windows SDK which
+gets installed when you setup [Windows target for Flutter](https://docs.flutter.dev/platform-integration/windows/setup).
+End users do not need Windows SDK.
 
 **Linux** — Uses raw numeric joystick indices that vary by
 controller hardware. The normalizer uses a bundled copy of
@@ -234,6 +238,21 @@ class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
 }
 
 ```
+
+
+## Windows troubleshooting
+
+If you get a compilation error due to missing "GameInput.h" it
+is because it doesn't find your [Windows SDK](https://learn.microsoft.com/en-us/windows/apps/windows-sdk/)
+installation.
+
+Make sure you have setup [Windows target for Flutter](https://docs.flutter.dev/platform-integration/windows/setup).
+It is specifically the step to setup C++ for desktop development
+that installs Windows SDK.
+
+Neither package users (developers) nor end users needs GameInput
+redistributable. This is because gamepads uses GameInput API v0
+which is statically linked.
 
 
 ## Support
