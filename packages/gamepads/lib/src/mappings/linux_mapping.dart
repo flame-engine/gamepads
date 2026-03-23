@@ -147,9 +147,12 @@ class LinuxMapping extends PlatformMapping {
           return 0.0;
         }
         // Map positive half [0, max] to [0.0, 1.0].
-        final range = controllerMapping.stickRange;
-        if (range != null) {
-          return value / range.$2;
+        // Use triggerRange for trigger axes, stickRange otherwise.
+        final positiveRange = isTrigger
+            ? controllerMapping.triggerRange
+            : controllerMapping.stickRange;
+        if (positiveRange != null) {
+          return value / positiveRange.$2;
         }
         return value;
 
@@ -158,9 +161,12 @@ class LinuxMapping extends PlatformMapping {
           return 0.0;
         }
         // Map negative half [min, 0] to [0.0, 1.0].
-        final range = controllerMapping.stickRange;
-        if (range != null) {
-          return -value / -range.$1;
+        // Use triggerRange for trigger axes, stickRange otherwise.
+        final negativeRange = isTrigger
+            ? controllerMapping.triggerRange
+            : controllerMapping.stickRange;
+        if (negativeRange != null) {
+          return -value / -negativeRange.$1;
         }
         return -value;
 

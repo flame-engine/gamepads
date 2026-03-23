@@ -109,12 +109,17 @@ class MacosMapping extends PlatformMapping {
   }
 
   static GamepadButton? _findButton(String key) {
+    // Longer patterns are checked first to avoid substring collisions
+    // (e.g. 'b.circle' matching inside 'rb.circle').
+    GamepadButton? best;
+    var bestLength = 0;
     for (final entry in _buttonPatterns.entries) {
-      if (key.contains(entry.key)) {
-        return entry.value;
+      if (entry.key.length > bestLength && key.contains(entry.key)) {
+        best = entry.value;
+        bestLength = entry.key.length;
       }
     }
-    return null;
+    return best;
   }
 
   @override

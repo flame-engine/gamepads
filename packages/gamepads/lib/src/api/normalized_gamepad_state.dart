@@ -17,8 +17,7 @@ class NormalizedGamepadState {
   void update(NormalizedGamepadEvent event) {
     if (event.button != null) {
       buttons[event.button!] = event.value != 0;
-    }
-    if (event.axis != null) {
+    } else if (event.axis != null) {
       axes[event.axis!] = event.value;
     }
   }

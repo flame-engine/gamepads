@@ -122,6 +122,14 @@ class GamepadNormalizer {
     );
   }
 
+  /// Removes the cached device mapping for [gamepadId].
+  ///
+  /// Call this when a gamepad disconnects so the mapping is refreshed
+  /// if a different controller later reuses the same id.
+  void removeDevice(String gamepadId) {
+    _deviceMappings.remove(gamepadId);
+  }
+
   PlatformMapping _mappingFor(String gamepadId) {
     return _deviceMappings[gamepadId] ?? _mapping;
   }
