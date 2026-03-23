@@ -140,7 +140,7 @@ Buttons and axes follow the Xbox/standard gamepad layout:
 
 | Type     | Values                       | Range       |
 |----------|------------------------------|-------------|
-| `Button` | `a`, `b`, `x`, `y`          | 0.0 or 1.0  |
+| `Button` | `a`, `b`, `x`, `y`           | 0.0 or 1.0  |
 | `Button` | `leftBumper`, `rightBumper`  | 0.0 or 1.0  |
 | `Button` | `leftTrigger`, `rightTrigger`| 0.0 or 1.0  |
 | `Button` | `back`, `start`, `home`      | 0.0 or 1.0  |
