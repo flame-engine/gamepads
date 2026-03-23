@@ -133,6 +133,10 @@ class GamepadsWeb extends GamepadsPlatformInterface {
       'gamepaddisconnected',
       (web.Event event) {
         _gamepadCount--;
+        final jsGamepad = (event as web.GamepadEvent).gamepad;
+        final gamepadId = jsGamepad.index.toString();
+        _gamepadIds.remove(gamepadId);
+        _lastGamepadStates.remove(gamepadId);
         if (_gamepadCount == 0) {
           _gamepadPollingTimer?.cancel();
         }
