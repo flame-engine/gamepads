@@ -1,53 +1,26 @@
 import 'package:gamepads/src/api/gamepad_axis.dart';
 import 'package:gamepads/src/api/gamepad_button.dart';
-import 'package:gamepads/src/mappings/linux_mapping.dart';
 import 'package:gamepads/src/mappings/platform_mapping.dart';
 
 /// Mapping for Windows gamepad events.
 ///
-/// Windows uses "a", "b" etc. for buttons and named strings for axes:
-/// "leftThumbstickX, "leftThumbstickY", ...
+/// The Windows GameInput API sends named strings for all controllers
+/// (e.g. "a", "b", "leftThumbstickX"), so a single default mapping
+/// works for every controller. No VID/PID lookup is needed.
 ///
-/// Default axis mapping (most common for XInput-compatible controllers):
-/// - leftThumbstickX: Left stick X (-1 to 1, center 0)
-/// - leftThumbstickY: Left stick Y (-1 to 1, center 0)
-/// - rightThumbstickX: Left stick X (-1 to 1, center 0)
-/// - rightThumbstickY: Left stick Y (-1 to 1, center 0)
-/// - leftTrigger: Left trigger (0 to 1)
-/// - rightTrigger: Right trigger (0 to 1)
+/// Button keys: "a", "b", "x", "y", "leftShoulder", "rightShoulder",
+/// "view", "menu", "leftThumbstick", "rightThumbstick",
+/// "dpadUp", "dpadDown", "dpadLeft", "dpadRight"
+///
+/// Axis keys and ranges:
+/// - leftThumbstickX/Y, rightThumbstickX/Y: -1.0 to 1.0
+/// - leftTrigger, rightTrigger: 0.0 to 1.0
 class WindowsMapping extends PlatformMapping {
-  final UnknownControllerBehavior _unknownBehavior;
-  final _WindowsControllerMapping? _controllerMapping;
-
-  WindowsMapping({
-    UnknownControllerBehavior unknownBehavior =
-        UnknownControllerBehavior.bestEffort,
-  }) : _unknownBehavior = unknownBehavior,
-       _controllerMapping =
-           unknownBehavior == UnknownControllerBehavior.bestEffort
-           ? _WindowsControllerMapping.defaultMapping
-           : null;
-
-  @override
-  bool get requiresDeviceId => true;
-
-  @override
-  PlatformMapping forDevice({int? vendorId, int? productId}) {
-    // The Windows GameInput API sends named strings (e.g. "a",
-    // "leftThumbstickX") that already match the default mapping.
-    // The SDL DB contains numeric-index mappings that don't apply
-    // here, so we skip the DB lookup entirely.
-    return WindowsMapping(unknownBehavior: _unknownBehavior);
-  }
+  static const _mapping = _WindowsControllerMapping.defaultMapping;
 
   @override
   NormalizedButton? normalizeButton(String key, double value) {
-    final controllerMapping = _controllerMapping;
-    if (controllerMapping == null) {
-      return null;
-    }
-
-    final button = controllerMapping.buttons[key];
+    final button = _mapping.buttons[key];
     if (button == null) {
       return null;
     }
@@ -56,12 +29,7 @@ class WindowsMapping extends PlatformMapping {
 
   @override
   List<NormalizedAxis> normalizeAxis(String key, double value) {
-    final controllerMapping = _controllerMapping;
-    if (controllerMapping == null) {
-      return const [];
-    }
-
-    final axisInfo = controllerMapping.axes[key];
+    final axisInfo = _mapping.axes[key];
     if (axisInfo == null) {
       return const [];
     }

@@ -534,16 +534,8 @@ void main() {
   });
 
   group('WindowsMapping', () {
-    test('requires device ID', () {
+    test('normalizes buttons', () {
       final mapping = WindowsMapping();
-      expect(mapping.requiresDeviceId, isTrue);
-    });
-
-    test('best-effort normalizes buttons', () {
-      final mapping = WindowsMapping().forDevice(
-        vendorId: 0x9999,
-        productId: 0x9999,
-      );
       expect(
         mapping.normalizeButton('a', 1.0)?.button,
         GamepadButton.a,
@@ -555,10 +547,7 @@ void main() {
     });
 
     test('normalizes axis values from -1.0 to 1.0 range', () {
-      final mapping = WindowsMapping().forDevice(
-        vendorId: 0x9999,
-        productId: 0x9999,
-      );
+      final mapping = WindowsMapping();
 
       // Center value → ~0.0
       final center = mapping.normalizeAxis('leftThumbstickX', 0.0);
@@ -571,22 +560,15 @@ void main() {
     });
 
     test('normalizes trigger axis', () {
-      final mapping = WindowsMapping().forDevice(
-        vendorId: 0x9999,
-        productId: 0x9999,
-      );
+      final mapping = WindowsMapping();
 
-      // dwYpos 0 = up (inverted), should become +1.0
       final up = mapping.normalizeAxis('leftTrigger', 0.0);
       expect(up.first.axis, GamepadAxis.leftTrigger);
       expect(up.first.value, closeTo(0.0, 0.01));
     });
 
     test('normalizes d-pad', () {
-      final mapping = WindowsMapping().forDevice(
-        vendorId: 0x9999,
-        productId: 0x9999,
-      );
+      final mapping = WindowsMapping();
       expect(
         mapping.normalizeButton('dpadUp', 1.0)?.button,
         GamepadButton.dpadUp,
