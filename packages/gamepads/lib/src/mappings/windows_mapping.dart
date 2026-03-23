@@ -1,7 +1,5 @@
 import 'package:gamepads/src/api/gamepad_axis.dart';
 import 'package:gamepads/src/api/gamepad_button.dart';
-import 'package:gamepads/src/gamepad_normalizer.dart';
-import 'package:gamepads/src/mappings/controller_database.dart';
 import 'package:gamepads/src/mappings/linux_mapping.dart';
 import 'package:gamepads/src/mappings/platform_mapping.dart';
 
@@ -19,7 +17,7 @@ import 'package:gamepads/src/mappings/platform_mapping.dart';
 /// - rightTrigger: Right trigger (0 to 1)
 class WindowsMapping extends PlatformMapping {
   final UnknownControllerBehavior _unknownBehavior;
-  _WindowsControllerMapping? _controllerMapping;
+  final _WindowsControllerMapping? _controllerMapping;
 
   WindowsMapping({
     UnknownControllerBehavior unknownBehavior =
@@ -35,24 +33,11 @@ class WindowsMapping extends PlatformMapping {
 
   @override
   PlatformMapping forDevice({int? vendorId, int? productId}) {
-    final mapping = WindowsMapping(unknownBehavior: _unknownBehavior);
-    if (vendorId != null && productId != null) {
-      final databaseMapping = ControllerDatabase.lookup(
-        vendorId: vendorId,
-        productId: productId,
-        platform: GamepadPlatform.windows,
-      );
-      if (databaseMapping != null) {
-        mapping._controllerMapping = _WindowsControllerMapping.fromDatabase(
-          databaseMapping,
-        );
-      }
-    }
-    if (mapping._controllerMapping == null &&
-        _unknownBehavior == UnknownControllerBehavior.bestEffort) {
-      mapping._controllerMapping = _WindowsControllerMapping.defaultMapping;
-    }
-    return mapping;
+    // The Windows GameInput API sends named strings (e.g. "a",
+    // "leftThumbstickX") that already match the default mapping.
+    // The SDL DB contains numeric-index mappings that don't apply
+    // here, so we skip the DB lookup entirely.
+    return WindowsMapping(unknownBehavior: _unknownBehavior);
   }
 
   @override
@@ -193,11 +178,4 @@ class _WindowsControllerMapping {
     },
   );
 
-  // ignore: avoid_unused_constructor_parameters
-  factory _WindowsControllerMapping.fromDatabase(ControllerMapping database) {
-    // For Windows, we primarily use the default mapping since the Windows
-    // joystick API normalizes button indices. The DB mapping is used for
-    // button name resolution.
-    return defaultMapping;
-  }
 }
