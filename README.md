@@ -64,7 +64,7 @@ button/axis names and value ranges across all platforms:
 
 ```dart
 Gamepads.normalizedEvents.listen((event) {
-  if (event.button == GamepadButton.a) {
+  if (event.button == GamepadButton.a && event.value != 0) {
     print('A button pressed!');
   }
   if (event.axis == GamepadAxis.leftStickX) {
