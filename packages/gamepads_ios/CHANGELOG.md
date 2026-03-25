@@ -1,3 +1,7 @@
+## 0.1.3+2
+
+ - Update a dependency to the latest release.
+
 ## 0.1.3+1
 
  - **FIX**: Adding rightThumbstickButton and leftThumbstickButton keys for iOS ([#71](https://github.com/flame-engine/gamepads/issues/71)). ([244e16cb](https://github.com/flame-engine/gamepads/commit/244e16cbd0b2b1e0c193f8397dcae91c93416bba))
