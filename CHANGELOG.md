@@ -35,11 +35,12 @@ Packages with dependency updates only:
 #### `gamepads_windows` - `v0.2.0`
 
  - **FEAT**: Normalize gamepad output across controllers and platforms ([#82](https://github.com/flame-engine/gamepads/issues/82)). ([2a712e1f](https://github.com/flame-engine/gamepads/commit/2a712e1fd35140f9412e0aae2d7c040dcff84ec1))
- - **BREAKING** **REFACTOR**: Update to windows GameInput api ([#81](https://github.com/flame-engine/gamepads/issues/81)). ([6dccf50b](https://github.com/flame-engine/gamepads/commit/6dccf50b42c0cce079a06df4e9ab2399f9264b2f))
+ - **BREAKING** **REFACTOR**: Update to windows GameInput api ([#81](https://github.com/flame-engine/gamepads/issues/81)). ([6dccf50b](https://github.com/flame-engine/gamepads/commit/6dccf50b42c0cce079a06df4e9ab2399f9264b2f)). Raw event names has changed.
 
 #### `gamepads` - `v0.1.10`
 
  - **FEAT**: Normalize gamepad output across controllers and platforms ([#82](https://github.com/flame-engine/gamepads/issues/82)). ([2a712e1f](https://github.com/flame-engine/gamepads/commit/2a712e1fd35140f9412e0aae2d7c040dcff84ec1))
+ - **BREAKING** **REFACTOR**: Update to windows GameInput api ([#81](https://github.com/flame-engine/gamepads/issues/81)). ([6dccf50b](https://github.com/flame-engine/gamepads/commit/6dccf50b42c0cce079a06df4e9ab2399f9264b2f)). Raw event names has changed.
 
 #### `gamepads_android` - `v0.1.7`
 
