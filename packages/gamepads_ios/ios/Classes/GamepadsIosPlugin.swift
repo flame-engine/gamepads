@@ -87,11 +87,11 @@ public class GamepadsIosPlugin: NSObject, FlutterPlugin {
     }
 
     // Triggers (ANALOG)
-    gamepad.leftTrigger?.valueChangedHandler = { [weak self] _, value, _ in
+    gamepad.leftTrigger.valueChangedHandler = { [weak self] _, value, _ in
       self?.sendEvent(gamepadId: gamepadId, key: "leftTrigger", value: value, isAnalog: true)
     }
 
-    gamepad.rightTrigger?.valueChangedHandler = { [weak self] _, value, _ in
+    gamepad.rightTrigger.valueChangedHandler = { [weak self] _, value, _ in
       self?.sendEvent(gamepadId: gamepadId, key: "rightTrigger", value: value, isAnalog: true)
     }
 
