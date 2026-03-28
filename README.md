@@ -255,6 +255,12 @@ redistributable. This is because gamepads uses GameInput API v0
 which is statically linked.
 
 
+## Bridge packages
+
+* [flame_gamepads](https://github.com/flame-engine/flame/tree/main/packages/flame_gamepads) - Provides a GamepadCallbacks component mixin for your Flame games
+* [flutter_gamepads](./packages/flutter_gamepads/) - Provides a widget that emit intents for users to navigating a Flutter widgets tree using a gamepad.
+
+
 ## Support
 
 The simplest way to show us your support is by giving the project a star! :star:
