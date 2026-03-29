@@ -150,14 +150,19 @@ void main() {
               onPressed: () => {},
               child: const Text('Button'),
             ),
-            GamepadInterceptor(onBeforeIntent: (intent) {
-              interceptorBeforeIntentCalled = true;
-              return interceptorEmit;
-            }, child: ElevatedButton(
-              focusNode: secondFocusNode,
-              onPressed: () { secondPressed = true; },
-              child: const Text('Second'),
-            ))
+            GamepadInterceptor(
+              onBeforeIntent: (intent) {
+                interceptorBeforeIntentCalled = true;
+                return interceptorEmit;
+              },
+              child: ElevatedButton(
+                focusNode: secondFocusNode,
+                onPressed: () {
+                  secondPressed = true;
+                },
+                child: const Text('Second'),
+              ),
+            ),
           ],
         ),
       ),
