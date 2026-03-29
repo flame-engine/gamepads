@@ -10,8 +10,8 @@ similar to using the Tab key, but using the D-pad buttons on their gamepad. Seve
 'simple' widgets like Buttons, DropdownMenu, Switch etc. just works.
 
 Some more complex interactive widgets like eg. the Slider widget needs some special attention
-to support. Another situation is when you have a Scroll view that doesn't receive focus. This
-package provides a `GamepadInterceptor` widget that you can use to handle those situations.
+to support. This package provides a `GamepadInterceptor` widget that you can use to handle
+those situations.
 
 
 ### Default bindings
@@ -109,3 +109,41 @@ false to block an intent from being emitted.
 On GamepadControl you may also set ignoreEvents = true to an an earlier level temporarily
 block all Gamepad input processing. When ignoreEvents is reset to false, all axis input
 is reset to default (non-activated) state.
+
+
+## Implementation strategy recommendation
+
+### Step 1 - Clear focus indicators
+
+Use the TAB key on your keyboard and step through your app and verify that your widgets
+clearly show if they are focused or not.
+
+You may have to update your Theme and add an expressive border of the focused buttons for
+example.
+
+If you notice that some widgets never receives focus you have to resolve this, by making
+them focusable and verify with the TAB key this works.
+
+
+### Step 2 - Add default GamepadControl
+
+Start with wrapping your MaterialApp or similar with the `GamepadControl` and then
+try out your app with a gamepad. Take notice of which widgets in your app that doesn't
+work out-of-the box.
+
+```dart
+GamepadControl(
+    child: MaterialApp(),
+)
+```
+
+
+### Step 3 - Add interceptors where needed
+
+Then, wrap those problematic widgets with `GamepadInterceptor` and ensure that the widget
+itself can receive focus.
+
+Use onBeforeIntent to catch eg. the ScrollIntent and use that to implement interaction
+with your widget.
+
+Then test and repeat.
