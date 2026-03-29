@@ -224,7 +224,7 @@ void Gamepads::read_gamepad(GamepadData* gamepad, IGameInputDevice* device) {
     if (reading != nullptr) {
       if (reading->GetGamepadState(&state)) {
         if (are_states_different(previous_state, state)) {
-          auto events = diff_states(state, previous_state);
+          auto events = diff_states(previous_state, state);
           for (auto event : events) {
             if (event_emitter.has_value()) {
               (*event_emitter)(gamepad, event);
