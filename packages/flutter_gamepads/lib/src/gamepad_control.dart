@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gamepads/src/gamepad_activator.dart';
+import 'package:flutter_gamepads/flutter_gamepads.dart';
 import 'package:gamepads/gamepads.dart';
 
 /// Wrap your widget tree with this widget to allow users
@@ -21,6 +21,10 @@ class GamepadControl extends StatefulWidget {
 
     /// Called just before an Intent is invoked. Return false to block
     /// emitting the Intent.
+    ///
+    /// Additionally, you can wrap something deep in your tree with
+    /// [GamepadInterceptor] widget to receive onBeforeIntent locally
+    /// in that build context.
     this.onBeforeIntent,
 
     /// If set to true, the gamepad control is temporarily disabled. It still
@@ -52,18 +56,18 @@ class GamepadControl extends StatefulWidget {
       GamepadActivatorAxis.rightStickRight(): ScrollIntent(
         direction: AxisDirection.right,
       ),
-      GamepadActivatorAxis.leftStickLeft(): DirectionalFocusIntent(
-        TraversalDirection.left,
-      ),
-      GamepadActivatorAxis.leftStickRight(): DirectionalFocusIntent(
-        TraversalDirection.right,
-      ),
-      GamepadActivatorAxis.leftStickDown(): DirectionalFocusIntent(
-        TraversalDirection.down,
-      ),
-      GamepadActivatorAxis.leftStickUp(): DirectionalFocusIntent(
-        TraversalDirection.up,
-      ),
+//      GamepadActivatorAxis.leftStickLeft(): DirectionalFocusIntent(
+//        TraversalDirection.left,
+//      ),
+//      GamepadActivatorAxis.leftStickRight(): DirectionalFocusIntent(
+//        TraversalDirection.right,
+//      ),
+//      GamepadActivatorAxis.leftStickDown(): DirectionalFocusIntent(
+//        TraversalDirection.down,
+//      ),
+//      GamepadActivatorAxis.leftStickUp(): DirectionalFocusIntent(
+//        TraversalDirection.up,
+//      ),
     },
 
     super.key,
@@ -138,8 +142,7 @@ class _GamepadControlState extends State<GamepadControl> {
       _updatePreviousAxisValues(event);
       return;
     }
-    // Same lookup as ShortcutManager.handleKeypress
-    final primaryFocus = WidgetsBinding.instance.focusManager.primaryFocus;
+    // Same lookup as [ShortcutManager.handleKeypress]
     final focusedContext = primaryFocus?.context;
     // Allow previous/next to use parent context when focusContext is null
     // to allow user to focus something even when there is no autofocus.
@@ -148,19 +151,11 @@ class _GamepadControlState extends State<GamepadControl> {
         ((intent is PreviousFocusIntent || intent is NextFocusIntent)
             ? context
             : null);
+
     if (activateContext != null) {
-      var emitEvent = true;
-      if (widget.onBeforeIntent != null) {
-        emitEvent = widget.onBeforeIntent!(intent);
-      }
+      final emitEvent = _checkEmit(activateContext, intent);
       if (emitEvent) {
-        if (intent is PreviousFocusIntent) {
-          FocusScope.of(activateContext).previousFocus();
-        } else if (intent is NextFocusIntent) {
-          FocusScope.of(activateContext).nextFocus();
-        } else {
-          Actions.maybeInvoke(activateContext, intent);
-        }
+        Actions.maybeInvoke(activateContext, intent);
       }
     }
 
@@ -199,6 +194,19 @@ class _GamepadControlState extends State<GamepadControl> {
       }
     }
     return null;
+  }
+
+  bool _checkEmit(BuildContext activateContext, Intent intent) {
+    final interceptor = activateContext
+        .findAncestorWidgetOfExactType<GamepadInterceptor>();
+    var emit = true;
+    if (interceptor != null) {
+      emit = interceptor.onBeforeIntent(intent);
+    }
+    if (emit && widget.onBeforeIntent != null) {
+      emit = widget.onBeforeIntent!(intent);
+    }
+    return emit;
   }
 
   void _updatePreviousAxisValues(NormalizedGamepadEvent event) {
