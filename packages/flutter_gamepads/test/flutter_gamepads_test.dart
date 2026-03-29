@@ -63,7 +63,7 @@ void main() {
     );
 
     await tester.pumpWidget(widget);
-    await _event('dpadDown');
+    await _keyPress('dpadDown');
     await tester.pumpAndSettle();
 
     // First UI button has focus
@@ -72,7 +72,7 @@ void main() {
     expect(beforeInvokeActivate, isFalse);
 
     // Emit 'a' gamepad button => should press the first UI button
-    await _event('a');
+    await _keyPress('a');
     await tester.pumpAndSettle();
     expect(aFocusNode.hasFocus, isTrue);
     expect(lastButtonPressed, equals(_UiButton.first));
@@ -82,7 +82,7 @@ void main() {
     // Emit 'dpadRight' gamepad button => should focus second UI button
     beforeInvokeActivate = false;
     lastButtonPressed = _UiButton.noButton;
-    await _event('dpadRight');
+    await _keyPress('dpadRight');
     await tester.pumpAndSettle();
     expect(bFocusNode.hasFocus, isTrue);
     expect(lastButtonPressed, equals(_UiButton.noButton));
@@ -90,7 +90,7 @@ void main() {
     expect(beforeInvokeDismiss, isFalse);
 
     // Emit 'a' gamepad button => should press the second UI button
-    await _event('a');
+    await _keyPress('a');
     await tester.pumpAndSettle();
     expect(bFocusNode.hasFocus, isTrue);
     expect(lastButtonPressed, equals(_UiButton.second));
@@ -100,7 +100,7 @@ void main() {
     // Emit 'b' gamepad button => should call onBeforeInvoke with dismiss intent
     beforeInvokeActivate = false;
     lastButtonPressed = _UiButton.noButton;
-    await _event('b');
+    await _keyPress('b');
     await tester.pumpAndSettle();
     expect(lastButtonPressed, equals(_UiButton.noButton));
     expect(beforeInvokeActivate, isFalse);
@@ -111,7 +111,7 @@ void main() {
     beforeInvokeActivate = false;
     beforeInvokeDismiss = false;
     lastButtonPressed = _UiButton.noButton;
-    await _event('a');
+    await _keyPress('a');
     await tester.pumpAndSettle();
     expect(lastButtonPressed, equals(_UiButton.noButton));
     expect(beforeInvokeActivate, isTrue);
@@ -124,7 +124,7 @@ void main() {
     beforeInvokeActivate = false;
     beforeInvokeDismiss = false;
     lastButtonPressed = _UiButton.noButton;
-    await _event('a');
+    await _keyPress('a');
     await tester.pumpAndSettle();
     expect(lastButtonPressed, equals(_UiButton.noButton));
     expect(beforeInvokeActivate, isFalse);
@@ -164,8 +164,8 @@ void main() {
     );
 
     await tester.pumpWidget(widget);
-    await _event('dpadDown');
-    await _event('dpadDown');
+    await _keyPress('dpadDown');
+    await _keyPress('dpadDown');
     await tester.pumpAndSettle();
 
     expect(secondFocusNode.hasFocus, isTrue);
@@ -174,7 +174,7 @@ void main() {
     // Emit gamepad event => should call both onBeforeIntent
     rootBeforeIntentCalled = false;
     interceptorBeforeIntentCalled = false;
-    await _event('a');
+    await _keyPress('a');
     await tester.pumpAndSettle();
     expect(rootBeforeIntentCalled, isTrue);
     expect(interceptorBeforeIntentCalled, isTrue);
@@ -185,7 +185,7 @@ void main() {
     rootBeforeIntentCalled = false;
     interceptorBeforeIntentCalled = false;
     secondPressed = false;
-    await _event('a');
+    await _keyPress('a');
     await tester.pumpAndSettle();
     expect(rootBeforeIntentCalled, isTrue);
     expect(interceptorBeforeIntentCalled, isTrue);
@@ -196,7 +196,7 @@ void main() {
     interceptorEmit = false;
     rootBeforeIntentCalled = false;
     interceptorBeforeIntentCalled = false;
-    await _event('a');
+    await _keyPress('a');
     await tester.pumpAndSettle();
     expect(rootBeforeIntentCalled, isFalse);
     expect(interceptorBeforeIntentCalled, isTrue);
@@ -204,7 +204,12 @@ void main() {
   });
 }
 
-Future<void> _event(String key) async {
+Future<void> _keyPress(String key) async {
+  await _event(key, 1.0);
+  await _event(key, 0.0);
+}
+
+Future<void> _event(String key, double value) async {
   final millis = DateTime.now().millisecondsSinceEpoch;
   await platformInterface.platformCallHandler(
     MethodCall('onGamepadEvent', <String, dynamic>{
@@ -212,7 +217,7 @@ Future<void> _event(String key) async {
       'time': millis,
       'type': 'button',
       'key': key,
-      'value': 1.0,
+      'value': value,
     }),
   );
 }

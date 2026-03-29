@@ -16,6 +16,9 @@ class GamepadControl extends StatefulWidget {
 
   final Map<GamepadActivator, Intent> shortcuts;
 
+  final Duration initialRepeatDelay;
+  final Duration repeatedRepeatDelay;
+
   const GamepadControl({
     required this.child,
 
@@ -56,19 +59,14 @@ class GamepadControl extends StatefulWidget {
       GamepadActivatorAxis.rightStickRight(): ScrollIntent(
         direction: AxisDirection.right,
       ),
-//      GamepadActivatorAxis.leftStickLeft(): DirectionalFocusIntent(
-//        TraversalDirection.left,
-//      ),
-//      GamepadActivatorAxis.leftStickRight(): DirectionalFocusIntent(
-//        TraversalDirection.right,
-//      ),
-//      GamepadActivatorAxis.leftStickDown(): DirectionalFocusIntent(
-//        TraversalDirection.down,
-//      ),
-//      GamepadActivatorAxis.leftStickUp(): DirectionalFocusIntent(
-//        TraversalDirection.up,
-//      ),
+
     },
+
+    /// Delay after first input until first input repeat occurs.
+    this.initialRepeatDelay = const Duration(milliseconds: 700),
+
+    /// Delay after the first input repetition to the next reptilton and beyond.
+    this.repeatedRepeatDelay = const Duration(milliseconds: 200),
 
     super.key,
   });
@@ -80,16 +78,13 @@ class GamepadControl extends StatefulWidget {
 class _GamepadControlState extends State<GamepadControl> {
   StreamSubscription? _subscription;
 
-  /// abs() of the lowest minThreshold of any GamepadActivatorAxis
-  /// used by a shortcut or null if there are no axis shortcuts.
-  double? _minAxisThreshold;
-  final Map<GamepadAxis, double> previousAxisValue = {};
+  final Map<GamepadAxis, double> _previousAxisValue = {};
+  final Map<Intent, Timer> _repeat = {};
 
   @override
   void initState() {
     super.initState();
     _subscription = Gamepads.normalizedEvents.listen(onGamepadEvent);
-    _minAxisThreshold = _resolveMinAxisThreshold();
   }
 
   @override
@@ -101,31 +96,9 @@ class _GamepadControlState extends State<GamepadControl> {
   @override
   void didUpdateWidget(covariant GamepadControl oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _minAxisThreshold = _resolveMinAxisThreshold();
     if (widget.ignoreEvents) {
-      previousAxisValue.clear();
+      _previousAxisValue.clear();
     }
-  }
-
-  double? _resolveMinAxisThreshold() {
-    return widget.shortcuts.keys.fold<double?>(null, (
-      double? prev,
-      GamepadActivator activator,
-    ) {
-      switch (activator) {
-        case final GamepadActivatorAxis axisActivator:
-          final absActivatorMinThreshold = axisActivator.minThreshold.abs();
-          if (prev == null) {
-            return absActivatorMinThreshold;
-          }
-          if (absActivatorMinThreshold < prev) {
-            return absActivatorMinThreshold;
-          }
-        case _:
-          break;
-      }
-      return prev;
-    });
   }
 
   @override
@@ -137,81 +110,107 @@ class _GamepadControlState extends State<GamepadControl> {
     if (widget.ignoreEvents == true) {
       return;
     }
-    final intent = _find(event);
-    if (intent == null) {
-      _updatePreviousAxisValues(event);
-      return;
-    }
-    // Same lookup as [ShortcutManager.handleKeypress]
-    final focusedContext = primaryFocus?.context;
-    // Allow previous/next to use parent context when focusContext is null
-    // to allow user to focus something even when there is no autofocus.
-    final activateContext =
-        focusedContext ??
-        ((intent is PreviousFocusIntent || intent is NextFocusIntent)
-            ? context
-            : null);
-
-    if (activateContext != null) {
-      final emitEvent = _checkEmit(activateContext, intent);
-      if (emitEvent) {
-        Actions.maybeInvoke(activateContext, intent);
+    final intents = _find(event);
+    for (final (intent, activated, canceled) in intents) {
+      if (canceled) {
+        _repeat[intent]?.cancel();
+        _repeat.remove(intent);
+      }
+      if (activated) {
+        _maybeInvokeIntent(intent, const Duration(milliseconds: 700));
       }
     }
-
     _updatePreviousAxisValues(event);
   }
 
-  Intent? _find(NormalizedGamepadEvent event) {
-    final buttonPressed = event.button != null && event.value != 0;
-    final axisMaybeActive =
-        event.axis != null &&
-        _minAxisThreshold != null &&
-        event.value.abs() > _minAxisThreshold!.abs();
-    if (!buttonPressed && !axisMaybeActive) {
-      return null;
-    }
-
+  /// Find intents that match the given gamepad event.
+  ///
+  /// Return list of (Intent, activated, canceled)
+  List<(Intent, bool, bool)> _find(NormalizedGamepadEvent event) {
+    final result = <(Intent, bool, bool)>[];
     for (final entry in widget.shortcuts.entries) {
       final activator = entry.key;
       switch (activator) {
         case final GamepadActivatorButton buttonActivator:
           if (buttonActivator.button == event.button) {
-            return entry.value;
+            result.add((entry.value, event.value != 0, event.value == 0));
           }
         case final GamepadActivatorAxis axisActivator:
           if (axisActivator.axis == event.axis) {
             final activatorSign = axisActivator.minThreshold > 0;
             final inputSign = event.value > 0;
-            if (activatorSign == inputSign &&
+            // Axis is activated when moving to from below Threshold to
+            // above it.
+            final axisActivated =
+                activatorSign == inputSign &&
                 event.value.abs() > axisActivator.minThreshold.abs() &&
-                (!previousAxisValue.containsKey(axisActivator.axis) ||
-                    previousAxisValue[axisActivator.axis]!.abs() <=
-                        axisActivator.minThreshold.abs())) {
-              return entry.value;
-            }
+                (!_previousAxisValue.containsKey(axisActivator.axis) ||
+                    _previousAxisValue[axisActivator.axis]!.abs() <=
+                        axisActivator.minThreshold.abs());
+            // Cancel is easier as duplicate cancels is not an issue.
+            final axisCanceled = axisActivator.minThreshold > 0 ?
+                event.value <= axisActivator.minThreshold
+                : event.value >= axisActivator.minThreshold ;
+            result.add((entry.value, axisActivated, axisCanceled));
           }
       }
     }
-    return null;
+    return result;
   }
 
-  bool _checkEmit(BuildContext activateContext, Intent intent) {
+  /// Invoke [intent] on target context if it is not being blocked by
+  /// onBeforeInvoke or CallbackInterceptor.onBeforeInvoke. Also
+  /// schedule a repeat after [repeatDuration].
+  void _maybeInvokeIntent(Intent intent, Duration repeatDuration) {
+    final activateContext = _resolveInvokeContext(intent);
+    if (activateContext != null) {
+      // Activate the timer before calling _allowInvoke so that interceptors
+      // receive repeated input.
+      _repeat[intent] = Timer(
+        repeatDuration,
+        () => _onRepeat(intent),
+      );
+      final allowInvoke = _allowInvoke(activateContext, intent);
+      if (allowInvoke) {
+        Actions.maybeInvoke(activateContext, intent);
+      }
+    }
+  }
+
+  /// Resolve target context for given [intent]
+  BuildContext? _resolveInvokeContext(Intent intent) {
+    // Same lookup as [ShortcutManager.handleKeypress]
+    final focusedContext = primaryFocus?.context;
+    // Allow previous/next to use parent context when focusContext is null
+    // to allow user to focus something even when there is no autofocus.
+    return focusedContext ??
+        ((intent is PreviousFocusIntent || intent is NextFocusIntent)
+            ? context
+            : null);
+  }
+
+  /// Check if invoking [intent] is permitted by
+  /// CallbackInterceptor.onBeforeInvoke and onBeforeInvoke.
+  bool _allowInvoke(BuildContext activateContext, Intent intent) {
     final interceptor = activateContext
         .findAncestorWidgetOfExactType<GamepadInterceptor>();
-    var emit = true;
+    var allow = true;
     if (interceptor != null) {
-      emit = interceptor.onBeforeIntent(intent);
+      allow = interceptor.onBeforeIntent(intent);
     }
-    if (emit && widget.onBeforeIntent != null) {
-      emit = widget.onBeforeIntent!(intent);
+    if (allow && widget.onBeforeIntent != null) {
+      allow = widget.onBeforeIntent!(intent);
     }
-    return emit;
+    return allow;
+  }
+
+  void _onRepeat(Intent intent) {
+    _maybeInvokeIntent(intent, const Duration(milliseconds: 200));
   }
 
   void _updatePreviousAxisValues(NormalizedGamepadEvent event) {
     if (event.axis != null) {
-      previousAxisValue[event.axis!] = event.value;
+      _previousAxisValue[event.axis!] = event.value;
     }
   }
 }
