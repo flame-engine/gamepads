@@ -28,6 +28,7 @@ those situations.
 
 ## Usage
 
+
 ### GamepadControl
 
 Wrap your widgets with GamepadControl to allow users to navigate it using their gamepad. It is
@@ -112,6 +113,7 @@ is reset to default (non-activated) state.
 
 
 ## Implementation strategy recommendation
+
 
 ### Step 1 - Clear focus indicators
 
