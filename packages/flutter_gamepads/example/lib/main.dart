@@ -3,7 +3,6 @@ import 'package:flutter_gamepads/flutter_gamepads.dart';
 import 'package:flutter_gamepads_example/pages/home_page.dart';
 import 'package:flutter_gamepads_example/pages/settings_page.dart';
 import 'package:flutter_gamepads_example/theme.dart';
-import 'package:gamepads/gamepads.dart';
 
 void main() {
   runApp(const MyApp());

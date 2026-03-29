@@ -100,7 +100,7 @@ class HomePage extends StatelessWidget {
           Text(activator),
           Padding(
             padding: const EdgeInsets.only(left: 30),
-            child: Text('→   ${intentText}'),
+            child: Text('→   $intentText'),
           ),
         ],
       );

@@ -59,7 +59,6 @@ class GamepadControl extends StatefulWidget {
       GamepadActivatorAxis.rightStickRight(): ScrollIntent(
         direction: AxisDirection.right,
       ),
-
     },
 
     /// Delay after first input until first input repeat occurs.
@@ -148,9 +147,9 @@ class _GamepadControlState extends State<GamepadControl> {
                     _previousAxisValue[axisActivator.axis]!.abs() <=
                         axisActivator.minThreshold.abs());
             // Cancel is easier as duplicate cancels is not an issue.
-            final axisCanceled = axisActivator.minThreshold > 0 ?
-                event.value <= axisActivator.minThreshold
-                : event.value >= axisActivator.minThreshold ;
+            final axisCanceled = axisActivator.minThreshold > 0
+                ? event.value <= axisActivator.minThreshold
+                : event.value >= axisActivator.minThreshold;
             result.add((entry.value, axisActivated, axisCanceled));
           }
       }
