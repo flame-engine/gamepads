@@ -1,3 +1,7 @@
+## 0.1.10
+
+ - **FEAT**: Normalize gamepad output across controllers and platforms ([#82](https://github.com/flame-engine/gamepads/issues/82)). ([2a712e1f](https://github.com/flame-engine/gamepads/commit/2a712e1fd35140f9412e0aae2d7c040dcff84ec1))
+
 ## 0.1.9
 
  - **FEAT**: Support for Web ([#48](https://github.com/flame-engine/gamepads/issues/48)). ([eae56125](https://github.com/flame-engine/gamepads/commit/eae56125423acd3beea7387dbae0085a24ea5995))

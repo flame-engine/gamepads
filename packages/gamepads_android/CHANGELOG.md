@@ -1,3 +1,7 @@
+## 0.1.7
+
+ - **FEAT**: Normalize gamepad output across controllers and platforms ([#82](https://github.com/flame-engine/gamepads/issues/82)). ([2a712e1f](https://github.com/flame-engine/gamepads/commit/2a712e1fd35140f9412e0aae2d7c040dcff84ec1))
+
 ## 0.1.6
 
  - **FIX**: Fix incorrect handling of unhandled MotionEvent axes on android ([#74](https://github.com/flame-engine/gamepads/issues/74)). ([dbd2ced1](https://github.com/flame-engine/gamepads/commit/dbd2ced145a8d009e68696b090a55664d25b2a4a))

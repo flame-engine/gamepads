@@ -1,3 +1,10 @@
+## 0.2.0
+
+> Note: This release has breaking changes.
+
+ - **FEAT**: Normalize gamepad output across controllers and platforms ([#82](https://github.com/flame-engine/gamepads/issues/82)). ([2a712e1f](https://github.com/flame-engine/gamepads/commit/2a712e1fd35140f9412e0aae2d7c040dcff84ec1))
+ - **BREAKING** **REFACTOR**: Update to windows GameInput api ([#81](https://github.com/flame-engine/gamepads/issues/81)). ([6dccf50b](https://github.com/flame-engine/gamepads/commit/6dccf50b42c0cce079a06df4e9ab2399f9264b2f))
+
 ## 0.1.4+1
 
  - **FIX**: Use `std::optional` for return from `GamepadListenerProc` ([#58](https://github.com/flame-engine/gamepads/issues/58)). ([fbf52fd2](https://github.com/flame-engine/gamepads/commit/fbf52fd281cec345b110c8a5c63053cafd4571cd))

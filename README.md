@@ -30,12 +30,22 @@
 
 ---
 
-> **Note**: This plugin is still in beta. All APIs are subject to change. Any feedback is appreciated.
-
 Gamepads is a Flutter plugin to handle gamepad (or joystick) input across multiple platforms.
 
 It supports multiple simultaneously connected gamepads, and will automatically detect and listen to
 new connections.
+
+
+## Platform Support
+
+| Platform | Status |
+|----------|--------|
+| Android  | Supported |
+| iOS      | Supported |
+| macOS    | Supported |
+| Linux    | Supported |
+| Windows  | Supported |
+| Web      | Supported |
 
 
 ## Getting Started
@@ -49,7 +59,42 @@ The `list` method will list all currently connected gamepads:
 
 This uses the data class `GamepadController`, which has an `id` and a user-facing `name`.
 
-And the `events` stream will broadcast input events from all gamepads:
+Listen to `normalizedEvents` for gamepad input with consistent
+button/axis names and value ranges across all platforms:
+
+```dart
+Gamepads.normalizedEvents.listen((event) {
+  if (event.button == GamepadButton.a && event.value != 0) {
+    print('A button pressed!');
+  }
+  if (event.axis == GamepadAxis.leftStickX) {
+    print('Left stick X: ${event.value}');
+  }
+});
+```
+
+The platform is auto-detected. The `normalizedEvents` stream
+is lazy — normalization only runs while there is an active
+listener. When nobody is listening, no normalized events are
+created.
+
+To override the auto-detected platform, set a custom
+normalizer before accessing `normalizedEvents`:
+
+```dart
+Gamepads.normalizer = GamepadNormalizer.forPlatform(
+  GamepadPlatform.linux,
+);
+```
+
+
+## Raw Events
+
+If you need access to the underlying platform-specific events,
+use the `events` stream instead. Note that raw key names and
+value ranges differ across platforms (e.g., the A button is
+`"0"` on Linux, `"a"` on Windows, `"buttonA"` on iOS,
+`"KEYCODE_BUTTON_A"` on Android, and `"button 0"` on Web).
 
 ```dart
   Gamepads.events.listen((event) {
@@ -82,14 +127,63 @@ class GamepadEvent {
 }
 ```
 
+Normalized events always preserve the original raw event via
+`NormalizedGamepadEvent.rawEvent`, so you can fall back to
+platform-specific handling when needed.
 
-## Next Steps
 
-As mentioned, this is still a WIP library. Not only APIs are expected to change if needed, but we
- plan to add more features, like:
+## Standard Gamepad Model
 
-- stream to listen for connecting/disconnecting gamepads
-- get current state of a gamepad
+Buttons and axes follow the Xbox/standard gamepad layout:
+
+| Type     | Values                       | Range       |
+|----------|------------------------------|-------------|
+| `Button` | `a`, `b`, `x`, `y`           | 0.0 or 1.0  |
+| `Button` | `leftBumper`, `rightBumper`  | 0.0 or 1.0  |
+| `Button` | `leftTrigger`, `rightTrigger`| 0.0 or 1.0  |
+| `Button` | `back`, `start`, `home`      | 0.0 or 1.0  |
+| `Button` | `leftStick`, `rightStick`    | 0.0 or 1.0  |
+| `Button` | `dpadUp/Down/Left/Right`     | 0.0 or 1.0  |
+| `Axis`   | `leftStickX`, `leftStickY`   | -1.0 to 1.0 |
+| `Axis`   | `rightStickX`, `rightStickY` | -1.0 to 1.0 |
+| `Axis`   | `leftTrigger`, `rightTrigger`| 0.0 to 1.0  |
+
+Buttons use 0.0 (released) and 1.0 (pressed).
+Stick conventions: Left/Down = -1, Right/Up = +1.
+
+
+## Platform Details
+
+**iOS / macOS** — Uses the GCController API. Button and axis
+names are SF Symbols strings (e.g. `a.circle`, `l.joystick`),
+which the normalizer matches by pattern.
+
+**Android** — Uses `KeyEvent` and `MotionEvent` with
+platform-defined key codes (e.g. `KEYCODE_BUTTON_A`,
+`AXIS_X`). No device-specific lookup needed.
+
+**Web** — Uses the W3C Gamepad API with the standard mapping.
+Buttons and axes are reported as numeric indices (`button 0`,
+`analog 0`).
+
+**Windows** — Uses the
+[GameInput API](https://learn.microsoft.com/en-us/gaming/gdk/docs/reference/input/gameinput/gameinput_members)
+v0 which provides consistent named keys (e.g. `a`, `leftThumbstickX`)
+for all controllers. To compile for windows you need Windows SDK which
+gets installed when you setup [Windows target for Flutter](https://docs.flutter.dev/platform-integration/windows/setup).
+End users do not need Windows SDK.
+
+**Linux** — Uses raw numeric joystick indices that vary by
+controller hardware. The normalizer uses a bundled copy of
+the community-maintained
+[SDL GameController DB](https://github.com/gabomdq/SDL_GameControllerDB)
+to select the correct mapping by vendor/product ID (1500+
+controllers). Unknown controllers fall back to an Xbox-like
+layout. You can load additional mappings at runtime via
+`ControllerDatabase.loadSdlMappings()`.
+
+
+## Contributing
 
 If you are interested in helping, please reach out!
 You can use GitHub or our [Discord server](https://discord.gg/pxrBmy4).
@@ -144,6 +238,21 @@ class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
 }
 
 ```
+
+
+## Windows troubleshooting
+
+If you get a compilation error due to missing "GameInput.h" it
+is because it doesn't find your [Windows SDK](https://learn.microsoft.com/en-us/windows/apps/windows-sdk/)
+installation.
+
+Make sure you have setup [Windows target for Flutter](https://docs.flutter.dev/platform-integration/windows/setup).
+It is specifically the step to setup C++ for desktop development
+that installs Windows SDK.
+
+Neither package users (developers) nor end users needs GameInput
+redistributable. This is because gamepads uses GameInput API v0
+which is statically linked.
 
 
 ## Support

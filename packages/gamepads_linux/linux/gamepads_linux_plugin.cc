@@ -53,6 +53,9 @@ static void emit_gamepad_event(gamepad::GamepadInfo* gamepad,
     fl_value_set_string(
         map, "key", fl_value_new_string(std::to_string(event.number).c_str()));
     fl_value_set_string(map, "value", fl_value_new_float(event.value));
+    fl_value_set_string(map, "vendorId", fl_value_new_int(gamepad->vendor_id));
+    fl_value_set_string(map, "productId",
+                        fl_value_new_int(gamepad->product_id));
     fl_method_channel_invoke_method(channel, "onGamepadEvent", map, nullptr,
                                     nullptr, nullptr);
   }

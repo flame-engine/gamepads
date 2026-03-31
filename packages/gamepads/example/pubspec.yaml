@@ -11,7 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  gamepads: ^0.1.9
+  gamepads: ^0.1.10
+  share_plus: ^10.0.0
+  web: ^1.1.1
 
 dev_dependencies:
   flame_lint: ^1.4.1

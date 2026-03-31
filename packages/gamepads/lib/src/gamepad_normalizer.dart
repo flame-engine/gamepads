@@ -1,0 +1,247 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:gamepads/src/api/normalized_gamepad_event.dart';
+import 'package:gamepads/src/mappings/android_mapping.dart';
+import 'package:gamepads/src/mappings/ios_mapping.dart';
+import 'package:gamepads/src/mappings/linux_mapping.dart';
+import 'package:gamepads/src/mappings/macos_mapping.dart';
+import 'package:gamepads/src/mappings/platform_mapping.dart';
+import 'package:gamepads/src/mappings/web_standard_mapping.dart';
+import 'package:gamepads/src/mappings/windows_mapping.dart';
+import 'package:gamepads_platform_interface/api/gamepad_event.dart';
+
+/// The platform this normalizer should use for mapping.
+enum GamepadPlatform {
+  android('Android'),
+  ios('iOS'),
+  macos('Mac OS X'),
+  linux('Linux'),
+  windows('Windows'),
+  web('Web');
+
+  const GamepadPlatform(this.sdlName);
+
+  /// The platform name as used in SDL GameController DB entries.
+  final String sdlName;
+
+  /// Looks up a [GamepadPlatform] by its SDL platform name string.
+  ///
+  /// Returns `null` if the name is not recognized.
+  static GamepadPlatform? fromSdlName(String name) {
+    for (final platform in values) {
+      if (platform.sdlName == name) {
+        return platform;
+      }
+    }
+    return null;
+  }
+}
+
+/// Transforms raw [GamepadEvent]s into [NormalizedGamepadEvent]s using
+/// platform-specific mappings.
+///
+/// The platform is auto-detected by default. You can override it:
+/// ```dart
+/// final normalizer = GamepadNormalizer(platform: GamepadPlatform.linux);
+/// ```
+///
+/// For stream transformation:
+/// ```dart
+/// final normalizedStream = rawStream
+///     .transform(normalizer.transformer);
+/// ```
+class GamepadNormalizer {
+  final PlatformMapping _mapping;
+  final Map<String, PlatformMapping> _deviceMappings = {};
+
+  late final StreamTransformer<GamepadEvent, NormalizedGamepadEvent>
+  _transformer = StreamTransformer.fromHandlers(
+    handleData: (event, sink) {
+      _normalizeInto(event, sink.add);
+    },
+  );
+
+  /// Creates a normalizer that auto-detects the current platform.
+  GamepadNormalizer() : _mapping = _createMapping(_detectPlatform());
+
+  /// Creates a normalizer for a specific platform.
+  GamepadNormalizer.forPlatform(GamepadPlatform platform)
+    : _mapping = _createMapping(platform);
+
+  /// Creates a normalizer with a custom mapping (useful for testing).
+  GamepadNormalizer.withMapping(this._mapping);
+
+  static GamepadPlatform _detectPlatform() {
+    if (kIsWeb) {
+      return GamepadPlatform.web;
+    }
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return GamepadPlatform.android;
+      case TargetPlatform.iOS:
+        return GamepadPlatform.ios;
+      case TargetPlatform.macOS:
+        return GamepadPlatform.macos;
+      case TargetPlatform.linux:
+        return GamepadPlatform.linux;
+      case TargetPlatform.windows:
+        return GamepadPlatform.windows;
+      case TargetPlatform.fuchsia:
+        return GamepadPlatform.linux;
+    }
+  }
+
+  static PlatformMapping _createMapping(GamepadPlatform platform) {
+    switch (platform) {
+      case GamepadPlatform.android:
+        return AndroidMapping();
+      case GamepadPlatform.ios:
+        return IosMapping();
+      case GamepadPlatform.macos:
+        return MacosMapping();
+      case GamepadPlatform.linux:
+        return LinuxMapping();
+      case GamepadPlatform.windows:
+        return WindowsMapping();
+      case GamepadPlatform.web:
+        return WebStandardMapping();
+    }
+  }
+
+  /// Sets the device info for a specific gamepad, allowing device-specific
+  /// mappings to be selected (relevant for Linux and Windows).
+  void setDeviceInfo(
+    String gamepadId, {
+    required int vendorId,
+    required int productId,
+  }) {
+    _deviceMappings[gamepadId] = _mapping.forDevice(
+      vendorId: vendorId,
+      productId: productId,
+    );
+  }
+
+  /// Removes the cached device mapping for [gamepadId].
+  ///
+  /// Call this when a gamepad disconnects so the mapping is refreshed
+  /// if a different controller later reuses the same id.
+  void removeDevice(String gamepadId) {
+    _deviceMappings.remove(gamepadId);
+  }
+
+  PlatformMapping _mappingFor(String gamepadId) {
+    return _deviceMappings[gamepadId] ?? _mapping;
+  }
+
+  /// Normalizes a single [GamepadEvent].
+  ///
+  /// Returns a list of [NormalizedGamepadEvent]s. Most events produce a
+  /// single normalized event, but d-pad axis events may produce multiple
+  /// button events (e.g., dpadLeft pressed + dpadRight released).
+  ///
+  /// Returns an empty list if the event could not be normalized.
+  List<NormalizedGamepadEvent> normalize(GamepadEvent event) {
+    final results = <NormalizedGamepadEvent>[];
+    _normalizeInto(event, results.add);
+    return results;
+  }
+
+  /// Normalizes an event and passes each result to [emit], avoiding
+  /// intermediate list allocation when used with a stream sink.
+  void _normalizeInto(
+    GamepadEvent event,
+    void Function(NormalizedGamepadEvent) emit,
+  ) {
+    // Auto-configure device mapping from VID/PID on first event.
+    if (event.vendorId != null &&
+        event.productId != null &&
+        !_deviceMappings.containsKey(event.gamepadId)) {
+      setDeviceInfo(
+        event.gamepadId,
+        vendorId: event.vendorId!,
+        productId: event.productId!,
+      );
+    }
+    final mapping = _mappingFor(event.gamepadId);
+
+    switch (event.type) {
+      case KeyType.button:
+        final result = mapping.normalizeButton(event.key, event.value);
+        if (result != null) {
+          emit(
+            NormalizedGamepadEvent(
+              gamepadId: event.gamepadId,
+              timestamp: event.timestamp,
+              value: result.value,
+              rawEvent: event,
+              button: result.button,
+            ),
+          );
+          return;
+        }
+        // Some platforms (macOS) report d-pad as button type with
+        // axis-style keys. Check d-pad for unmatched button events.
+        final buttonDpadResults = mapping.normalizeDpadAxis(
+          event.key,
+          event.value,
+        );
+        for (final dpad in buttonDpadResults) {
+          emit(
+            NormalizedGamepadEvent(
+              gamepadId: event.gamepadId,
+              timestamp: event.timestamp,
+              value: dpad.value,
+              rawEvent: event,
+              button: dpad.button,
+            ),
+          );
+        }
+        return;
+
+      case KeyType.analog:
+        final axisResults = mapping.normalizeAxis(
+          event.key,
+          event.value,
+        );
+        if (axisResults.isNotEmpty) {
+          for (final axisResult in axisResults) {
+            emit(
+              NormalizedGamepadEvent(
+                gamepadId: event.gamepadId,
+                timestamp: event.timestamp,
+                value: axisResult.value,
+                rawEvent: event,
+                axis: axisResult.axis,
+              ),
+            );
+          }
+          // If axis matched, this is not a d-pad axis — skip dpad
+          // check.
+          return;
+        }
+
+        // Only check d-pad if the axis was not recognized above.
+        final dpadResults = mapping.normalizeDpadAxis(
+          event.key,
+          event.value,
+        );
+        for (final dpad in dpadResults) {
+          emit(
+            NormalizedGamepadEvent(
+              gamepadId: event.gamepadId,
+              timestamp: event.timestamp,
+              value: dpad.value,
+              rawEvent: event,
+              button: dpad.button,
+            ),
+          );
+        }
+    }
+  }
+
+  /// A cached [StreamTransformer] that converts a stream of
+  /// [GamepadEvent]s into a stream of [NormalizedGamepadEvent]s.
+  StreamTransformer<GamepadEvent, NormalizedGamepadEvent> get transformer =>
+      _transformer;
+}
