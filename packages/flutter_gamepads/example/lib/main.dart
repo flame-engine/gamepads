@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gamepads/flutter_gamepads.dart';
 import 'package:flutter_gamepads_example/flame_example/main.dart';
