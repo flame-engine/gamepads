@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gamepads/flutter_gamepads.dart';
 import 'package:gamepads/gamepads.dart';
@@ -54,10 +56,10 @@ class HomePage extends StatelessWidget {
             child: const Text('Play game'),
           ),
           const SizedBox(height: 20),
-              FilledButton(
-                onPressed: () => onGotoSettings(context),
-                child: const Text('Settings'),
-              ),
+          FilledButton(
+            onPressed: () => onGotoSettings(context),
+            child: const Text('Settings'),
+          ),
           const SizedBox(height: 20),
           FilledButton(
             onPressed: () => onShowDialog(context),
@@ -131,9 +133,9 @@ class HomePage extends StatelessWidget {
           // ListView.
           if (intent is ScrollIntent) {
             if (intent.direction == AxisDirection.up) {
-              controller.jumpTo(controller.offset - 100);
+              controller.jumpTo(max(0, controller.offset - 75));
             } else if (intent.direction == AxisDirection.down) {
-              controller.jumpTo(controller.offset + 100.0);
+              controller.jumpTo(min(controller.position.maxScrollExtent,  controller.offset + 75.0));
             }
             return false;
           }
@@ -146,7 +148,15 @@ class HomePage extends StatelessWidget {
             width: 200,
             child: ListView(
               controller: controller,
-              children: GamepadButton.values.map((b) => Text(b.name)).toList(),
+              children: [
+                const Text(
+                  'You can use right stick on gamepad to scroll this view.'
+                  ' It is supported via GamepadInterceptor.',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+                SizedBox(height: 20),
+                ...GamepadButton.values.map((b) => Text(b.name)),
+              ],
             ),
           ),
           actions: [

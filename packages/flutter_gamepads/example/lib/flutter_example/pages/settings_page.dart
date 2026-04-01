@@ -44,6 +44,11 @@ class _SettingsPageState extends State<SettingsPage> {
               prefixIcon: Icon(Icons.person_outline),
             ),
           ),
+          const Text(
+            'It is not possible to enter text with Gamepad',
+            style: TextStyle(fontStyle: FontStyle.italic),
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: 20),
           // This one Wraps a Slider with GamepadInterceptor to add gamepad
           // support to the default Slider widget
@@ -57,6 +62,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 volume = value;
               });
             },
+          ),
+          const Text(
+            'The slider can be changed (while it is focused) using right stick on your gamepad. Supported via GamepadInterceptor.',
+            style: TextStyle(fontStyle: FontStyle.italic),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
           ListTile(

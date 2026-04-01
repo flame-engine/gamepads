@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gamepads/flutter_gamepads.dart';
@@ -96,6 +98,27 @@ class _TickTackToeState extends State<_TickTackToe> {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelLarge!.copyWith(
               color: Colors.white70,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: min(MediaQuery.sizeOf(context).width, 500),
+              ),
+              child: const Text(
+                'GAMEPAD INFO\n'
+                'You can use the D-pad or right stick to move focus directionally up/down/left/right'
+                ' which is supported via GamepadInterceptor.'
+                '\n\n'
+                'Left stick only works while focus is within the 3x3 grid.',
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.white70,
+                ),
+                softWrap: true,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ],
