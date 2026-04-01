@@ -121,7 +121,7 @@ class HomePage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => GamepadInterceptor(
-        onBeforeIntent: (intent) {
+        onBeforeIntent: (activator, intent) {
           // The ListView just contains text and never therefore receives focus.
           // Using GamepadInterceptor we can still support scrolling this
           // ListView.

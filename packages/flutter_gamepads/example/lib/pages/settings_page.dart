@@ -48,7 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const SizedBox(height: 20),
           GamepadInterceptor(
-            onBeforeIntent: (intent) {
+            onBeforeIntent: (activator, intent) {
               // The Slider widget does not itself support any public Intent to
               // control it.
               //

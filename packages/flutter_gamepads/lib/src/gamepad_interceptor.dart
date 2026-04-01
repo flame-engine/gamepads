@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gamepads/src/api/gamepad_activator.dart';
 
 /// Wrap part of your widget tree with this widget to be able to
 /// receive onBeforeIntent locally near the widget you want to control.
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 /// a Slider() or other control you want to setup gamepad support for.
 class GamepadInterceptor extends StatelessWidget {
   final Widget child;
-  final bool Function(Intent) onBeforeIntent;
+  final bool Function(GamepadActivator activator, Intent intent) onBeforeIntent;
 
   const GamepadInterceptor({
     /// Called just before an Intent is invoked. Return false to block

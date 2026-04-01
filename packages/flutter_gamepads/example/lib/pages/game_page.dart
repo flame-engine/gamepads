@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gamepads/flutter_gamepads.dart';
+import 'package:gamepads/gamepads.dart';
 
 class GamePage extends StatelessWidget {
   const GamePage({super.key});
@@ -33,6 +34,13 @@ class _TickTackToeState extends State<_TickTackToe> {
   late final List<FocusNode> _focusNodes;
   var _player = _CellValue.x;
 
+  static const buttonDirMap = {
+    GamepadButton.dpadUp: AxisDirection.up,
+    GamepadButton.dpadDown: AxisDirection.down,
+    GamepadButton.dpadLeft: AxisDirection.left,
+    GamepadButton.dpadRight: AxisDirection.right,
+  };
+
   @override
   void initState() {
     _board = List<_CellValue>.generate(9, (_) => _CellValue.empty);
@@ -43,10 +51,14 @@ class _TickTackToeState extends State<_TickTackToe> {
   @override
   Widget build(BuildContext context) {
     return GamepadInterceptor(
-      onBeforeIntent: (intent) {
+      onBeforeIntent: (activator, intent) {
         if (intent is ScrollIntent) {
           moveFocus(intent.direction);
           return false;
+        }
+        if (activator is GamepadActivatorButton &&
+            buttonDirMap.keys.contains(activator.button)) {
+          return !moveFocus(buttonDirMap[activator.button]!);
         }
         return true;
       },
@@ -91,33 +103,38 @@ class _TickTackToeState extends State<_TickTackToe> {
     );
   }
 
-  void moveFocus(AxisDirection direction) {
-    var focusedIndex = _focusNodes.indexWhere(
+  bool moveFocus(AxisDirection direction) {
+    final focusedIndex = _focusNodes.indexWhere(
       (focusNode) => focusNode.hasFocus,
     );
-    if (focusedIndex == -1) {
-      focusedIndex = 4;
+    var newFocusedIndex = focusedIndex;
+    if (newFocusedIndex == -1) {
+      newFocusedIndex = 4;
     } else {
       switch (direction) {
         case AxisDirection.down:
-          if (focusedIndex < 6) {
-            focusedIndex += 3;
+          if (newFocusedIndex < 6) {
+            newFocusedIndex += 3;
           }
         case AxisDirection.up:
-          if (focusedIndex > 2) {
-            focusedIndex -= 3;
+          if (newFocusedIndex > 2) {
+            newFocusedIndex -= 3;
           }
         case AxisDirection.left:
-          if (focusedIndex % 3 > 0) {
-            focusedIndex -= 1;
+          if (newFocusedIndex % 3 > 0) {
+            newFocusedIndex -= 1;
           }
         case AxisDirection.right:
-          if (focusedIndex % 3 < 2) {
-            focusedIndex += 1;
+          if (newFocusedIndex % 3 < 2) {
+            newFocusedIndex += 1;
           }
       }
     }
-    _focusNodes[focusedIndex].requestFocus();
+    if (newFocusedIndex != focusedIndex) {
+      _focusNodes[newFocusedIndex].requestFocus();
+      return true;
+    }
+    return false;
   }
 
   void cellActivate(int index) {

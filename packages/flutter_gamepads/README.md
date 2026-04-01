@@ -48,7 +48,7 @@ If you want to intercept a Gamepad intent locally next to a Widget you can do so
 
 ```dart
 GamepadInterceptor(
-    onBeforeIntent: (intent) {
+    onBeforeIntent: (activator, intent) {
         if (intent is ScrollIntent) {
             if (intent.direction = AxisDirection.right) {
                 setState(() _value = min(100, _value + 10));

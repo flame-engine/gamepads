@@ -34,7 +34,7 @@ void main() {
         valueListenable: ignoreEvents,
         builder: (context, value, child) {
           return GamepadControl(
-            onBeforeIntent: (intent) {
+            onBeforeIntent: (activator, intent) {
               if (intent is ActivateIntent) {
                 beforeInvokeActivate = true;
               } else if (intent is DismissIntent) {
@@ -140,7 +140,7 @@ void main() {
     var secondPressed = false;
     final widget = MaterialApp(
       home: GamepadControl(
-        onBeforeIntent: (intent) {
+        onBeforeIntent: (activator, intent) {
           rootBeforeIntentCalled = true;
           return rootEmit;
         },
@@ -151,7 +151,7 @@ void main() {
               child: const Text('Button'),
             ),
             GamepadInterceptor(
-              onBeforeIntent: (intent) {
+              onBeforeIntent: (activator, intent) {
                 interceptorBeforeIntentCalled = true;
                 return interceptorEmit;
               },
