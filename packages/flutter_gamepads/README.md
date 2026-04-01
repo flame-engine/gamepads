@@ -74,6 +74,9 @@ GamepadInterceptor(
 Note that `GamepadInterceptor` must be placed below the `GamepadControl` widget in the
 widget tree.
 
+An example of how to package an Gamepad-extended widget can be found in
+[SliderWithGamepadExport](example/lib/flutter_example/pages/slider_with_gamepad_support.dart).
+
 
 ### Changing the Gamepad bindings
 
