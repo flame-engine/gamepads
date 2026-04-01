@@ -26,15 +26,16 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="4.4598915"
-     inkscape:cx="10.538373"
-     inkscape:cy="7.9598349"
+     inkscape:zoom="8.919783"
+     inkscape:cx="19.899587"
+     inkscape:cy="10.370207"
      inkscape:window-width="1920"
-     inkscape:window-height="1057"
-     inkscape:window-x="-8"
+     inkscape:window-height="1129"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     showgrid="false" />
   <defs
      id="defs1" />
   <g
@@ -43,7 +44,7 @@
      id="layer1">
     <path
        style="fill:#faef00;fill-opacity:1;fill-rule:evenodd;stroke:#3a3800;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 2.8439944,0.7936416 4.3816872,2.9293438 2.428719,5.4803213 3.8525205,7.7346737 3.3185948,5.5989716 6.0380299,2.988669 4.9749378,0.7936416 Z"
+       d="M 2.6898306,0.7936416 4.2275234,2.9293438 3.3328885,5.4803213 4.75669,7.7346737 4.2227643,5.5989716 5.8838661,2.988669 4.820774,0.7936416 Z"
        id="path1"
        sodipodi:nodetypes="cccccccc" />
   </g>
