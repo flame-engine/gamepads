@@ -89,6 +89,10 @@ class _GamepadControlState extends State<GamepadControl> {
   @override
   void dispose() {
     _subscription?.cancel();
+    _repeat.values.forEach((timer) {
+      timer.cancel();
+    });
+    _repeat.clear();
     super.dispose();
   }
 
