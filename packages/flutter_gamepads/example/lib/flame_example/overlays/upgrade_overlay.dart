@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gamepads_example/flame_example/game.dart';
+import 'package:flutter_gamepads_example/flame_example/overlays/overlay_dialog_backdrop.dart';
 import 'package:flutter_gamepads_example/flame_example/overlays/overlays.dart';
 import 'package:flutter_gamepads_example/flame_example/state/game_state.dart';
 
@@ -9,7 +10,7 @@ class UpgradeOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FocusScope(
+    return OverlayDialogBackdrop(
       child: AlertDialog(
         title: const Text('Upgrades'),
         content: SizedBox(
@@ -35,7 +36,6 @@ class UpgradeOverlay extends StatelessWidget {
         ),
         actions: [
           FilledButton(
-            autofocus: true,
             onPressed: () {
               game.hideOverlay(MyOverlays.upgrade);
             },
