@@ -149,3 +149,24 @@ Use onBeforeIntent to catch eg. the ScrollIntent and use that to implement inter
 with your widget.
 
 Then test and repeat.
+
+
+### Flame specific guidance
+
+`flutter_gamepad` can be helpful in scenarios when you have overlays in your
+Flame game that you want users to be able to navigate with their gamepad.
+
+1. Wrap your `GameWidget` with a `GamepadControl` widget
+2. For overlays that represent a modal dialog, you will need to trap the focus
+   in the dialog. See
+   [OverlayDialogBackdrop](example/lib/flame_example/overlays/overlay_dialog_backdrop.dart)
+   in Flame example app for how you can do that. In that example the dialog itself
+   will receive the focus so that when a mouse user opens the dialog, it won't show
+   a focus indicator on a button in the dialog.
+3. To close overlay dialogs on DismissIntent, you will need to catch it with
+   `onBeforeIntent` and close the overlay. In
+   [Flame Example](example/lib/flame_example/main.dart) this is done generically
+   at the root, but could instead wrap each dialog in a `GamepadInterceptor` to
+   do it locally if you need to guard closing the dialog by some condition.
+4. If you need to disable `GamepadControl` while in-game you can do so by setting
+   `ignoreEvents = true` on it.
