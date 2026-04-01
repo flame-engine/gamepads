@@ -7,7 +7,7 @@ A Flutter plugin to handle gamepad input across multiple platforms.
 
 Using just `GamepadControl` out-of-the-box allow users to change focus around your app
 similar to using the Tab key, but using the D-pad buttons on their gamepad. Several
-'simple' widgets like Buttons, DropdownMenu, Switch etc. just works.
+'simple' widgets like buttons, DropdownMenu, Switch etc. just works.
 
 Some more complex interactive widgets like eg. the Slider widget needs some special attention
 to support. This package provides a `GamepadInterceptor` widget that you can use to handle
@@ -31,8 +31,8 @@ those situations.
 
 ### GamepadControl
 
-Wrap your widgets with GamepadControl to allow users to navigate it using their gamepad. It is
-recommended to at any given time only have one GamepadControl in your widget tree.
+Wrap your widgets with `GamepadControl` to allow users to navigate it using their gamepad. It is
+recommended to at any given time only have one `GamepadControl` in your widget tree.
 
 ```dart
 GamepadControl(
@@ -44,7 +44,7 @@ GamepadControl(
 ### GamepadInterceptor
 
 If you want to intercept a Gamepad intent locally next to a Widget you can do so with
-`GamepadInterceptor`. Its onBeforeIntent is only called if a descendant widget has focus.
+`GamepadInterceptor`. Its `onBeforeIntent` is only called if a descendant widget has focus.
 
 ```dart
 GamepadInterceptor(
@@ -80,8 +80,9 @@ An example of how to package an Gamepad-extended widget can be found in
 
 ### Changing the Gamepad bindings
 
-You can customize the default gamepad bindings by providing a map between GamepadActivator
-and any Intent.
+You can customize the default gamepad bindings by providing a map between `GamepadActivator`
+and any `Intent`. Flutter comes with a set of generally supported intents, but you can also
+pass in your custom Intents as long as you provide Actions for them.
 
 ```dart
 GamepadControl(
@@ -107,12 +108,12 @@ GamepadControl(
 
 ### Temporary disabling Gamepad input
 
-From onBeforeIntent in a GamepadInterceptor or the GamepadControl widget you can return
+From `onBeforeIntent` in a `GamepadInterceptor` or the `GamepadControl` widget you can return
 false to block an intent from being emitted.
 
-On GamepadControl you may also set ignoreEvents = true to an an earlier level temporarily
-block all Gamepad input processing. When ignoreEvents is reset to false, all axis input
-is reset to default (non-activated) state.
+On `GamepadControl` you may also set `ignoreEvents = true` to an an earlier level temporarily
+block all Gamepad input processing. Setting `ignoreEvents` to true does clear currently activated
+axes and resets repeats, while `onBeforeIntent` just block each intent from being emitted.
 
 
 ## Implementation strategy recommendation
@@ -148,7 +149,7 @@ GamepadControl(
 Then, wrap those problematic widgets with `GamepadInterceptor` and ensure that the widget
 itself can receive focus.
 
-Use onBeforeIntent to catch eg. the ScrollIntent and use that to implement interaction
+Use `onBeforeIntent` to catch eg. the `ScrollIntent` and use that to implement interaction
 with your widget.
 
 Then test and repeat.
