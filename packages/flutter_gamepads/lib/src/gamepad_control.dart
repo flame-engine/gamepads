@@ -21,6 +21,7 @@ class GamepadControl extends StatefulWidget {
 
   final Map<GamepadActivator, Intent> shortcuts;
 
+  final Set<Intent> repeatIntents;
   final Duration initialRepeatDelay;
   final Duration repeatedRepeatDelay;
 
@@ -69,6 +70,22 @@ class GamepadControl extends StatefulWidget {
       GamepadActivatorAxis.rightStickRight(): ScrollIntent(
         direction: AxisDirection.right,
       ),
+    },
+
+    /// Set of intents which will be repeated if a GamepadActivator
+    /// linked to this Intent is being activated for
+    /// [initialRepeatDelay]. After that [repeatedRepeatDelay] sets
+    /// the delay between each repeat.
+    ///
+    /// Intents not listed here will not have input repetition on
+    /// hold.
+    this.repeatIntents = const {
+      PreviousFocusIntent(),
+      NextFocusIntent(),
+      ScrollIntent(direction: AxisDirection.up),
+      ScrollIntent(direction: AxisDirection.down),
+      ScrollIntent(direction: AxisDirection.left),
+      ScrollIntent(direction: AxisDirection.right),
     },
 
     /// Delay after first input until first input repeat occurs.
@@ -128,7 +145,11 @@ class _GamepadControlState extends State<GamepadControl> {
         _repeat.remove(intent);
       }
       if (activated) {
-        _maybeInvokeIntent(activator, intent, const Duration(milliseconds: 700));
+        _maybeInvokeIntent(
+          activator,
+          intent,
+          const Duration(milliseconds: 700),
+        );
       }
     }
     _updatePreviousAxisValues(event);
@@ -137,14 +158,21 @@ class _GamepadControlState extends State<GamepadControl> {
   /// Find intents that match the given gamepad event.
   ///
   /// Return list of (Intent, activated, canceled)
-  List<(GamepadActivator, Intent, bool, bool)> _find(NormalizedGamepadEvent event) {
+  List<(GamepadActivator, Intent, bool, bool)> _find(
+    NormalizedGamepadEvent event,
+  ) {
     final result = <(GamepadActivator, Intent, bool, bool)>[];
     for (final entry in widget.shortcuts.entries) {
       final activator = entry.key;
       switch (activator) {
         case final GamepadActivatorButton buttonActivator:
           if (buttonActivator.button == event.button) {
-            result.add((activator, entry.value, event.value != 0, event.value == 0));
+            result.add((
+              activator,
+              entry.value,
+              event.value != 0,
+              event.value == 0,
+            ));
           }
         case final GamepadActivatorAxis axisActivator:
           if (axisActivator.axis == event.axis) {
@@ -174,15 +202,19 @@ class _GamepadControlState extends State<GamepadControl> {
   /// schedule a repeat after [repeatDuration].
   void _maybeInvokeIntent(
     GamepadActivator activator,
-    Intent intent, Duration repeatDuration) {
+    Intent intent,
+    Duration repeatDuration,
+  ) {
     final activateContext = _resolveInvokeContext(intent);
     if (activateContext != null) {
       // Activate the timer before calling _allowInvoke so that interceptors
       // receive repeated input.
-      _repeat[intent] = Timer(
-        repeatDuration,
-        () => _onRepeat(activator, intent),
-      );
+      if (widget.repeatIntents.contains(intent)) {
+        _repeat[intent] = Timer(
+          repeatDuration,
+          () => _onRepeat(activator, intent),
+        );
+      }
       final allowInvoke = _allowInvoke(activateContext, activator, intent);
       if (allowInvoke) {
         Actions.maybeInvoke(activateContext, intent);
@@ -204,7 +236,11 @@ class _GamepadControlState extends State<GamepadControl> {
 
   /// Check if invoking [intent] is permitted by
   /// CallbackInterceptor.onBeforeInvoke and onBeforeInvoke.
-  bool _allowInvoke(BuildContext activateContext, GamepadActivator activator, Intent intent) {
+  bool _allowInvoke(
+    BuildContext activateContext,
+    GamepadActivator activator,
+    Intent intent,
+  ) {
     final interceptor = activateContext
         .findAncestorWidgetOfExactType<GamepadInterceptor>();
     var allow = true;

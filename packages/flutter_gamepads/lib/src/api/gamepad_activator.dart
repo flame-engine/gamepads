@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:gamepads/gamepads.dart';
 
+@immutable
 class GamepadActivator {
   const GamepadActivator();
 }
