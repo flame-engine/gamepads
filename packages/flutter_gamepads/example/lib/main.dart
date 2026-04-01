@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gamepads/flutter_gamepads.dart';
 import 'package:flutter_gamepads_example/flame_example/main.dart';
@@ -8,11 +10,12 @@ void main() {
 }
 
 enum Example {
-  flutter('A pure Flutter example'),
-  flame('A Flame game example');
+  flutter('Flutter Example', 'A pure Flutter example'),
+  flame('Flame Example', 'A Flame game with overlays');
 
-  const Example(this.description);
+  const Example(this.label, this.description);
 
+  final String label;
   final String description;
 }
 
@@ -59,8 +62,14 @@ class _ChooserAppState extends State<ChooserApp> {
                       },
                       child: Column(
                         children: [
+                          if (ex == Example.flame)
+                            Image.asset('assets/images/spaceship.png'),
+                          if (ex == Example.flutter)
+                            const FlutterLogo(
+                              size: 32,
+                            ),
                           Text(
-                            ex.name[0].toUpperCase() + ex.name.substring(1),
+                            ex.label,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           Text(ex.description),
