@@ -46,6 +46,11 @@ class HomePage extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           FilledButton(
+            onPressed: () => onShowGame(context),
+            child: const Text('Play game'),
+          ),
+          const SizedBox(height: 20),
+          FilledButton(
             onPressed: () => onShowDialog(context),
             child: const Text('Show dialog'),
           ),
@@ -105,6 +110,10 @@ class HomePage extends StatelessWidget {
         ],
       );
     }).toList();
+  }
+
+  void onShowGame(BuildContext context) {
+    Navigator.of(context).pushNamed('/game');
   }
 
   void onShowDialog(BuildContext context) {
