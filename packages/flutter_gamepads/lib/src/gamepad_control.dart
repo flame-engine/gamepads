@@ -25,13 +25,18 @@ class GamepadControl extends StatefulWidget {
     /// Called just before an Intent is invoked. Return false to block
     /// emitting the Intent.
     ///
+    /// This includes both initial activation of a button or axis, but
+    /// also repetition due to holding long enough for input repeat.
+    ///
     /// Additionally, you can wrap something deep in your tree with
     /// [GamepadInterceptor] widget to receive onBeforeIntent locally
     /// in that build context.
     this.onBeforeIntent,
 
-    /// If set to true, the gamepad control is temporarily disabled. It still
-    /// listen on the gamepad, but just ignores the events.
+    /// If set to true, the gamepad control is temporarily disabled. All
+    /// input repeats gets canceled and to activate axis inputs users
+    /// has to go from non-active to active axis value again (after
+    /// ignoreEvents has become true again).
     this.ignoreEvents = false,
 
     /// Configures the bindings between Gamepad activator (button or axis)
@@ -89,10 +94,7 @@ class _GamepadControlState extends State<GamepadControl> {
   @override
   void dispose() {
     _subscription?.cancel();
-    _repeat.values.forEach((timer) {
-      timer.cancel();
-    });
-    _repeat.clear();
+    _cancelAllRepeatTimers();
     super.dispose();
   }
 
@@ -101,6 +103,7 @@ class _GamepadControlState extends State<GamepadControl> {
     super.didUpdateWidget(oldWidget);
     if (widget.ignoreEvents) {
       _previousAxisValue.clear();
+      _cancelAllRepeatTimers();
     }
   }
 
@@ -217,5 +220,12 @@ class _GamepadControlState extends State<GamepadControl> {
     if (event.axis != null) {
       _previousAxisValue[event.axis!] = event.value;
     }
+  }
+
+  void _cancelAllRepeatTimers() {
+    _repeat.values.forEach((timer) {
+      timer.cancel();
+    });
+    _repeat.clear();
   }
 }
