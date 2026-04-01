@@ -62,7 +62,7 @@ class _StatusBarOverlayState extends State<StatusBarOverlay> {
           const SizedBox(width: 5),
           FilledButton(
             onPressed: onShowHelpOverlay,
-            child: Text('Controls'),
+            child: const Text('Controls'),
           ),
         ],
       ),

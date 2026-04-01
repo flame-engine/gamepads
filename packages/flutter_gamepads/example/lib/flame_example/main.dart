@@ -23,7 +23,7 @@ class MyFlameApp extends StatelessWidget {
           ThemeData.from(
             colorScheme: ColorScheme.dark(
               primary: Colors.orange[700]!,
-              surface: Color.lerp( Colors.orange[900], Colors.grey[800], 0.7)!,
+              surface: Color.lerp(Colors.orange[900], Colors.grey[800], 0.7)!,
             ),
           ).copyWith(
             dialogTheme: DialogThemeData(

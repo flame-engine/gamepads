@@ -71,10 +71,10 @@ class SpaceShip extends SpriteComponent
   }
 
   void _basicUpdate(double dt) {
-    bool hasTurnRail = game.gameState.installedUpgrades.value.contains(
+    final hasTurnRail = game.gameState.installedUpgrades.value.contains(
       SpaceshipUpgrades.turnRail,
     );
-    bool hasAutoBrake = game.gameState.installedUpgrades.value.contains(
+    final hasAutoBrake = game.gameState.installedUpgrades.value.contains(
       SpaceshipUpgrades.autoBrake,
     );
 
@@ -102,16 +102,6 @@ class SpaceShip extends SpriteComponent
     if (velocity.length > 0.001) {
       position.x += velocity.x * dt;
       position.y += velocity.y * dt;
-    }
-  }
-
-  void _turnRailUpdate(double dt) {
-    angle += inputX * dt * rotationVelocity;
-    dy = max(0, dy + inputY * dt * (inputY > 0 ? accel : decel));
-
-    if (dy.abs() > 0.001) {
-      position.x += cos(angle - pi / 2) * dy * dt;
-      position.y += sin(angle - pi / 2) * dy * dt;
     }
   }
 
@@ -163,6 +153,7 @@ class SpaceShip extends SpriteComponent
 }
 
 class PowerUp extends SpriteComponent {
+  @override
   Future<void> onLoad() async {
     sprite = await Sprite.load('power_up.png');
     anchor = Anchor.center;

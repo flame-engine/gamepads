@@ -1,4 +1,3 @@
-
 enum MyOverlays {
   help,
   statusbar,

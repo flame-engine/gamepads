@@ -19,7 +19,7 @@ class GamePage extends StatelessWidget {
 }
 
 class _TickTackToe extends StatefulWidget {
-  const _TickTackToe({super.key});
+  const _TickTackToe();
 
   @override
   State<_TickTackToe> createState() => _TickTackToeState();
@@ -182,7 +182,6 @@ class _Cell extends StatefulWidget {
     required this.index,
     required this.focusNode,
     required this.onActivate,
-    super.key,
   });
 
   @override
@@ -200,7 +199,7 @@ class _CellState extends State<_Cell> {
               Size(_cellSize, _cellSize),
             ),
             shape: const WidgetStatePropertyAll(
-              RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+              RoundedRectangleBorder(),
             ),
             backgroundColor: WidgetStatePropertyAll(Colors.brown[300]),
             side: WidgetStateProperty.resolveWith((state) {

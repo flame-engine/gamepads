@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gamepads/flutter_gamepads.dart';
 import 'package:flutter_gamepads_example/flutter_example/pages/slider_with_gamepad_support.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -64,7 +61,8 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           const Text(
-            'The slider can be changed (while it is focused) using right stick on your gamepad. Supported via GamepadInterceptor.',
+            'The slider can be changed (while it is focused) using right stick '
+            'on your gamepad. Supported via GamepadInterceptor.',
             style: TextStyle(fontStyle: FontStyle.italic),
             textAlign: TextAlign.center,
           ),

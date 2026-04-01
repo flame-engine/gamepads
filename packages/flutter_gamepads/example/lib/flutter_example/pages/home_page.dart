@@ -135,7 +135,12 @@ class HomePage extends StatelessWidget {
             if (intent.direction == AxisDirection.up) {
               controller.jumpTo(max(0, controller.offset - 75));
             } else if (intent.direction == AxisDirection.down) {
-              controller.jumpTo(min(controller.position.maxScrollExtent,  controller.offset + 75.0));
+              controller.jumpTo(
+                min(
+                  controller.position.maxScrollExtent,
+                  controller.offset + 75.0,
+                ),
+              );
             }
             return false;
           }
@@ -154,7 +159,7 @@ class HomePage extends StatelessWidget {
                   ' It is supported via GamepadInterceptor.',
                   style: TextStyle(fontStyle: FontStyle.italic),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ...GamepadButton.values.map((b) => Text(b.name)),
               ],
             ),

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter_gamepads_example/flame_example/overlays/overlays.dart';
@@ -17,8 +15,7 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents {
       overlays.activeOverlays.contains(MyOverlays.upgrade.name);
 
   void updateEnginePause() {
-    final shouldBePaused =
-        gameState.userPaused.value || anyDialogOpen;
+    final shouldBePaused = gameState.userPaused.value || anyDialogOpen;
     if (shouldBePaused != paused) {
       if (shouldBePaused) {
         pauseEngine();
