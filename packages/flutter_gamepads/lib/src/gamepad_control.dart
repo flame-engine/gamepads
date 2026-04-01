@@ -7,8 +7,13 @@ import 'package:gamepads/gamepads.dart';
 /// Wrap your widget tree with this widget to allow users
 /// to navigate it using their gamepad.
 ///
-/// Make sure your theme is setup so that widgets get a clear
-/// visual indicator when they are focused.
+/// Note: If you have more than one concurrent GamepadControl
+/// in your widget tree, you need to set ignoreEvents=true on
+/// at least n-1 of your GamepadControl widgets to avoid duplicate
+/// intents being fired.
+///
+/// Make sure your theme is setup so that widgets get a clearly
+/// visible visual indicator when they are focused.
 class GamepadControl extends StatefulWidget {
   final Widget child;
   final bool ignoreEvents;
