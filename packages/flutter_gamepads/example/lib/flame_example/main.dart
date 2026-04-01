@@ -1,22 +1,23 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gamepads/flutter_gamepads.dart';
-import 'package:flutter_gamepads_flame_example/game.dart';
-import 'package:flutter_gamepads_flame_example/overlays/help_overlay.dart';
-import 'package:flutter_gamepads_flame_example/overlays/overlays.dart';
-import 'package:flutter_gamepads_flame_example/overlays/statusbar.dart';
-import 'package:flutter_gamepads_flame_example/overlays/upgrade_overlay.dart';
+import 'package:flutter_gamepads_example/flame_example/game.dart';
+import 'package:flutter_gamepads_example/flame_example/overlays/help_overlay.dart';
+import 'package:flutter_gamepads_example/flame_example/overlays/overlays.dart';
+import 'package:flutter_gamepads_example/flame_example/overlays/statusbar.dart';
+import 'package:flutter_gamepads_example/flame_example/overlays/upgrade_overlay.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyFlameApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyFlameApp extends StatelessWidget {
+  final void Function()? exitApp;
+  const MyFlameApp({this.exitApp, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final game = MyGame();
+    final game = MyGame(exitApp);
     return MaterialApp(
       theme:
           ThemeData.from(

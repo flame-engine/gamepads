@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gamepads_flame_example/game.dart';
-import 'package:flutter_gamepads_flame_example/overlays/overlays.dart';
-import 'package:flutter_gamepads_flame_example/state/game_state.dart';
+import 'package:flutter_gamepads_example/flame_example/game.dart';
+import 'package:flutter_gamepads_example/flame_example/overlays/overlays.dart';
 
 class StatusBarOverlay extends StatefulWidget {
   final MyGame game;
@@ -20,12 +19,25 @@ class _StatusBarOverlayState extends State<StatusBarOverlay> {
       color: Theme.of(context).colorScheme.surface,
       child: Row(
         children: [
+          if (widget.game.exitApp != null) ...[
+            FilledButton(
+              onPressed: widget.game.exitApp,
+              child: const Icon(
+                Icons.chevron_left,
+                semanticLabel: 'Exit Flame Example',
+              ),
+            ),
+            const SizedBox(width: 5),
+          ],
           FilledButton(
             onPressed: onTogglePause,
             child: ValueListenableBuilder(
               valueListenable: widget.game.gameState.userPaused,
               builder: (context, userPaused, child) {
-                return Icon(userPaused ? Icons.play_arrow : Icons.pause);
+                return Icon(
+                  userPaused ? Icons.play_arrow : Icons.pause,
+                  semanticLabel: userPaused ? 'Unpause' : 'Pause',
+                );
               },
             ),
           ),
@@ -37,7 +49,10 @@ class _StatusBarOverlayState extends State<StatusBarOverlay> {
               builder: (context, value, child) {
                 return Row(
                   children: [
-                    Image.asset('assets/images/power_up.png'),
+                    Image.asset(
+                      'assets/images/power_up.png',
+                      semanticLabel: 'Power ups',
+                    ),
                     Text('$value'),
                   ],
                 );

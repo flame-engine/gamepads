@@ -10,6 +10,7 @@ environment:
 
 dependencies:
   collection: ^1.19.1
+  flame: ^1.36.0
   flutter:
     sdk: flutter
   flutter_gamepads: ^0.1.0
@@ -22,3 +23,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/spaceship.png
+    - assets/images/power_up.png

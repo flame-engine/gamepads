@@ -5,8 +5,8 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gamepads_flame_example/game.dart';
-import 'package:flutter_gamepads_flame_example/state/game_state.dart';
+import 'package:flutter_gamepads_example/flame_example/game.dart';
+import 'package:flutter_gamepads_example/flame_example/state/game_state.dart';
 import 'package:gamepads/gamepads.dart';
 
 class MyWorld extends World

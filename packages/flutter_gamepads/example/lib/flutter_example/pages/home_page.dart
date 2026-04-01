@@ -3,7 +3,8 @@ import 'package:flutter_gamepads/flutter_gamepads.dart';
 import 'package:gamepads/gamepads.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final void Function()? exitApp;
+  const HomePage({this.exitApp, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,22 +19,25 @@ class HomePage extends StatelessWidget {
               Align(
                 alignment: AlignmentGeometry.centerRight,
                 child: FilledButton(
+                  autofocus: exitApp == null,
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Icon(Icons.chevron_left, semanticLabel: 'Close'),
                 ),
               ),
-              const SizedBox(height: 50),
-              FilledButton(
-                autofocus: true,
-                onPressed: () => onGotoSettings(context),
-                child: const Text('Settings'),
-              ),
+              if (exitApp != null) ...[
+                const SizedBox(height: 50),
+                FilledButton(
+                  autofocus: true,
+                  onPressed: exitApp,
+                  child: const Text('Exit Flutter Example'),
+                ),
+              ],
             ],
           ),
         ),
       ),
       appBar: AppBar(
-        title: const Text('Flutter Gamepads sample app'),
+        title: const Text('Flutter Example'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -50,14 +54,14 @@ class HomePage extends StatelessWidget {
             child: const Text('Play game'),
           ),
           const SizedBox(height: 20),
+              FilledButton(
+                onPressed: () => onGotoSettings(context),
+                child: const Text('Settings'),
+              ),
+          const SizedBox(height: 20),
           FilledButton(
             onPressed: () => onShowDialog(context),
             child: const Text('Show dialog'),
-          ),
-          const SizedBox(height: 20),
-          FilledButton(
-            onPressed: () => onShowSnackbar(context),
-            child: const Text('Show snackbar'),
           ),
           const SizedBox(height: 20),
           Card(
@@ -164,7 +168,6 @@ class HomePage extends StatelessWidget {
   }
 
   void onGotoSettings(BuildContext context) {
-    Navigator.of(context).pop();
     Navigator.of(context).pushNamed('/settings');
   }
 }

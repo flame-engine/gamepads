@@ -3,7 +3,6 @@ repository: https://github.com/flame-engine/gamepads
 workspace:
     - packages/flutter_gamepads
     - packages/flutter_gamepads/example
-    - packages/flutter_gamepads/flame_example
     - packages/gamepads
     - packages/gamepads/example
     - packages/gamepads_android

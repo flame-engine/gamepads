@@ -2,14 +2,15 @@ import 'dart:ui';
 
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
-import 'package:flutter_gamepads_flame_example/overlays/overlays.dart';
-import 'package:flutter_gamepads_flame_example/state/game_state.dart';
-import 'package:flutter_gamepads_flame_example/world.dart';
+import 'package:flutter_gamepads_example/flame_example/overlays/overlays.dart';
+import 'package:flutter_gamepads_example/flame_example/state/game_state.dart';
+import 'package:flutter_gamepads_example/flame_example/world.dart';
 
 class MyGame extends FlameGame with HasKeyboardHandlerComponents {
   final GameState gameState = GameState();
+  final void Function()? exitApp;
 
-  MyGame() : super(world: MyWorld());
+  MyGame(this.exitApp) : super(world: MyWorld());
 
   bool get anyDialogOpen =>
       overlays.activeOverlays.contains(MyOverlays.help.name) ||
