@@ -37,7 +37,6 @@ class _ChooserAppState extends State<ChooserApp> {
 
   Widget buildSelectionUi(BuildContext context) {
     return GamepadControl(
-      ignoreEvents: example != null,
       child: MaterialApp(
         theme: _theme,
         home: Scaffold(
@@ -47,29 +46,29 @@ class _ChooserAppState extends State<ChooserApp> {
               children: [
                 Text(
                   'Choose an Example app',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge!.copyWith(color: Colors.white),
                 ),
-                ...Example.values
-                    .map(
-                      (ex) => Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: FilledButton(
-                          onPressed: () {
-                            setState(() => example = ex);
-                          },
-                          child: Column(
-                            children: [
-                              Text(
-                                ex.name[0].toUpperCase() + ex.name.substring(1),
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              Text(ex.description),
-                            ],
+                ...Example.values.map(
+                  (ex) => Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: FilledButton(
+                      onPressed: () {
+                        setState(() => example = ex);
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            ex.name[0].toUpperCase() + ex.name.substring(1),
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
-                        ),
+                          Text(ex.description),
+                        ],
                       ),
-                    )
-                    .toList(),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -85,22 +84,25 @@ class _ChooserAppState extends State<ChooserApp> {
   }
 }
 
-ThemeData get _theme => ThemeData.from(
-  colorScheme: ColorScheme.fromSeed(
-    seedColor: Colors.orange,
-    brightness: Brightness.dark,
-  ),
-).copyWith(
-  filledButtonTheme: FilledButtonThemeData(
-    style: ButtonStyle(
-      padding: const WidgetStatePropertyAll(EdgeInsets.all(30)),
-      side: WidgetStateProperty.resolveWith((state) {
-        return state.contains(WidgetState.focused) ? BorderSide(
-          color: Colors.deepOrange[800]!,
-          width: 5 ,
-          strokeAlign: 3,
-        ) : BorderSide.none;
-      }),
-    )
-  )
-);
+ThemeData get _theme =>
+    ThemeData.from(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.orange,
+        brightness: Brightness.dark,
+      ),
+    ).copyWith(
+      filledButtonTheme: FilledButtonThemeData(
+        style: ButtonStyle(
+          padding: const WidgetStatePropertyAll(EdgeInsets.all(30)),
+          side: WidgetStateProperty.resolveWith((state) {
+            return state.contains(WidgetState.focused)
+                ? BorderSide(
+                    color: Colors.deepOrange[800]!,
+                    width: 5,
+                    strokeAlign: 3,
+                  )
+                : BorderSide.none;
+          }),
+        ),
+      ),
+    );
