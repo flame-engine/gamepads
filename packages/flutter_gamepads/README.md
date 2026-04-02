@@ -1,29 +1,24 @@
 # flutter_gamepads
 
-A Flutter plugin to handle gamepad input across multiple platforms.
+A Flutter package that maps gamepad input to UI interaction. It is based on the same
+Flutter focus and intent systems that keyboard navigation in Flutter at its core is based on.
+
+This means that for a large part, the same effort you spend on supporting keyboard and
+screen reader users also benefit gamepad users and vice versa.
+
+The philosophy is that you just add Gamepad support to your app to extend its multi-modality
+of user input.
 
 
 ## Supported interaction
 
-Using just `GamepadControl` out-of-the-box allow users to change focus around your app
-similar to using the Tab key, but using the D-pad buttons on their gamepad. Several
-'simple' widgets like buttons, DropdownMenu, Switch etc. just works.
+Using just `GamepadControl` users of your app can move focus around your app similar to using
+the Tab key, but using the D-pad buttons on their gamepad. Several 'simple' widgets like
+buttons, DropdownMenu, Switch etc. just works.
 
 Some more complex interactive widgets like eg. the Slider widget needs some special attention
 to support. This package provides a `GamepadInterceptor` widget that you can use to handle
 those situations.
-
-
-### Default bindings
-
-* Activate: A
-* Dismiss: B
-* Previous focus: D-pad up or D-pad left
-* Next focus: D-pad down or D-pad right
-* Scroll up: Right stick up
-* Scroll down: Right stick down
-* Scroll left: Right stick left
-* Scroll right: Right stick right
 
 
 ## Usage
@@ -39,6 +34,17 @@ GamepadControl(
     child: MaterialApp(),
 )
 ```
+
+That will give you these default input bindings:
+
+* Activate: A
+* Dismiss: B
+* Previous focus: D-pad up or D-pad left
+* Next focus: D-pad down or D-pad right
+* Scroll up: Right stick up
+* Scroll down: Right stick down
+* Scroll left: Right stick left
+* Scroll right: Right stick right
 
 
 ### GamepadInterceptor
