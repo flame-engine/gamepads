@@ -21,7 +21,6 @@ class HomePage extends StatelessWidget {
               Align(
                 alignment: AlignmentGeometry.centerRight,
                 child: FilledButton(
-                  autofocus: exitApp == null,
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Icon(Icons.chevron_left, semanticLabel: 'Close'),
                 ),
@@ -29,7 +28,6 @@ class HomePage extends StatelessWidget {
               if (exitApp != null) ...[
                 const SizedBox(height: 50),
                 FilledButton(
-                  autofocus: true,
                   onPressed: exitApp,
                   child: const Text('Exit Flutter Example'),
                 ),
@@ -166,7 +164,6 @@ class HomePage extends StatelessWidget {
           ),
           actions: [
             FilledButton(
-              autofocus: true,
               onPressed: () => Navigator.of(context).pop(),
               child: const Text('Close'),
             ),
