@@ -54,4 +54,8 @@ enum GamepadButton {
 
   /// D-pad right.
   dpadRight,
+
+  /// The touchpad button (pressing the touchpad surface, available on
+  /// PlayStation DualSense and DualShock controllers).
+  touchpad,
 }
