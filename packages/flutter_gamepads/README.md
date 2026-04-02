@@ -37,14 +37,14 @@ GamepadControl(
 
 That will give you these default input bindings:
 
-* Activate: A
-* Dismiss: B
-* Previous focus: D-pad up or D-pad left
-* Next focus: D-pad down or D-pad right
-* Scroll up: Right stick up
-* Scroll down: Right stick down
-* Scroll left: Right stick left
-* Scroll right: Right stick right
+- Activate: A
+- Dismiss: B
+- Previous focus: D-pad up or D-pad left
+- Next focus: D-pad down or D-pad right
+- Scroll up: Right stick up
+- Scroll down: Right stick down
+- Scroll left: Right stick left
+- Scroll right: Right stick right
 
 
 ### GamepadInterceptor
