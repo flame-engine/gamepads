@@ -5,12 +5,15 @@ ThemeData appTheme() {
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
   );
   const focusColor = Colors.orange;
+  // A base border with highlight color for focused state.
   final focusBorder = WidgetStateBorderSide.resolveWith((state) {
     if (state.contains(WidgetState.focused)) {
       return const BorderSide(color: focusColor, width: 3);
     }
     return const BorderSide(color: Colors.transparent, width: 3);
   });
+  // Apply the border style to different types of buttons used in the example
+  // app
   return theme.copyWith(
     focusColor: focusColor,
     elevatedButtonTheme: ElevatedButtonThemeData(

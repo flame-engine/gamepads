@@ -6,12 +6,15 @@ import 'package:flutter_gamepads_example/flame_example/overlays/help_overlay.dar
 import 'package:flutter_gamepads_example/flame_example/overlays/overlays.dart';
 import 'package:flutter_gamepads_example/flame_example/overlays/statusbar.dart';
 import 'package:flutter_gamepads_example/flame_example/overlays/upgrade_overlay.dart';
+import 'package:flutter_gamepads_example/flame_example/theme.dart';
 
 void main() {
   runApp(const MyFlameApp());
 }
 
 class MyFlameApp extends StatelessWidget {
+  /// Callback provided by the Example chooser that allow the
+  /// example to signal that user wants to exit the example.
   final void Function()? exitApp;
   const MyFlameApp({this.exitApp, super.key});
 
@@ -19,38 +22,12 @@ class MyFlameApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final game = MyGame(exitApp);
     return MaterialApp(
-      theme:
-          ThemeData.from(
-            colorScheme: ColorScheme.dark(
-              primary: Colors.orange[700]!,
-              surface: Color.lerp(Colors.orange[900], Colors.grey[800], 0.7)!,
-            ),
-          ).copyWith(
-            dialogTheme: DialogThemeData(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusGeometry.circular(5),
-              ),
-            ),
-            filledButtonTheme: FilledButtonThemeData(
-              style: ButtonStyle(
-                shape: WidgetStateProperty.resolveWith((state) {
-                  return RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: state.contains(WidgetState.focused)
-                          ? Colors.lightGreenAccent
-                          : Colors.transparent,
-                      width: 4,
-                      strokeAlign: -0.5,
-                    ),
-                    borderRadius: BorderRadiusGeometry.circular(
-                      state.contains(WidgetState.focused) ? 2 : 5,
-                    ),
-                  );
-                }),
-              ),
-            ),
-          ),
+      theme: buildTheme(),
       home: GamepadControl(
+        // An alternative to closing dialogs globally here is to wrap
+        // each dialog with a GamepadInterceptor to be able to locally
+        // catch the DismissIntent there. That option can be useful if
+        // you need to prevent closing in some situations.
         onBeforeIntent: (activator, intent) {
           if (intent is DismissIntent && game.anyDialogOpen) {
             game.hideAllDialogs();

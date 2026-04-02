@@ -7,6 +7,7 @@ void main() {
   runApp(const ChooserApp());
 }
 
+/// Description of example apps
 enum Example {
   flutter('Flutter Example', 'A pure Flutter example'),
   flame('Flame Example', 'A Flame game with overlays');
@@ -15,8 +16,25 @@ enum Example {
 
   final String label;
   final String description;
+
+  Widget imageBuilder(BuildContext context) {
+    return switch (this) {
+      Example.flame => Image.asset('assets/images/spaceship.png'),
+      Example.flutter => const FlutterLogo(size: 32),
+    };
+  }
+
+  Widget exampleAppBuilder(BuildContext context, void Function() exitApp) {
+    return switch (this) {
+      Example.flame => MyFlameApp(exitApp: exitApp),
+      Example.flutter => MyFlutterApp(exitApp: exitApp),
+    };
+  }
 }
 
+/// A chooser app that lets user select between two example apps:
+/// * Flutter example
+/// * Flame example
 class ChooserApp extends StatefulWidget {
   const ChooserApp({super.key});
 
@@ -25,18 +43,23 @@ class ChooserApp extends StatefulWidget {
 }
 
 class _ChooserAppState extends State<ChooserApp> {
-  Example? example;
+  Example? selectedExample;
 
   @override
   Widget build(BuildContext context) {
-    return switch (example) {
-      Example.flame => MyFlameApp(exitApp: exitApp),
-      Example.flutter => MyFlutterApp(exitApp: exitApp),
-      null => buildSelectionUi(context),
+    return switch (selectedExample) {
+      (final Example example) => example.exampleAppBuilder(context, exitApp),
+      null => buildExampleSelectionUi(context),
     };
   }
 
-  Widget buildSelectionUi(BuildContext context) {
+  Widget buildExampleSelectionUi(BuildContext context) {
+    // The GamepadControl widget provides user ability to control the UI
+    // with their gamepad.
+    //
+    // It has to sit here in buildEXampleSelectionUI so that it doesn't
+    // build when one of the example apps builds as they provide their
+    // own setup with a GamepadControl.
     return GamepadControl(
       child: MaterialApp(
         theme: _theme,
@@ -52,29 +75,7 @@ class _ChooserAppState extends State<ChooserApp> {
                   ).textTheme.titleLarge!.copyWith(color: Colors.white),
                 ),
                 ...Example.values.map(
-                  (ex) => Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: FilledButton(
-                      onPressed: () {
-                        setState(() => example = ex);
-                      },
-                      child: Column(
-                        children: [
-                          if (ex == Example.flame)
-                            Image.asset('assets/images/spaceship.png'),
-                          if (ex == Example.flutter)
-                            const FlutterLogo(
-                              size: 32,
-                            ),
-                          Text(
-                            ex.label,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          Text(ex.description),
-                        ],
-                      ),
-                    ),
-                  ),
+                  (example) => buildExampleButton(context, example),
                 ),
               ],
             ),
@@ -84,9 +85,31 @@ class _ChooserAppState extends State<ChooserApp> {
     );
   }
 
+  Widget buildExampleButton(BuildContext context, Example example) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: FilledButton(
+        onPressed: () {
+          setState(() => selectedExample = example);
+        },
+        child: Column(
+          children: [
+            example.imageBuilder(context),
+            Text(
+              example.label,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Text(example.description),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Exit selected example app
   void exitApp() {
     setState(() {
-      example = null;
+      selectedExample = null;
     });
   }
 }
@@ -101,6 +124,8 @@ ThemeData get _theme =>
       filledButtonTheme: FilledButtonThemeData(
         style: ButtonStyle(
           padding: const WidgetStatePropertyAll(EdgeInsets.all(30)),
+          // An expressive border for focused buttons makes it easier to
+          // use the chooser app with gamepad and keyboard input.
           side: WidgetStateProperty.resolveWith((state) {
             return state.contains(WidgetState.focused)
                 ? BorderSide(
