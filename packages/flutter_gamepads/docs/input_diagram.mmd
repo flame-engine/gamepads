@@ -1,0 +1,29 @@
+flowchart TD
+    input["Normalized Gamepad Input (gamepads package)"]
+    --> ignoreCheck{"ignoreEvents"}
+
+    ignoreCheck -->|true| stopIgnore[STOP]
+    ignoreCheck -->|false| findActivator[Find matching GamepadActivator]
+
+    findActivator --> keyEventType{"Activator event"}
+
+    keyEventType -->|Activated| startRepeat[Start repeat timer for intent]
+    keyEventType -->|Canceled| stopRepeat[Stop repeat timer of intent]
+    stopRepeat --> stopAfterStopRepeat[STOP]
+    keyEventType -->|Neither| stopInvalid[STOP]
+
+    timerEvent[Repeat timer event]
+    startRepeat --> findInterceptor
+    timerEvent --> findInterceptor
+
+    findInterceptor[Find nearest GamepadInterceptor ancestor from primaryFocus]
+
+    findInterceptor --> interceptorDecision{"GamepadInterceptor<br/>.onBeforeIntent()?"}
+
+    interceptorDecision -->|Return false| stopInterceptor[STOP]
+    interceptorDecision -->|Return true| controlDecision{"GamepadControl<br/>.onBeforeIntent()?"}
+
+    controlDecision -->|Return false| stopControl[STOP]
+    controlDecision -->|Return true| emitIntent[Emit Intent to primaryFocus]
+
+    emitIntent --> actionsSystem[Flutter Actions system handles it]
