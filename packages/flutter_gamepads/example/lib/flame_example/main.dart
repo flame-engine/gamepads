@@ -23,6 +23,11 @@ class MyFlameApp extends StatelessWidget {
     final game = MyGame(exitApp);
     return MaterialApp(
       theme: buildTheme(),
+      // The role here of GamepadControl is to allow users to interact
+      // with the Flutter widgets in overlays of the Flame game.
+      //
+      // For Spaceship control, the game uses direct gamepads event
+      // processing. See components/spaceship.dart.
       home: GamepadControl(
         // An alternative to closing dialogs globally here is to wrap
         // each dialog with a GamepadInterceptor to be able to locally
