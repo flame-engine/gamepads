@@ -111,7 +111,7 @@ class _TickTackToeState extends State<_TickTackToe> {
                 'You can use the D-pad or right stick to move focus directionally up/down/left/right'
                 ' which is supported via GamepadInterceptor.'
                 '\n\n'
-                'Left stick only works while focus is within the 3x3 grid.',
+                'Right stick only works while focus is within the 3x3 grid.',
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                   color: Colors.white70,
