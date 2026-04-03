@@ -97,17 +97,6 @@ use `onBeforeIntent` to block intents from all but one of the `GamepadControl` w
 The `GamepadControl` widget does not check if primaryFocus is a descendant of itself.
 
 
-### Callbacks and the emit chain
-
-The chain from received `NormalizedGamepadEvent` from `gamepads` package via callbacks to
-emitting an intent is described by the diagram below.
-
-![Diagram of the callbacks and intent emit chain](docs/input_diagram.svg)
-
-If no GamepadInterceptor is found, or if GamepadControl.onBeforeIntent is not set, execution
-continues as if true was returned.
-
-
 ### GamepadInterceptor
 
 If you want to intercept a Gamepad intent locally next to a Widget you can do so with
@@ -132,6 +121,17 @@ GamepadInterceptor(
 
 An example of how to build a gamepad extended widget can be found in
 [SliderWithGamepadExport](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_example/example/lib/flutter_example/pages/slider_with_gamepad_support.dart).
+
+
+### Callbacks and the emit chain
+
+The chain from received `NormalizedGamepadEvent` from `gamepads` package via callbacks to
+emitting an intent is described by the diagram below.
+
+![Diagram of the callbacks and intent emit chain](docs/input_diagram.svg)
+
+If no GamepadInterceptor is found, or if GamepadControl.onBeforeIntent is not set, execution
+continues as if true was returned.
 
 
 ### Blocking Gamepad input
