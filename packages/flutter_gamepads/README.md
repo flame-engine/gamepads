@@ -29,7 +29,7 @@ of user input.
   usage, see the Flame-specific guidance later in the README.
 
 
-## Not included
+### Not included
 
 This package does not magically "just work" in all cases. Your app has to work reasonably well
 with the Flutter focus system and there can be some widgets that need some extra work to get
