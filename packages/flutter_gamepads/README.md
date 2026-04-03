@@ -62,7 +62,7 @@ example the border of focused widgets stand out in a different color.
    detailed explanation of callbacks.
 
 
-## API Usage
+## Usage
 
 `GamepadControl` is the main widget of this package. You usually have exactly one of this widget
 that wraps your MaterialApp or similar.
