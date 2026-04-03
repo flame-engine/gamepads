@@ -154,21 +154,14 @@ An example of how to build a gamepad extended widget can be found in
 There are four ways to block gamepad input from invoking intents:
 
 1. Omitting the `GamepadControl` widget from your widget tree
-
-  - Fully unregisters `gamepad` event handles, axis activation memory, repeat timers etc.
-
+   Fully unregisters `gamepad` event handles, axis activation memory, repeat timers etc.
 2. `GamepadControl.ignoreEvents == true`
-
-  - Early check on each `gamepads` event, axis activation memory is reset and repeat timers are
-    reset.
-
+   Early check on each `gamepads` event, axis activation memory is reset and repeat timers are
+   reset.
 3. `GamepadInterceptor.onBeforeIntent() => false`
-
-  - Blocks each intent before it is passed on to GamepadControl.onBeforeIntent()
-
+   Blocks each intent before it is passed on to GamepadControl.onBeforeIntent()
 4. `GamepadControl.onBeforeIntent() => false`
-
-  - Blocks each intent before it is passed on to Flutter.
+   Blocks each intent before it is passed on to Flutter.
 
 Method 1 and 2 are good for when you fully want to block gamepad control of Flutter UI.
 
