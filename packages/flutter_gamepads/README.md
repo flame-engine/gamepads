@@ -9,22 +9,29 @@ screen reader users also benefit gamepad users and vice versa.
 The philosophy is that you just add Gamepad support to your app to extend its multi-modality
 of user input.
 
+
 ## Features
 
-**Input support**
-* Gamepad buttons and axes can be used as input
-* Input repetition (on long press/activation)
-* Uses [gamepads](https://pub.dev/packages/gamepads) as the underlying Gamepad platforms
+
+### Input support
+
+- Gamepad buttons and axes can be used as input
+- Input repetition (on long press/activation)
+- Uses [gamepads](https://pub.dev/packages/gamepads) as the underlying Gamepad platforms
   support library
 
-**Output support**
+
+### Output support
+
 - Move focus
 - Activate focused button
 - Dismiss
 - Scroll
 - (actually anything that you can do with Intents in Flutter, plus more with callbacks)
 
-**API and docs**
+
+### API and docs
+
 - A GamepadControl widget to wrap your app which in some cases is all you need.
 - Callbacks that allow intercepting an Intent before it actually is emitted.
 - Extensive example project showing how the package can be used in pure Flutter apps
@@ -147,12 +154,20 @@ An example of how to build a gamepad extended widget can be found in
 There are four ways to block gamepad input from invoking intents:
 
 1. Omitting the `GamepadControl` widget from your widget tree
+
   - Fully unregisters `gamepad` event handles, axis activation memory, repeat timers etc.
+
 2. `GamepadControl.ignoreEvents == true`
-  - Early check on each `gamepads` event, axis activation memory is reset and repeat timers are reset.
+
+  - Early check on each `gamepads` event, axis activation memory is reset and repeat timers are
+    reset.
+
 3. `GamepadInterceptor.onBeforeIntent() => false`
+
   - Blocks each intent before it is passed on to GamepadControl.onBeforeIntent()
+
 4. `GamepadControl.onBeforeIntent() => false`
+
   - Blocks each intent before it is passed on to Flutter.
 
 Method 1 and 2 are good for when you fully want to block gamepad control of Flutter UI.
@@ -228,8 +243,8 @@ GamepadControl(
                             value: _value,
                             label: 'Works with gamepads',
                             max: 1.0,
-                            // This setState never occur by Gamepad input, but is good to allow keyboard/mouse
-                            // input as well.
+                            // This setState never occur by Gamepad input, but is good to allow
+                            // keyboard/mouse input as well.
                             onChange: (value) => setState(() => _value = value),
                         ),
                     ),
