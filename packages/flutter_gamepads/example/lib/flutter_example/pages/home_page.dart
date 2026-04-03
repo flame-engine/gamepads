@@ -1,0 +1,185 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_gamepads/flutter_gamepads.dart';
+import 'package:gamepads/gamepads.dart';
+
+class HomePage extends StatelessWidget {
+  final void Function()? exitApp;
+  const HomePage({this.exitApp, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: Drawer(
+        backgroundColor: Colors.indigo[200],
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                alignment: AlignmentGeometry.centerRight,
+                child: FilledButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Icon(Icons.chevron_left, semanticLabel: 'Close'),
+                ),
+              ),
+              if (exitApp != null) ...[
+                const SizedBox(height: 50),
+                FilledButton(
+                  onPressed: exitApp,
+                  child: const Text('Exit Flutter Example'),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+      appBar: AppBar(
+        title: const Text('Flutter Example'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const Card(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Text('A short sample app for flutter gamepads testing'),
+            ),
+          ),
+          const SizedBox(height: 20),
+          FilledButton(
+            onPressed: () => onShowGame(context),
+            child: const Text('Play game'),
+          ),
+          const SizedBox(height: 20),
+          FilledButton(
+            onPressed: () => onGotoSettings(context),
+            child: const Text('Settings'),
+          ),
+          const SizedBox(height: 20),
+          FilledButton(
+            onPressed: () => onShowDialog(context),
+            child: const Text('Show dialog'),
+          ),
+          const SizedBox(height: 20),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Controls',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Table(
+                    columnWidths: const {
+                      0: IntrinsicColumnWidth(),
+                    },
+                    children: [
+                      ...gamepadInfo(),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<TableRow> gamepadInfo() {
+    final shortcuts = GamepadControl(child: Container()).shortcuts;
+    return shortcuts.keys.map((key) {
+      var activator = '';
+      if (key is GamepadActivatorButton) {
+        activator += 'Button ${key.button.name}';
+      } else if (key is GamepadActivatorAxis) {
+        activator += 'Axis ${key.axis.name}';
+      }
+
+      final intent = shortcuts[key];
+      final intentText = intent.toString().split('Intent')[0];
+
+      return TableRow(
+        children: [
+          Text(activator),
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: Text('→   $intentText'),
+          ),
+        ],
+      );
+    }).toList();
+  }
+
+  void onShowGame(BuildContext context) {
+    Navigator.of(context).pushNamed('/game');
+  }
+
+  void onShowDialog(BuildContext context) {
+    final controller = ScrollController();
+    showDialog(
+      context: context,
+      builder: (context) => GamepadInterceptor(
+        onBeforeIntent: (activator, intent) {
+          // The ListView just contains text and never therefore receives focus.
+          // Using GamepadInterceptor we can still support scrolling this
+          // ListView.
+          if (intent is ScrollIntent) {
+            if (intent.direction == AxisDirection.up) {
+              controller.jumpTo(max(0, controller.offset - 75));
+            } else if (intent.direction == AxisDirection.down) {
+              controller.jumpTo(
+                min(
+                  controller.position.maxScrollExtent,
+                  controller.offset + 75.0,
+                ),
+              );
+            }
+            return false;
+          }
+          return true;
+        },
+        child: AlertDialog(
+          title: const Text('List of gamepad buttons'),
+          content: SizedBox(
+            height: 200,
+            width: 200,
+            child: ListView(
+              controller: controller,
+              children: [
+                const Text(
+                  'You can use right stick on gamepad to scroll this view.'
+                  ' It is supported via GamepadInterceptor.',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+                const SizedBox(height: 20),
+                ...GamepadButton.values.map((b) => Text(b.name)),
+              ],
+            ),
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void onShowSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Primary action triggered')),
+    );
+  }
+
+  void onGotoSettings(BuildContext context) {
+    Navigator.of(context).pushNamed('/settings');
+  }
+}

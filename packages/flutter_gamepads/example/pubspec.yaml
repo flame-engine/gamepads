@@ -1,0 +1,29 @@
+name: flutter_gamepads_example
+description: A simple example project showcasing the flutter_gamepads plugin.
+resolution: workspace
+publish_to: 'none'
+
+version: 0.1.0
+
+environment:
+  sdk: ">=3.9.0 <4.0.0"
+
+dependencies:
+  collection: ^1.19.1
+  flame: ^1.32.0
+  flutter:
+    sdk: flutter
+  flutter_gamepads: ^0.1.0
+  gamepads: ^0.1.10
+
+dev_dependencies:
+  flame_lint: ^1.4.1
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/spaceship.png
+    - assets/images/power_up.png

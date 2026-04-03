@@ -1,0 +1,23 @@
+name: flutter_gamepads
+resolution: workspace
+description: A Flutter package that maps gamepad input to UI interaction.
+version: 0.1.10
+homepage: https://github.com/flame-engine/gamepads
+repository: https://github.com/flame-engine/gamepads/tree/main/packages/flutter_gamepads
+
+flutter:
+
+environment:
+  sdk: ">=3.9.0 <4.0.0"
+  flutter: ">=3.35.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  gamepads: ^0.1.10
+
+dev_dependencies:
+  flame_lint: ^1.4.1
+  flutter_test:
+    sdk: flutter
+  gamepads_platform_interface: ^0.1.3
