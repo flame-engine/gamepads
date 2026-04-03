@@ -46,9 +46,6 @@ working.
 
 Text input is currently not supported via Gamepad input.
 
-If you just want to add gamepad support as game input without any UI navigation, you are probably
-better off using the [gamepads](https://pub.dev/packages/gamepads) package directly.
-
 
 ## Quick-start
 
