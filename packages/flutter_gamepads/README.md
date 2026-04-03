@@ -29,7 +29,7 @@ of user input.
   usage, see the Flame-specific guidance later in the README.
 
 
-### Not included
+### Limitations
 
 This package does not magically "just work" in all cases. Your app has to work reasonably well
 with the Flutter focus system and there can be some widgets that need some extra work to get
@@ -62,82 +62,43 @@ example the border of focused widgets stand out in a different color.
    detailed explanation of callbacks.
 
 
-## How it works
+## API Usage
+
+`GamepadControl` is the main widget of this package. You usually have exactly one of this widget
+that wraps your MaterialApp or similar.
 
 
-### GamepadControl
+### Callbacks
 
-This widget will listen to `gamepads` normalized input events and emit Intents originating
-from the primary focused widget.
+You can provide a `onBeforeIntent` method to `GamepadControl` to intercept just before an intent
+would be invoked on the primary focus of your Flutter app.
+
+If you return false from it, the intent is blocked from being emitted.
 
 ```dart
-GamepadControl(
-    child: MaterialApp(),
-)
+bool onBeforeIntent(GamepadActivator activator, Intent intent) {
+
+}
 ```
 
-By default GamepadControl comes with these bindings:
-
-- D-pad up: Previous focus
-- D-pad left: Previous focus
-- D-pad right: Next focus
-- D-pad down: Next focus
-- A: Activate
-- B: Dismiss
-- Right stick up: Scroll up
-- Right stick left: Scroll left
-- Right stick right: Scroll right
-- Right stick down: Scroll down
-
-But they can be customized via the `shortcuts` parameter. It is not limited to the intents
-above. Any class that inherits from the `Intent` base class can be used as the emitted intent
-for a gamepad activator (button or axis).
-
-
-#### Multiple GamepadControl widgets
-
-Note that if you have multiple `GamepadControl` widgets concurrently in your widget tree, they
-will all emit intents on the `primaryFocus` focus node. Except if you set `ignoreEvents` or
-use `onBeforeIntent` to block intents from all but one of the `GamepadControl` widgets.
-
-The `GamepadControl` widget does not check if primaryFocus is a descendant of itself.
-
-
-### GamepadInterceptor
-
-If you want to intercept a Gamepad intent locally next to a Widget you can do so with
-`GamepadInterceptor`. Its `onBeforeIntent` is only called if a descendant widget has focus.
+However with local states this becomes impractical and ***flutter_gamepads*** provides an
+other widget `GamepadInterceptor` that you wrap a subtree of widgets. It's only purpose
+is to provide an onBeforeIntent callback that is locally scoped.
 
 ```dart
 GamepadInterceptor(
     onBeforeIntent: (activator, intent) {
-        if (intent is ScrollIntent) {
-            // Handle scroll intent
-            print('Gamepad scroll ${intent.direction}');
 
-            // Block actual emit of ScrollIntent
-            return false;
-        }
-        // Allow other intents such as focus change to occur
-        return true;
-    }
+    },
     child: YourWidget(),
 )
 ```
 
-An example of how to build a gamepad extended widget can be found in
+
+#### Example
+
+An example of how to build a gamepad-extended widget can be found in
 [SliderWithGamepadExport](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_example/example/lib/flutter_example/pages/slider_with_gamepad_support.dart).
-
-
-### Callbacks and the emit chain
-
-The chain from received `NormalizedGamepadEvent` from `gamepads` package via callbacks to
-emitting an intent is described by the diagram below.
-
-![Diagram of the callbacks and intent emit chain](docs/input_diagram.svg)
-
-If no GamepadInterceptor is found, or if GamepadControl.onBeforeIntent is not set, execution
-continues as if true was returned.
 
 
 ### Blocking Gamepad input
@@ -159,7 +120,56 @@ Method 1 and 2 are good for when you fully want to block gamepad control of Flut
 Method 3 or 4 is good if you want to block specific intents.
 
 
-## Flame specific guidance
+### Multiple GamepadControl widgets
+
+Note that if you have multiple `GamepadControl` widgets concurrently in your widget tree, they
+will all emit intents on the `primaryFocus` focus node. Except if you set `ignoreEvents` or
+use `onBeforeIntent` to block intents from all but one of the `GamepadControl` widgets.
+
+The `GamepadControl` widget does not check if primaryFocus is a descendant of itself.
+
+
+### How it works
+
+`GamepadControl` listens on `NormalizedGamepadEvent` from ***gamepads*** package and maps those
+to a `GamepadActivator` and its related `Intent`.
+
+Input repetition is conceptually started on activation of a GamepadActivator and stopped
+once the activator has been canceled (eg. button up or axis below minimum threshold).
+
+`GamepadControl` will lookup the closest ancestor `GamepadInterceptor` from `primaryFocus`
+and call its `onBeforeIntent` first (if there is one), and then proceed to `onBeforeIntent` on
+`GamepadControl`. Calling is lazy so if the local `onBeforeIntent` returns fall, the one on
+`GamepadControl` is not called.
+
+If no onBeforeIntent has rejected, the Intent will be invoked on the primary focus context.
+
+[Diagram of the callbacks and intent emit chain](docs/input_diagram.svg)
+
+
+### Defaults
+
+By default `GamepadControl` comes with these bindings:
+
+- D-pad up: Previous focus
+- D-pad left: Previous focus
+- D-pad right: Next focus
+- D-pad down: Next focus
+- A: Activate
+- B: Dismiss
+- Right stick up: Scroll up
+- Right stick left: Scroll left
+- Right stick right: Scroll right
+- Right stick down: Scroll down
+
+Except for Activate and Dismiss, all intents have input repeat enabled by default.
+
+The bindings can customized via the `shortcuts` parameter. It is not limited to the intents
+above. Any class that inherits from the `Intent` base class can be used as the emitted intent
+for a gamepad activator (button or axis).
+
+
+### Flame specific guidance
 
 `flutter_gamepads` can be helpful in scenarios when you have overlays in your
 Flame game that you want users to be able to navigate with their gamepad.
