@@ -99,10 +99,10 @@ GamepadInterceptor(
 #### onBeforeIntent examples
 
 An example of how to build a gamepad-extended widget can be found in
-[SliderWithGamepadExport](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_example/example/lib/flutter_example/pages/slider_with_gamepad_support.dart).
+[SliderWithGamepadExport](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_gamepads/example/lib/flutter_example/pages/slider_with_gamepad_support.dart).
 
 Another example, using the activator to support 4-way directional D-pad
-within a Tick-tac-toe game is in [TicTacToe widget](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_example/example/lib/flutter_example/pages/game_page.dart).
+within a Tick-tac-toe game is in [TicTacToe widget](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_gamepads/example/lib/flutter_example/pages/game_page.dart).
 
 
 ### Blocking Gamepad input
@@ -148,7 +148,7 @@ and call its `onBeforeIntent` first (if there is one), and then proceed to `onBe
 
 If no onBeforeIntent has rejected, the Intent will be invoked on the primary focus context.
 
-[Diagram of the callbacks and intent emit chain](docs/input_diagram.svg)
+[Diagram of the callbacks and intent emit chain](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_gamepads/example/lib/flutter_example/docs/input_diagram.svg)
 
 
 ### Defaults
@@ -181,13 +181,13 @@ Flame game that you want users to be able to navigate with their gamepad.
 1. Wrap your `GameWidget` with a `GamepadControl` widget
 2. For overlays that represent a modal dialog, you will need to trap the focus
    in the dialog. See
-   [OverlayDialogBackdrop](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_example/example/lib/flame_example/overlays/overlay_dialog_backdrop.dart)
+   [OverlayDialogBackdrop](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_gamepads/example/lib/flame_example/overlays/overlay_dialog_backdrop.dart)
    in Flame example app for how you can do that. In that example the dialog itself
    will receive the focus so that when a mouse user opens the dialog, it won't show
    a focus indicator on a button in the dialog.
 3. To close overlay dialogs on DismissIntent, you will need to catch it with
    `onBeforeIntent` and close the overlay. In
-   [Flame Example](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_example/example/lib/flame_example/main.dart)
+   [Flame Example](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_gamepads/example/lib/flame_example/main.dart)
    this is done generically at the root, but could instead wrap each dialog in a
    `GamepadInterceptor` to do it locally if you need to guard closing the dialog
    by some condition.
