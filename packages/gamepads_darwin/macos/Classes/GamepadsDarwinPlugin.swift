@@ -2,6 +2,13 @@ import Cocoa
 import GameController
 import FlutterMacOS
 
+enum FixedKey: String {
+    case buttonMenu
+    case buttonOptions
+    case buttonHome
+    case touchpadButton
+}
+
 public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     let channel: FlutterMethodChannel
     let gamepads = GamepadsListener()
@@ -46,36 +53,36 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     /// ambiguous across controller types (e.g. both DualSense system
     /// buttons report "capsule.portrait"). For other elements, returns
     /// nil so the caller falls back to SF Symbol names.
-    private func getFixedKey(gamepad: GCExtendedGamepad, element: GCControllerElement) -> String? {
+    private func getFixedKey(gamepad: GCExtendedGamepad, element: GCControllerElement) -> FixedKey? {
         if element === gamepad.buttonMenu {
-            return "buttonMenu"
+            return .buttonMenu
         }
         if let opt = gamepad.buttonOptions, element === opt {
-            return "buttonOptions"
+            return .buttonOptions
         }
         if #available(macOS 11.0, *) {
             if let home = gamepad.buttonHome, element === home {
-                return "buttonHome"
+                return .buttonHome
             }
         }
         if #available(macOS 11.3, *) {
             if let ds = gamepad as? GCDualSenseGamepad,
                element === ds.touchpadButton {
-                return "touchpadButton"
+                return .touchpadButton
             }
         }
         if #available(macOS 11.0, *) {
             if let ds = gamepad as? GCDualShockGamepad,
                element === ds.touchpadButton {
-                return "touchpadButton"
+                return .touchpadButton
             }
         }
         return nil
     }
 
-    private func getValues(element: GCControllerElement, fixedKey: String? = nil) -> [(String, Float)] {
+    private func getValues(element: GCControllerElement, fixedKey: FixedKey? = nil) -> [(String, Float)] {
         if let element = element as? GCControllerButtonInput {
-            var button: String = fixedKey ?? "Unknown button"
+            var button: String = fixedKey?.rawValue ?? "Unknown button"
             if fixedKey == nil {
                 if #available(macOS 11.0, *) {
                     if let name = element.sfSymbolsName {
@@ -85,7 +92,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             }
             return [(button, element.value)]
         } else if let element = element as? GCControllerAxisInput {
-            var axis: String = fixedKey ?? "Unknown axis"
+            var axis: String = fixedKey?.rawValue ?? "Unknown axis"
             if fixedKey == nil {
                 if #available(macOS 11.0, *) {
                     if let name = element.sfSymbolsName {
@@ -95,7 +102,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             }
             return [(axis, element.value)]
         } else if let element = element as? GCControllerDirectionPad {
-            var directionPad: String = fixedKey ?? "Unknown direction pad"
+            var directionPad: String = fixedKey?.rawValue ?? "Unknown direction pad"
             if fixedKey == nil {
                 if #available(macOS 11.0, *) {
                     if let name = element.sfSymbolsName {
