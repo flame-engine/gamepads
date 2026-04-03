@@ -25,9 +25,8 @@ of user input.
 - Callbacks that allow intercepting an Intent before it actually is emitted.
 - Extensive example project showing how the package can be used in pure Flutter apps
   as well as for Flame game overlays.
-
-Can be used in both pure Flutter apps and in Flame games for overlays and menus. For Flame
-usage, see the Flame-specific guidance later in the README.
+- Can be used in both pure Flutter apps and in Flame games for overlays and menus. For Flame
+  usage, see the Flame-specific guidance later in the README.
 
 
 ## Not included
