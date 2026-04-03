@@ -65,7 +65,8 @@ example the border of focused widgets stand out in a different color.
 ## Usage
 
 `GamepadControl` is the main widget of this package. You usually have exactly one of this widget
-that wraps your MaterialApp or similar.
+that wraps your MaterialApp or similar. This widget will listen on ***gamepads*** input stream
+and emit Flutter intents on the primary focused context based on user input.
 
 
 ### Callbacks
