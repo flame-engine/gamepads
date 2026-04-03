@@ -19,7 +19,7 @@ of user input.
 - (actually anything that you can do with Intents in Flutter, plus more with callbacks)
 - Gamepad buttons and axes can be used as input
 - Input repetition (on long press/activation)
-- Uses [gamepads](https://pub.dev/packages/gamepads) as the underlying Gamepad platforms
+- Uses [*gamepads*](https://pub.dev/packages/gamepads) as the underlying Gamepad platforms
   support library
 - A GamepadControl widget to wrap your app which in some cases is all you need.
 - Callbacks that allow intercepting an Intent before it actually is emitted.
@@ -65,7 +65,7 @@ example the border of focused widgets stand out in a different color.
 ## Usage
 
 `GamepadControl` is the main widget of this package. You usually have exactly one of this widget
-that wraps your MaterialApp or similar. This widget will listen on ***gamepads*** input stream
+that wraps your MaterialApp or similar. This widget will listen on *gamepads* input stream
 and emit Flutter intents on the primary focused context based on user input.
 
 
@@ -82,7 +82,7 @@ bool onBeforeIntent(GamepadActivator activator, Intent intent) {
 }
 ```
 
-However with local states this becomes impractical and ***flutter_gamepads*** provides an
+However with local states this becomes impractical and *flutter_gamepads* provides an
 other widget `GamepadInterceptor` that you wrap a subtree of widgets. It's only purpose
 is to provide an onBeforeIntent callback that is locally scoped.
 
@@ -109,7 +109,7 @@ There are four ways to block gamepad input from invoking intents:
 1. Omitting the `GamepadControl` widget from your widget tree
     - Fully unregisters `gamepad` event handles, axis activation memory, repeat timers etc.
 2. `GamepadControl.ignoreEvents == true`
-    - Early check on each `gamepads` event, axis activation memory is reset and repeat timers are
+    - Early check on each *gamepads* event, axis activation memory is reset and repeat timers are
       reset.
 3. `GamepadInterceptor.onBeforeIntent() => false`
     - Blocks each intent before it is passed on to GamepadControl.onBeforeIntent()
@@ -132,7 +132,7 @@ The `GamepadControl` widget does not check if primaryFocus is a descendant of it
 
 ### How it works
 
-`GamepadControl` listens on `NormalizedGamepadEvent` from ***gamepads*** package and maps those
+`GamepadControl` listens on `NormalizedGamepadEvent` from *gamepads* package and maps those
 to a `GamepadActivator` and its related `Intent`.
 
 Input repetition is conceptually started on activation of a GamepadActivator and stopped
