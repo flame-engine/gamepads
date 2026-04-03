@@ -1,9 +1,9 @@
 # flutter_gamepads
 
-A Flutter package that maps gamepad input to UI interaction. It is built on Flutter’s focus
-and intent system which powers keyboard navigation in Flutter.
+A Flutter package that maps gamepad input to UI interaction.
 
-This means that for a large part, the same effort you spend on supporting keyboard and
+This package is built on Flutter’s focus and intent system which powers keyboard navigation in
+Flutter. This means that for a large part, the same effort you spend on supporting keyboard and
 screen reader users also benefit gamepad users and vice versa.
 
 The philosophy is that you just add Gamepad support to your app to extend its multi-modality
@@ -12,23 +12,15 @@ of user input.
 
 ## Features
 
-Input:
-
-- Gamepad buttons and axes can be used as input
-- Input repetition (on long press/activation)
-- Uses [gamepads](https://pub.dev/packages/gamepads) as the underlying Gamepad platforms
-  support library
-
-Output:
-
 - Move focus
 - Activate focused button
 - Dismiss
 - Scroll
 - (actually anything that you can do with Intents in Flutter, plus more with callbacks)
-
-API and docs:
-
+- Gamepad buttons and axes can be used as input
+- Input repetition (on long press/activation)
+- Uses [gamepads](https://pub.dev/packages/gamepads) as the underlying Gamepad platforms
+  support library
 - A GamepadControl widget to wrap your app which in some cases is all you need.
 - Callbacks that allow intercepting an Intent before it actually is emitted.
 - Extensive example project showing how the package can be used in pure Flutter apps
