@@ -216,14 +216,15 @@ GamepadControl(
                         label: 'Does not work with gamepads',
                         onChange: (value) => setState(() => sliderValue = value),
                     ),
-                    // This slider can be operated with Gamepad due to the compatibility
-                    // layer provided via GamepadInterceptor.
+                    // This slider can be operated with Gamepad due to the
+                    // compatibility layer provided via GamepadInterceptor.
                     GamepadInterceptor(
                         onBeforeIntent: (activator, intent) {
                             if (intent is ScrollIntent) {
                                 if (intent.direction == AxisDirection.right) {
                                     setState(() _value = min(1.0, _value + 0.1));
-                                } else if (intent.direction == AxisDirection.left) {
+                                } else if (intent.direction ==
+                                                        AxisDirection.left) {
                                     setState(() _value = max(0.0, _value - 0.1));
                                 }
                                 // Block actual emit of ScrollIntent
@@ -236,8 +237,8 @@ GamepadControl(
                             value: _value,
                             label: 'Works with gamepads',
                             max: 1.0,
-                            // This setState never occur by Gamepad input, but is good to allow
-                            // keyboard/mouse input as well.
+                            // This setState never occur by Gamepad input, but is
+                            // good to allow keyboard/mouse input as well.
                             onChange: (value) => setState(() => _value = value),
                         ),
                     ),
