@@ -96,11 +96,13 @@ GamepadInterceptor(
 ```
 
 
-#### Example
+#### onBeforeIntent examples
 
 An example of how to build a gamepad-extended widget can be found in
 [SliderWithGamepadExport](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_example/example/lib/flutter_example/pages/slider_with_gamepad_support.dart).
 
+Another example, using the activator to support 4-way directional D-pad
+within a Tick-tac-toe game is in [TicTacToe widget](https://github.com/flame-engine/gamepads/tree/main/packages/flutter_example/example/lib/flutter_example/pages/game_page.dart).
 
 ### Blocking Gamepad input
 
