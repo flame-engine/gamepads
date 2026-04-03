@@ -12,16 +12,14 @@ of user input.
 
 ## Features
 
-
-### Input support
+Input:
 
 - Gamepad buttons and axes can be used as input
 - Input repetition (on long press/activation)
 - Uses [gamepads](https://pub.dev/packages/gamepads) as the underlying Gamepad platforms
   support library
 
-
-### Output support
+Output:
 
 - Move focus
 - Activate focused button
@@ -29,8 +27,7 @@ of user input.
 - Scroll
 - (actually anything that you can do with Intents in Flutter, plus more with callbacks)
 
-
-### API and docs
+API and docs:
 
 - A GamepadControl widget to wrap your app which in some cases is all you need.
 - Callbacks that allow intercepting an Intent before it actually is emitted.
