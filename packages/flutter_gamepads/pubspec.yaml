@@ -1,9 +1,9 @@
 name: flutter_gamepads
 resolution: workspace
-description: A Flutter plugin to handle gamepad input across multiple platforms.
+description: A Flutter package that maps gamepad input to UI interaction.
 version: 0.1.10
 homepage: https://github.com/flame-engine/gamepads
-repository: https://github.com/flame-engine/gamepads/tree/main/packages/gamepads
+repository: https://github.com/flame-engine/gamepads/tree/main/packages/flutter_gamepads
 
 flutter:
 
