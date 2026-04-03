@@ -70,6 +70,12 @@ example the border of focused widgets stand out in a different color.
 This widget will listen to `gamepads` normalized input events and emit Intents originating
 from the primary focused widget.
 
+```dart
+GamepadControl(
+    child: MaterialApp(),
+)
+```
+
 By default GamepadControl comes with these bindings:
 
 - D-pad up: Previous focus
