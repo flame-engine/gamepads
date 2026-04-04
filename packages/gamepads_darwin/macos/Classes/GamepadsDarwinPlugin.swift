@@ -2,6 +2,13 @@ import Cocoa
 import GameController
 import FlutterMacOS
 
+enum FixedKey: String {
+    case buttonMenu
+    case buttonOptions
+    case buttonHome
+    case touchpadButton
+}
+
 public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     let channel: FlutterMethodChannel
     let gamepads = GamepadsListener()
@@ -29,7 +36,8 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     }
 
     private func onGamepadEvent(gamepadId: Int, gamepad: GCExtendedGamepad, element: GCControllerElement) {
-        for (key, value) in getValues(element: element) {
+        let fixedKey = getFixedKey(gamepad: gamepad, element: element)
+        for (key, value) in getValues(element: element, fixedKey: fixedKey) {
             let arguments: [String: Any] = [
                 "gamepadId": String(gamepadId),
                 "time": Int(getTimestamp(gamepad: gamepad)),
@@ -41,30 +49,65 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         }
     }
 
-    private func getValues(element: GCControllerElement) -> [(String, Float)] {
+    /// Returns a fixed key name for elements whose SF Symbol names are
+    /// ambiguous across controller types (e.g. both DualSense system
+    /// buttons report "capsule.portrait"). For other elements, returns
+    /// nil so the caller falls back to SF Symbol names.
+    private func getFixedKey(gamepad: GCExtendedGamepad, element: GCControllerElement) -> FixedKey? {
+        if element === gamepad.buttonMenu {
+            return .buttonMenu
+        }
+        if let opt = gamepad.buttonOptions, element === opt {
+            return .buttonOptions
+        }
+        if #available(macOS 11.0, *) {
+            if let home = gamepad.buttonHome, element === home {
+                return .buttonHome
+            }
+        }
+        if #available(macOS 11.3, *) {
+            if let ds = gamepad as? GCDualSenseGamepad,
+               element === ds.touchpadButton {
+                return .touchpadButton
+            }
+        }
+        if #available(macOS 11.0, *) {
+            if let ds = gamepad as? GCDualShockGamepad,
+               element === ds.touchpadButton {
+                return .touchpadButton
+            }
+        }
+        return nil
+    }
+
+    private func getValues(element: GCControllerElement, fixedKey: FixedKey? = nil) -> [(String, Float)] {
         if let element = element as? GCControllerButtonInput {
-            var button: String = "Unknown button"
-            if #available(macOS 11.0, *) {
-                if (element.sfSymbolsName != nil) {
-                    button = element.sfSymbolsName!
+            var button: String = fixedKey?.rawValue ?? "Unknown button"
+            if fixedKey == nil {
+                if #available(macOS 11.0, *) {
+                    if let name = element.sfSymbolsName {
+                        button = name
+                    }
                 }
             }
-            
             return [(button, element.value)]
         } else if let element = element as? GCControllerAxisInput {
-            var axis: String = "Unknown axis"
-            if #available(macOS 11.0, *) {
-                if (element.sfSymbolsName != nil) {
-                    axis = element.sfSymbolsName!
+            var axis: String = fixedKey?.rawValue ?? "Unknown axis"
+            if fixedKey == nil {
+                if #available(macOS 11.0, *) {
+                    if let name = element.sfSymbolsName {
+                        axis = name
+                    }
                 }
             }
             return [(axis, element.value)]
         } else if let element = element as? GCControllerDirectionPad {
-            var directionPad: String = "Unknown direction pad"
-    
-            if #available(macOS 11.0, *) {
-                if (element.sfSymbolsName != nil) {
-                    directionPad = element.sfSymbolsName!
+            var directionPad: String = fixedKey?.rawValue ?? "Unknown direction pad"
+            if fixedKey == nil {
+                if #available(macOS 11.0, *) {
+                    if let name = element.sfSymbolsName {
+                        directionPad = name
+                    }
                 }
             }
             return [

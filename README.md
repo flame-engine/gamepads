@@ -144,6 +144,7 @@ Buttons and axes follow the Xbox/standard gamepad layout:
 | `Button` | `back`, `start`, `home`      | 0.0 or 1.0  |
 | `Button` | `leftStick`, `rightStick`    | 0.0 or 1.0  |
 | `Button` | `dpadUp/Down/Left/Right`     | 0.0 or 1.0  |
+| `Button` | `touchpad`                   | 0.0 or 1.0  |
 | `Axis`   | `leftStickX`, `leftStickY`   | -1.0 to 1.0 |
 | `Axis`   | `rightStickX`, `rightStickY` | -1.0 to 1.0 |
 | `Axis`   | `leftTrigger`, `rightTrigger`| 0.0 to 1.0  |

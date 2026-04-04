@@ -29,6 +29,14 @@ class MacosMapping extends PlatformMapping {
   // SF Symbols names can vary by controller, so we use contains-based
   // matching on first encounter, then cache the result.
   static const _buttonPatterns = <String, GamepadButton>{
+    // Fixed keys from native plugin — these use GCController typed
+    // property names instead of SF Symbols to avoid ambiguity across
+    // controller types (e.g. DualSense reports capsule.portrait for
+    // both system buttons).
+    'buttonMenu': GamepadButton.start,
+    'buttonOptions': GamepadButton.back,
+    'buttonHome': GamepadButton.home,
+    'touchpadButton': GamepadButton.touchpad,
     // Xbox-style face buttons
     'a.circle': GamepadButton.a,
     'b.circle': GamepadButton.b,

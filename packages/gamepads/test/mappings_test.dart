@@ -389,6 +389,28 @@ void main() {
       );
     });
 
+    test('normalizes system buttons from fixed keys', () {
+      expect(
+        mapping.normalizeButton('buttonMenu', 1.0)?.button,
+        GamepadButton.start,
+      );
+      expect(
+        mapping.normalizeButton('buttonOptions', 1.0)?.button,
+        GamepadButton.back,
+      );
+      expect(
+        mapping.normalizeButton('buttonHome', 1.0)?.button,
+        GamepadButton.home,
+      );
+    });
+
+    test('normalizes touchpad button', () {
+      expect(
+        mapping.normalizeButton('touchpadButton', 1.0)?.button,
+        GamepadButton.touchpad,
+      );
+    });
+
     test('normalizes shoulder buttons', () {
       expect(
         mapping.normalizeButton('l1.rectangle.roundedbottom', 1.0)?.button,
