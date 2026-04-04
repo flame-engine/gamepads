@@ -148,7 +148,7 @@ and call its `onBeforeIntent` first (if there is one), and then proceed to `onBe
 
 If no onBeforeIntent has rejected, the Intent will be invoked on the primary focus context.
 
-[Diagram of the callbacks and intent emit chain](https://raw.githubusercontent.com/flame-engine/gamepads/refs/heads/main/packages/flutter_gamepads/docs/input_diagram.svg)
+[Diagram of the callbacks and intent emit chain](https://raw.githubusercontent.com/flame-engine/gamepads/refs/heads/main/packages/flutter_gamepads/doc/input_diagram.svg)
 
 
 ### Defaults
