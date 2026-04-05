@@ -1,3 +1,9 @@
+## 0.3.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FIX**: Button input value was flipped on windows ([#90](https://github.com/flame-engine/gamepads/issues/90)). ([2e24b686](https://github.com/flame-engine/gamepads/commit/2e24b686eb70478fb166993bfc23854cca7356eb))
+
 ## 0.2.0
 
 > Note: This release has breaking changes.

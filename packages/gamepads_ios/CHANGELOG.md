@@ -1,3 +1,7 @@
+## 0.1.3+3
+
+ - **FIX**: Correct trigger handling for iOS. ([#94](https://github.com/flame-engine/gamepads/issues/94)). ([17c2f907](https://github.com/flame-engine/gamepads/commit/17c2f9079a83d991a13ad2f45f40374135fc09d9))
+
 ## 0.1.3+2
 
  - Update a dependency to the latest release.

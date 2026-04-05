@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-04-05
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`gamepads_windows` - `v0.3.0`](#gamepads_windows---v030)
+
+Packages with other changes:
+
+ - [`flutter_gamepads` - `v0.1.11`](#flutter_gamepads---v0111)
+ - [`gamepads` - `v0.1.10+1`](#gamepads---v01101)
+ - [`gamepads_darwin` - `v0.1.2+4`](#gamepads_darwin---v0124)
+ - [`gamepads_ios` - `v0.1.3+3`](#gamepads_ios---v0133)
+
+---
+
+#### `gamepads_windows` - `v0.3.0`
+
+ - **BREAKING** **FIX**: Button input value was flipped on windows ([#90](https://github.com/flame-engine/gamepads/issues/90)). ([2e24b686](https://github.com/flame-engine/gamepads/commit/2e24b686eb70478fb166993bfc23854cca7356eb))
+
+#### `flutter_gamepads` - `v0.1.11`
+
+ - **FEAT**: Add package flutter_gamepads ([#88](https://github.com/flame-engine/gamepads/issues/88)). ([4f171c6f](https://github.com/flame-engine/gamepads/commit/4f171c6fa72c76dcf7bd53e5dde50936dfe9142d))
+ - **DOCS**: Fix link to diagram in flutter_gamepads README ([#97](https://github.com/flame-engine/gamepads/issues/97)). ([d6417724](https://github.com/flame-engine/gamepads/commit/d6417724c1b8d5edfd4099a1e3eb50326dc871e9))
+
+#### `gamepads` - `v0.1.10+1`
+
+ - **FIX**: Use typed GCController properties for macOS system button mapping ([#96](https://github.com/flame-engine/gamepads/issues/96)). ([b4264e48](https://github.com/flame-engine/gamepads/commit/b4264e481abc5755725d3b1c7626b759f71bb1d4))
+ - **FIX**: Move update_controller_database.dart to correct tool/ path ([#92](https://github.com/flame-engine/gamepads/issues/92)). ([842894ea](https://github.com/flame-engine/gamepads/commit/842894ea7ee01c5613336c4012fdfcfe25a850bb))
+
+#### `gamepads_darwin` - `v0.1.2+4`
+
+ - **FIX**: Use typed GCController properties for macOS system button mapping ([#96](https://github.com/flame-engine/gamepads/issues/96)). ([b4264e48](https://github.com/flame-engine/gamepads/commit/b4264e481abc5755725d3b1c7626b759f71bb1d4))
+
+#### `gamepads_ios` - `v0.1.3+3`
+
+ - **FIX**: Correct trigger handling for iOS. ([#94](https://github.com/flame-engine/gamepads/issues/94)). ([17c2f907](https://github.com/flame-engine/gamepads/commit/17c2f9079a83d991a13ad2f45f40374135fc09d9))
+
+
 ## 2026-03-25
 
 ### Changes
