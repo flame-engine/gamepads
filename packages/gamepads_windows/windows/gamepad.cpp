@@ -236,7 +236,7 @@ void Gamepads::read_gamepad(GamepadData* gamepad, IGameInputDevice* device) {
       }
     }
 
-    Sleep(1);
+    Sleep(8);
   }
 
   if (gamepad->stop_thread) {
