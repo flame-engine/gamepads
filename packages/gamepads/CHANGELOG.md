@@ -1,3 +1,8 @@
+## 0.1.10+1
+
+ - **FIX**: Use typed GCController properties for macOS system button mapping ([#96](https://github.com/flame-engine/gamepads/issues/96)). ([b4264e48](https://github.com/flame-engine/gamepads/commit/b4264e481abc5755725d3b1c7626b759f71bb1d4))
+ - **FIX**: Move update_controller_database.dart to correct tool/ path ([#92](https://github.com/flame-engine/gamepads/issues/92)). ([842894ea](https://github.com/flame-engine/gamepads/commit/842894ea7ee01c5613336c4012fdfcfe25a850bb))
+
 ## 0.1.10
 
  - **FEAT**: Normalize gamepad output across controllers and platforms ([#82](https://github.com/flame-engine/gamepads/issues/82)). ([2a712e1f](https://github.com/flame-engine/gamepads/commit/2a712e1fd35140f9412e0aae2d7c040dcff84ec1))
