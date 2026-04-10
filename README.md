@@ -258,11 +258,11 @@ which is statically linked.
 
 ## Bridge packages
 
-- [flame_gamepads](https://github.com/flame-engine/flame/tree/main/packages/flame_gamepads) -
+- [flame_gamepads](https://pub.dev/packages/flame_gamepads) -
   Provides a GamepadCallbacks component mixin for your Flame games
-- [flutter_gamepads](./packages/flutter_gamepads/) - Provides a widget that maps gamepad input
-  to UI interaction with your Flutter widgets. In regular Flutter apps as well as for Flame
-  overlays.
+- [flutter_gamepads](https://pub.dev/packages/flutter_gamepads) - Provides a widget that
+  maps gamepad input to UI interaction with your Flutter widgets. In regular Flutter apps
+  as well as for Flame overlays.
 
 
 ## Support
