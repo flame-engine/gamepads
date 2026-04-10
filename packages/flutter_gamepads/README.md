@@ -110,7 +110,7 @@ within a Tick-tac-toe game is in [TicTacToe widget](https://github.com/flame-eng
 There are four ways to block gamepad input from invoking intents:
 
 1. Omitting the `GamepadControl` widget from your widget tree
-    - Fully unregisters `gamepad` event handles, axis activation memory, repeat timers etc.
+    - Fully unregisters *gamepads* event handles, axis activation memory, repeat timers etc.
 2. `GamepadControl.ignoreEvents == true`
     - Early check on each *gamepads* event, axis activation memory is reset and repeat timers are
       reset.
