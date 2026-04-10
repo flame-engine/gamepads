@@ -110,7 +110,7 @@ within a Tick-tac-toe game is in [TicTacToe widget](https://github.com/flame-eng
 There are four ways to block gamepad input from invoking intents:
 
 1. Omitting the `GamepadControl` widget from your widget tree
-    - Fully unregisters `gamepad` event handles, axis activation memory, repeat timers etc.
+    - Fully unregisters *gamepads* event handles, axis activation memory, repeat timers etc.
 2. `GamepadControl.ignoreEvents == true`
     - Early check on each *gamepads* event, axis activation memory is reset and repeat timers are
       reset.
@@ -131,24 +131,6 @@ will all emit intents on the `primaryFocus` focus node. Except if you set `ignor
 use `onBeforeIntent` to block intents from all but one of the `GamepadControl` widgets.
 
 The `GamepadControl` widget does not check if primaryFocus is a descendant of itself.
-
-
-### How it works
-
-`GamepadControl` listens on `NormalizedGamepadEvent` from *gamepads* package and maps those
-to a `GamepadActivator` and its related `Intent`.
-
-Input repetition is conceptually started on activation of a GamepadActivator and stopped
-once the activator has been canceled (eg. button up or axis below minimum threshold).
-
-`GamepadControl` will lookup the closest ancestor `GamepadInterceptor` from `primaryFocus`
-and call its `onBeforeIntent` first (if there is one), and then proceed to `onBeforeIntent` on
-`GamepadControl`. Calling is lazy so if the local `onBeforeIntent` returns fall, the one on
-`GamepadControl` is not called.
-
-If no onBeforeIntent has rejected, the Intent will be invoked on the primary focus context.
-
-[Diagram of the callbacks and intent emit chain](https://raw.githubusercontent.com/flame-engine/gamepads/refs/heads/main/packages/flutter_gamepads/doc/input_diagram.svg)
 
 
 ### Defaults
@@ -193,6 +175,24 @@ Flame game that you want users to be able to navigate with their gamepad.
    by some condition.
 4. If you need to disable `GamepadControl` while in-game you can do so by setting
    `ignoreEvents = true` on it.
+
+
+## How it works
+
+`GamepadControl` listens on `NormalizedGamepadEvent` from *gamepads* package and maps those
+to a `GamepadActivator` and its related `Intent`.
+
+Input repetition is conceptually started on activation of a GamepadActivator and stopped
+once the activator has been canceled (eg. button up or axis below minimum threshold).
+
+`GamepadControl` will lookup the closest ancestor `GamepadInterceptor` from `primaryFocus`
+and call its `onBeforeIntent` first (if there is one), and then proceed to `onBeforeIntent` on
+`GamepadControl`. Calling is lazy so if the local `onBeforeIntent` returns fall, the one on
+`GamepadControl` is not called.
+
+If no onBeforeIntent has rejected, the Intent will be invoked on the primary focus context.
+
+[Diagram of the callbacks and intent emit chain](https://raw.githubusercontent.com/flame-engine/gamepads/refs/heads/main/packages/flutter_gamepads/doc/input_diagram.svg)
 
 
 ## Code example
