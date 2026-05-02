@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-05-02
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`flutter_gamepads` - `v0.1.11+1`](#flutter_gamepads---v01111)
+ - [`gamepads_web` - `v0.1.1+1`](#gamepads_web---v0111)
+ - [`gamepads_windows` - `v0.3.0+1`](#gamepads_windows---v0301)
+ - [`gamepads` - `v0.1.10+2`](#gamepads---v01102)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads` - `v0.1.10+2`
+
+---
+
+#### `flutter_gamepads` - `v0.1.11+1`
+
+ - **DOCS**: Update flutter_gamepads README ([#101](https://github.com/flame-engine/gamepads/issues/101)). ([e001feee](https://github.com/flame-engine/gamepads/commit/e001feeee35d11c7366b118fce3ff8bcfaf10830))
+
+#### `gamepads_web` - `v0.1.1+1`
+
+ - **FIX**: Remove unused dependency that causes package:js dependency ([#103](https://github.com/flame-engine/gamepads/issues/103)). ([0463612b](https://github.com/flame-engine/gamepads/commit/0463612b646e187d3dc1cac3424167a042b9cf1b))
+
+#### `gamepads_windows` - `v0.3.0+1`
+
+ - **FIX**: Improved performance on windows ([#54](https://github.com/flame-engine/gamepads/issues/54)) ([#100](https://github.com/flame-engine/gamepads/issues/100)). ([f4efa60b](https://github.com/flame-engine/gamepads/commit/f4efa60bc443e1aed930f224e081c3e9ddc39699))
+
+
 ## 2026-04-05
 
 ### Changes
