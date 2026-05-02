@@ -1,3 +1,7 @@
+## 0.1.10+2
+
+ - Update a dependency to the latest release.
+
 ## 0.1.10+1
 
  - **FIX**: Use typed GCController properties for macOS system button mapping ([#96](https://github.com/flame-engine/gamepads/issues/96)). ([b4264e48](https://github.com/flame-engine/gamepads/commit/b4264e481abc5755725d3b1c7626b759f71bb1d4))

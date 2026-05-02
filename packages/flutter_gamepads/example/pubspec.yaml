@@ -13,8 +13,8 @@ dependencies:
   flame: ^1.32.0
   flutter:
     sdk: flutter
-  flutter_gamepads: ^0.1.11
-  gamepads: ^0.1.10+1
+  flutter_gamepads: ^0.1.11+1
+  gamepads: ^0.1.10+2
 
 dev_dependencies:
   flame_lint: ^1.4.1

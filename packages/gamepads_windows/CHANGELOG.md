@@ -1,3 +1,7 @@
+## 0.3.0+1
+
+ - **FIX**: Improved performance on windows ([#54](https://github.com/flame-engine/gamepads/issues/54)) ([#100](https://github.com/flame-engine/gamepads/issues/100)). ([f4efa60b](https://github.com/flame-engine/gamepads/commit/f4efa60bc443e1aed930f224e081c3e9ddc39699))
+
 ## 0.3.0
 
 > Note: This release has breaking changes.
