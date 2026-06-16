@@ -30,6 +30,10 @@ class EventListener {
         SupportedAxis(MotionEvent.AXIS_BRAKE),
         SupportedAxis(MotionEvent.AXIS_GAS),
         SupportedAxis(MotionEvent.AXIS_WHEEL),
+        // Right-stick axes for non-Xbox layouts (Xbox uses AXIS_Z/RZ).
+        // E.g. DJI RC Pro reports its right stick on RX/RY.
+        SupportedAxis(MotionEvent.AXIS_RX),
+        SupportedAxis(MotionEvent.AXIS_RY, invert = true),
     )
 
     fun onKeyEvent(keyEvent: KeyEvent, channel: MethodChannel): Boolean {
