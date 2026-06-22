@@ -1,3 +1,8 @@
+## 0.1.8
+
+ - **FIX**(android): Capture joystick motion via decorView listener ([#112](https://github.com/flame-engine/gamepads/issues/112)). ([b15dc5cd](https://github.com/flame-engine/gamepads/commit/b15dc5cda41158000df7e4ace6fd61457226e88c))
+ - **FEAT**(android): Report AXIS_RX/RY for non-Xbox stick layouts ([#111](https://github.com/flame-engine/gamepads/issues/111)). ([099bad79](https://github.com/flame-engine/gamepads/commit/099bad790417f785cd3d17362c620f7e6d559bd7))
+
 ## 0.1.7
 
  - **FEAT**: Normalize gamepad output across controllers and platforms ([#82](https://github.com/flame-engine/gamepads/issues/82)). ([2a712e1f](https://github.com/flame-engine/gamepads/commit/2a712e1fd35140f9412e0aae2d7c040dcff84ec1))
