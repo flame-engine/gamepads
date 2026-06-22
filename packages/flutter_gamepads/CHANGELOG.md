@@ -1,3 +1,7 @@
+## 0.1.11+2
+
+ - Update a dependency to the latest release.
+
 ## 0.1.11+1
 
  - **DOCS**: Update flutter_gamepads README ([#101](https://github.com/flame-engine/gamepads/issues/101)). ([e001feee](https://github.com/flame-engine/gamepads/commit/e001feeee35d11c7366b118fce3ff8bcfaf10830))

@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-06-22
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads_android` - `v0.1.8`](#gamepads_android---v018)
+ - [`gamepads` - `v0.1.10+3`](#gamepads---v01103)
+ - [`flutter_gamepads` - `v0.1.11+2`](#flutter_gamepads---v01112)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads` - `v0.1.10+3`
+ - `flutter_gamepads` - `v0.1.11+2`
+
+---
+
+#### `gamepads_android` - `v0.1.8`
+
+ - **FIX**(android): Capture joystick motion via decorView listener ([#112](https://github.com/flame-engine/gamepads/issues/112)). ([b15dc5cd](https://github.com/flame-engine/gamepads/commit/b15dc5cda41158000df7e4ace6fd61457226e88c))
+ - **FEAT**(android): Report AXIS_RX/RY for non-Xbox stick layouts ([#111](https://github.com/flame-engine/gamepads/issues/111)). ([099bad79](https://github.com/flame-engine/gamepads/commit/099bad790417f785cd3d17362c620f7e6d559bd7))
+
+
 ## 2026-05-02
 
 ### Changes
