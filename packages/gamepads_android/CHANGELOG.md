@@ -1,3 +1,7 @@
+## 0.1.8+1
+
+ - **FIX**(android): Migrate to built-in Kotlin for AGP 9 support ([#115](https://github.com/flame-engine/gamepads/issues/115)). ([bddacbb3](https://github.com/flame-engine/gamepads/commit/bddacbb3c0510a295422af4b71636e0c96d63505))
+
 ## 0.1.8
 
  - **FIX**(android): Capture joystick motion via decorView listener ([#112](https://github.com/flame-engine/gamepads/issues/112)). ([b15dc5cd](https://github.com/flame-engine/gamepads/commit/b15dc5cda41158000df7e4ace6fd61457226e88c))
