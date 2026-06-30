@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-06-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads_android` - `v0.1.8+1`](#gamepads_android---v0181)
+ - [`gamepads` - `v0.1.10+4`](#gamepads---v01104)
+ - [`flutter_gamepads` - `v0.1.11+3`](#flutter_gamepads---v01113)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads` - `v0.1.10+4`
+ - `flutter_gamepads` - `v0.1.11+3`
+
+---
+
+#### `gamepads_android` - `v0.1.8+1`
+
+ - **FIX**(android): Migrate to built-in Kotlin for AGP 9 support ([#115](https://github.com/flame-engine/gamepads/issues/115)). ([bddacbb3](https://github.com/flame-engine/gamepads/commit/bddacbb3c0510a295422af4b71636e0c96d63505))
+
+
 ## 2026-06-22
 
 ### Changes
