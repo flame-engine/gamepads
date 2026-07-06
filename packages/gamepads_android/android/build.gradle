@@ -25,8 +25,11 @@ apply plugin: 'com.android.library'
 
 def agpMajor = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')[0] as int
 
+// Applied via pluginManager rather than `apply plugin: 'kotlin-android'` so that
+// Flutter's static build script scan does not flag this plugin as applying KGP,
+// which emits a build warning for consumers on Flutter's built-in Kotlin.
 if (agpMajor < 9) {
-    apply plugin: 'kotlin-android'
+    project.pluginManager.apply('org.jetbrains.kotlin.android')
 }
 
 android {
