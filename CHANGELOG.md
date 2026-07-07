@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-07-07
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads_android` - `v0.1.8+2`](#gamepads_android---v0182)
+ - [`gamepads` - `v0.1.10+5`](#gamepads---v01105)
+ - [`flutter_gamepads` - `v0.1.11+4`](#flutter_gamepads---v01114)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads` - `v0.1.10+5`
+ - `flutter_gamepads` - `v0.1.11+4`
+
+---
+
+#### `gamepads_android` - `v0.1.8+2`
+
+ - **FIX**(android): Avoid KGP warning on AGP 8.x with built-in Kotlin ([#120](https://github.com/flame-engine/gamepads/issues/120)). ([291d43e8](https://github.com/flame-engine/gamepads/commit/291d43e83f33f05d1c1c29623d66b7097b4a7b5d))
+
+
 ## 2026-06-30
 
 ### Changes
