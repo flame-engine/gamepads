@@ -17,7 +17,7 @@ environment:
   sdk: '>=3.9.0 <4.0.0'
 
 dev_dependencies:
-  melos: ^7.5.1
+  melos: ^8.2.0
 
 melos:
   command:
@@ -33,12 +33,8 @@ melos:
 
   scripts:
     lint:
-      run: melos run analyze && melos run format
+      run: melos analyze -c 10 && melos run format
       description: Run all static analysis checks.
-
-    analyze:
-      run: melos exec -c 10 flutter analyze --fatal-infos
-      description: Run `flutter analyze` for all packages.
 
     format:
       run: melos exec dart format . --fix
@@ -53,14 +49,4 @@ melos:
       description: Run dartdoc checks for all non-example packages.
       packageFilters:
         ignore: "*_example"
-
-    test:select:
-      run: melos exec flutter test
-      packageFilters:
-        dirExists: test
-      description: Run `flutter test` for selected packages.
-
-    test:
-      run: melos run test:select --no-select
-      description: Run all Flutter tests in this project.
 

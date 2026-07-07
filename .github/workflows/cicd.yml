@@ -28,7 +28,7 @@ jobs:
         with:
           flutter-version: ${{env.FLUTTER_MIN_VERSION}}
       - uses: bluefireteam/melos-action@v3
-      - run: melos exec dart analyze .
+      - run: melos analyze
 
   analyze-latest:
     runs-on: ubuntu-latest
