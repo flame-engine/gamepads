@@ -1,3 +1,7 @@
+## 0.1.8+2
+
+ - **FIX**(android): Avoid KGP warning on AGP 8.x with built-in Kotlin ([#120](https://github.com/flame-engine/gamepads/issues/120)). ([291d43e8](https://github.com/flame-engine/gamepads/commit/291d43e83f33f05d1c1c29623d66b7097b4a7b5d))
+
 ## 0.1.8+1
 
  - **FIX**(android): Migrate to built-in Kotlin for AGP 9 support ([#115](https://github.com/flame-engine/gamepads/issues/115)). ([bddacbb3](https://github.com/flame-engine/gamepads/commit/bddacbb3c0510a295422af4b71636e0c96d63505))
