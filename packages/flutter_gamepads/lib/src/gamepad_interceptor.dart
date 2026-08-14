@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_gamepads/src/api/gamepad_activator.dart';
 
 /// Wrap part of your widget tree with this widget to be able to

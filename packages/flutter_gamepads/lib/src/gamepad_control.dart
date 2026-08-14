@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_gamepads/flutter_gamepads.dart';
 import 'package:gamepads/gamepads.dart';
 
