@@ -213,9 +213,12 @@ class MainActivity: FlutterActivity(), GamepadsCompatibleActivity {
     var motionListener: ((MotionEvent) -> Boolean)? = null
 
     override fun dispatchGenericMotionEvent(motionEvent: MotionEvent): Boolean {
-        return motionListener?.invoke(motionEvent) ?: false
+        if (motionListener?.invoke(motionEvent) == true) {
+            return true
+        }
+        return super.dispatchGenericMotionEvent(motionEvent)
     }
-    
+
     override fun dispatchKeyEvent(keyEvent: KeyEvent): Boolean {
         if (keyListener?.invoke(keyEvent) == true) {
             return true

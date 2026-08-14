@@ -35,6 +35,9 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private var genericMotionListener: View.OnGenericMotionListener? = null
 
   private fun listGamepads(): List<Map<String, String>>  {
+    if (!::devices.isInitialized) {
+      return emptyList()
+    }
     return devices.getDevices().map { device ->
       mapOf(
         "id" to device.key.toString(),
@@ -67,7 +70,16 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   fun onAttachedToActivityShared(activity: Activity) {
-    val compatibleActivity = activity as GamepadsCompatibleActivity
+    val compatibleActivity = activity as? GamepadsCompatibleActivity
+    if (compatibleActivity == null) {
+      Log.e(
+        TAG,
+        "Gamepad support is disabled: ${activity.javaClass.name} does not " +
+          "implement GamepadsCompatibleActivity. See the 'Android Integration' " +
+          "section of the gamepads README for the required MainActivity setup."
+      )
+      return
+    }
     devices = DeviceListener { compatibleActivity.isGamepadsInputDevice(it) }
     events = EventListener()
     compatibleActivity.registerInputDeviceListener(devices, handler = null)
