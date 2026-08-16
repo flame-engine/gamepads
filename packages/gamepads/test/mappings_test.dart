@@ -245,8 +245,16 @@ void main() {
       expect(right[1].button, GamepadButton.dpadRight);
       expect(right[1].value, 1.0);
 
-      // Android hat Y: positive = down
-      final down = mapping.normalizeDpadAxis('AXIS_HAT_Y', 1.0);
+      // gamepads_android's EventListener inverts AXIS_HAT_Y before it reaches
+      // the mapping, so +1.0 = up and -1.0 = down here (regression for #123:
+      // pressing up must emit dpadUp, not dpadDown).
+      final up = mapping.normalizeDpadAxis('AXIS_HAT_Y', 1.0);
+      expect(up[0].button, GamepadButton.dpadDown);
+      expect(up[0].value, 0.0);
+      expect(up[1].button, GamepadButton.dpadUp);
+      expect(up[1].value, 1.0);
+
+      final down = mapping.normalizeDpadAxis('AXIS_HAT_Y', -1.0);
       expect(down[0].button, GamepadButton.dpadDown);
       expect(down[0].value, 1.0);
       expect(down[1].button, GamepadButton.dpadUp);
