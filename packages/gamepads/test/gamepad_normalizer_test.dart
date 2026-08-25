@@ -94,7 +94,7 @@ void main() {
         expect(results.first.button, GamepadButton.a);
       });
 
-      test('normalizes Android axis with Y inversion', () {
+      test('keeps the Android Y axis inverted by the plugin', () {
         final event = GamepadEvent(
           gamepadId: 'pad1',
           timestamp: 1000,
@@ -105,7 +105,7 @@ void main() {
 
         final results = normalizer.normalize(event);
         expect(results.first.axis, GamepadAxis.leftStickY);
-        expect(results.first.value, -1.0);
+        expect(results.first.value, 1.0);
       });
     });
 

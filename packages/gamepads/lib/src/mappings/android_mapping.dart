@@ -37,6 +37,10 @@ class AndroidMapping extends PlatformMapping {
     'AXIS_RTRIGGER': GamepadAxis.rightTrigger,
     'AXIS_BRAKE': GamepadAxis.leftTrigger,
     'AXIS_GAS': GamepadAxis.rightTrigger,
+    // Right-stick axes for non-Xbox layouts, which report the right stick on
+    // RX/RY instead of Z/RZ. E.g. the DJI RC Pro.
+    'AXIS_RX': GamepadAxis.rightStickX,
+    'AXIS_RY': GamepadAxis.rightStickY,
   };
 
   // D-pad hat axes on Android.
@@ -59,10 +63,9 @@ class AndroidMapping extends PlatformMapping {
       return const [];
     }
     // Android reports sticks in -1.0 to 1.0 and triggers in 0.0 to 1.0.
-    // Y-axis is inverted on Android (up = negative).
-    if (axis == GamepadAxis.leftStickY || axis == GamepadAxis.rightStickY) {
-      return [NormalizedAxis(axis, -value)];
-    }
+    // gamepads_android's EventListener already inverts the stick Y axes
+    // (AXIS_Y, AXIS_RZ and AXIS_RY), so the values reaching here follow
+    // up = +1.0, down = -1.0 and must not be negated again. See issue #123.
     return [NormalizedAxis(axis, value)];
   }
 
@@ -78,9 +81,8 @@ class AndroidMapping extends PlatformMapping {
       ];
     }
     if (key == _dpadYAxis) {
-      // gamepads_android's EventListener already inverts AXIS_HAT_Y, so the
-      // value reaching here follows up = +1.0, down = -1.0 (the opposite of
-      // Android's native AXIS_HAT_Y convention). See issue #123.
+      // As with the stick Y axes above, EventListener already inverts
+      // AXIS_HAT_Y, so up = +1.0 and down = -1.0 here.
       return [
         NormalizedButton(
           GamepadButton.dpadDown,

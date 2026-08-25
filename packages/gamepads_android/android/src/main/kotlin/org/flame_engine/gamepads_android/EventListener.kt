@@ -18,6 +18,12 @@ class EventListener {
     }
     private val lastAxisValue = mutableMapOf<Int, Float>()
     // Reference: https://developer.android.com/reference/android/view/MotionEvent
+    //
+    // The vertical axes are inverted here so that the values sent to Dart
+    // follow up = +1.0, down = -1.0 instead of Android's native convention.
+    // AndroidMapping in the gamepads package relies on that and does not
+    // invert them again, so removing an `invert` below silently flips the
+    // corresponding stick or d-pad direction. See issue #123.
     private val supportedAxes = listOf(
         SupportedAxis(MotionEvent.AXIS_X),
         SupportedAxis(MotionEvent.AXIS_Y, invert = true),
