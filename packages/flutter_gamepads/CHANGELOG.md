@@ -1,3 +1,7 @@
+## 0.1.12
+
+ - **FIX**: Remove use of flutter/material.dart in flutter_gamepads ([#125](https://github.com/flame-engine/gamepads/issues/125)). ([9b1434ae](https://github.com/flame-engine/gamepads/commit/9b1434aef1a79f4228868484f57d43b4deb068c3))
+
 ## 0.1.11+4
 
  - Update a dependency to the latest release.

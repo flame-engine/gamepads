@@ -17,7 +17,7 @@ environment:
   sdk: '>=3.9.0 <4.0.0'
 
 dev_dependencies:
-  melos: ^8.2.0
+  melos: ^8.4.0
 
 melos:
   command:

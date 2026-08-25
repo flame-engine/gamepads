@@ -3,6 +3,59 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-08-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads_android` - `v0.1.9`](#gamepads_android---v019)
+ - [`gamepads_darwin` - `v0.1.3`](#gamepads_darwin---v013)
+ - [`gamepads_ios` - `v0.1.4`](#gamepads_ios---v014)
+ - [`gamepads_web` - `v0.1.2`](#gamepads_web---v012)
+ - [`gamepads_windows` - `v0.3.1`](#gamepads_windows---v031)
+ - [`gamepads` - `v0.1.11`](#gamepads---v0111)
+ - [`flutter_gamepads` - `v0.1.12`](#flutter_gamepads---v0112)
+
+---
+
+#### `gamepads_android` - `v0.1.9`
+
+ - **FIX**: Correct inverted Android stick Y axis and map the RX/RY right stick ([#129](https://github.com/flame-engine/gamepads/issues/129)). ([18c18861](https://github.com/flame-engine/gamepads/commit/18c188614ffbeb9241b24c00ab50e8c6ef48d802))
+ - **FIX**(android): Correct gamepad device detection and stop breaking keyboard input ([#127](https://github.com/flame-engine/gamepads/issues/127)). ([50843a0c](https://github.com/flame-engine/gamepads/commit/50843a0ccfb395af7cba5083fff47789c3fa8cae))
+
+#### `gamepads_darwin` - `v0.1.3`
+
+ - **FEAT**: Add Swift Package Manager support ([#126](https://github.com/flame-engine/gamepads/issues/126)). ([4552f041](https://github.com/flame-engine/gamepads/commit/4552f041ebe90127356a4b62be3bfb6c3b9eeb22))
+
+#### `gamepads_ios` - `v0.1.4`
+
+ - **FEAT**: Add Swift Package Manager support ([#126](https://github.com/flame-engine/gamepads/issues/126)). ([4552f041](https://github.com/flame-engine/gamepads/commit/4552f041ebe90127356a4b62be3bfb6c3b9eeb22))
+
+#### `gamepads_web` - `v0.1.2`
+
+ - Bump "gamepads_web" to `0.1.2`.
+
+#### `gamepads_windows` - `v0.3.1`
+
+ - Bump "gamepads_windows" to `0.3.1`.
+
+#### `gamepads` - `v0.1.11`
+
+ - **FIX**: Correct inverted Android stick Y axis and map the RX/RY right stick ([#129](https://github.com/flame-engine/gamepads/issues/129)). ([18c18861](https://github.com/flame-engine/gamepads/commit/18c188614ffbeb9241b24c00ab50e8c6ef48d802))
+ - **FIX**: Correct inverted Android D-pad Up/Down (AXIS_HAT_Y double-inversion) ([#128](https://github.com/flame-engine/gamepads/issues/128)). ([88711197](https://github.com/flame-engine/gamepads/commit/88711197daa978cab220f85ce2a6cc9850e1c24d))
+
+#### `flutter_gamepads` - `v0.1.12`
+
+ - **FIX**: Remove use of flutter/material.dart in flutter_gamepads ([#125](https://github.com/flame-engine/gamepads/issues/125)). ([9b1434ae](https://github.com/flame-engine/gamepads/commit/9b1434aef1a79f4228868484f57d43b4deb068c3))
+
+
 ## 2026-07-07
 
 ### Changes
@@ -473,9 +526,9 @@ Packages with other changes:
  - [`gamepads_platform_interface` - `v0.1.2+1`](#gamepads_platform_interface---v0121)
  - [`gamepads_linux` - `v0.1.1+3`](#gamepads_linux---v0113)
  - [`gamepads_windows` - `v0.1.1+3`](#gamepads_windows---v0113)
- - [`gamepads_darwin` - `v0.1.2+2`](#gamepads_darwin---v0122)
- - [`gamepads_ios` - `v0.1.2+2`](#gamepads_ios---v0122)
- - [`gamepads_android` - `v0.1.2+2`](#gamepads_android---v0122)
+ - [`gamepads_darwin` - `v0.1.2`](#gamepads_darwin---v0122)
+ - [`gamepads_ios` - `v0.1.2`](#gamepads_ios---v0122)
+ - [`gamepads_android` - `v0.1.2`](#gamepads_android---v0122)
 
 Packages with dependency updates only:
 
@@ -483,9 +536,9 @@ Packages with dependency updates only:
 
  - `gamepads_linux` - `v0.1.1+3`
  - `gamepads_windows` - `v0.1.1+3`
- - `gamepads_darwin` - `v0.1.2+2`
- - `gamepads_ios` - `v0.1.2+2`
- - `gamepads_android` - `v0.1.2+2`
+ - `gamepads_darwin` - `v0.1.2`
+ - `gamepads_ios` - `v0.1.2`
+ - `gamepads_android` - `v0.1.2`
 
 ---
 

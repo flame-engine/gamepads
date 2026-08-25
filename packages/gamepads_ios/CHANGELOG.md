@@ -1,3 +1,7 @@
+## 0.1.4
+
+ - **FEAT**: Add Swift Package Manager support ([#126](https://github.com/flame-engine/gamepads/issues/126)). ([4552f041](https://github.com/flame-engine/gamepads/commit/4552f041ebe90127356a4b62be3bfb6c3b9eeb22))
+
 ## 0.1.3+3
 
  - **FIX**: Correct trigger handling for iOS. ([#94](https://github.com/flame-engine/gamepads/issues/94)). ([17c2f907](https://github.com/flame-engine/gamepads/commit/17c2f9079a83d991a13ad2f45f40374135fc09d9))
@@ -15,7 +19,7 @@
 
  - **FIX**: Correct dpad axis mapping and add support for start/select/home buttons (iOS) ([#65](https://github.com/flame-engine/gamepads/issues/65)). ([1aef0c28](https://github.com/flame-engine/gamepads/commit/1aef0c2881db84b78f68f23b754912a2625b7902))
 
-## 0.1.2+2
+## 0.1.2
 
  - Update a dependency to the latest release.
 
