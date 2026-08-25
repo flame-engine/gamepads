@@ -78,12 +78,15 @@ class AndroidMapping extends PlatformMapping {
       ];
     }
     if (key == _dpadYAxis) {
+      // gamepads_android's EventListener already inverts AXIS_HAT_Y, so the
+      // value reaching here follows up = +1.0, down = -1.0 (the opposite of
+      // Android's native AXIS_HAT_Y convention). See issue #123.
       return [
         NormalizedButton(
           GamepadButton.dpadDown,
-          value > 0 ? 1.0 : 0.0,
+          value < 0 ? 1.0 : 0.0,
         ),
-        NormalizedButton(GamepadButton.dpadUp, value < 0 ? 1.0 : 0.0),
+        NormalizedButton(GamepadButton.dpadUp, value > 0 ? 1.0 : 0.0),
       ];
     }
     return const [];
