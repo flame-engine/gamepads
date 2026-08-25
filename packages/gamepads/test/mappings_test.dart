@@ -202,17 +202,28 @@ void main() {
       );
     });
 
-    test('normalizes stick axes with Y inversion', () {
+    test('normalizes stick axes without inverting Y again', () {
       final lx = mapping.normalizeAxis('AXIS_X', 0.5);
       expect(lx.first.axis, GamepadAxis.leftStickX);
       expect(lx.first.value, 0.5);
 
-      // Y-axis should be inverted
+      // EventListener already inverted AXIS_Y and AXIS_RZ, so a positive
+      // value here means up and must be passed through unchanged.
       final ly = mapping.normalizeAxis('AXIS_Y', 0.5);
       expect(ly.first.axis, GamepadAxis.leftStickY);
-      expect(ly.first.value, -0.5);
+      expect(ly.first.value, 0.5);
 
       final ry = mapping.normalizeAxis('AXIS_RZ', -1.0);
+      expect(ry.first.axis, GamepadAxis.rightStickY);
+      expect(ry.first.value, -1.0);
+    });
+
+    test('normalizes the alternate right stick axes', () {
+      final rx = mapping.normalizeAxis('AXIS_RX', 0.5);
+      expect(rx.first.axis, GamepadAxis.rightStickX);
+      expect(rx.first.value, 0.5);
+
+      final ry = mapping.normalizeAxis('AXIS_RY', 1.0);
       expect(ry.first.axis, GamepadAxis.rightStickY);
       expect(ry.first.value, 1.0);
     });
@@ -245,9 +256,9 @@ void main() {
       expect(right[1].button, GamepadButton.dpadRight);
       expect(right[1].value, 1.0);
 
-      // gamepads_android's EventListener inverts AXIS_HAT_Y before it reaches
-      // the mapping, so +1.0 = up and -1.0 = down here (regression for #123:
-      // pressing up must emit dpadUp, not dpadDown).
+      // EventListener inverts AXIS_HAT_Y before it reaches the mapping, so
+      // +1.0 = up and -1.0 = down here (regression for #123: pressing up
+      // must emit dpadUp, not dpadDown).
       final up = mapping.normalizeDpadAxis('AXIS_HAT_Y', 1.0);
       expect(up[0].button, GamepadButton.dpadDown);
       expect(up[0].value, 0.0);
