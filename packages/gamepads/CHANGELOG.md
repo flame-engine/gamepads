@@ -1,3 +1,8 @@
+## 0.1.11
+
+ - **FIX**: Correct inverted Android stick Y axis and map the RX/RY right stick ([#129](https://github.com/flame-engine/gamepads/issues/129)). ([18c18861](https://github.com/flame-engine/gamepads/commit/18c188614ffbeb9241b24c00ab50e8c6ef48d802))
+ - **FIX**: Correct inverted Android D-pad Up/Down (AXIS_HAT_Y double-inversion) ([#128](https://github.com/flame-engine/gamepads/issues/128)). ([88711197](https://github.com/flame-engine/gamepads/commit/88711197daa978cab220f85ce2a6cc9850e1c24d))
+
 ## 0.1.10+5
 
  - Update a dependency to the latest release.

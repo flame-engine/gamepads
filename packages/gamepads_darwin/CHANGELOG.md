@@ -1,3 +1,7 @@
+## 0.1.3
+
+ - **FEAT**: Add Swift Package Manager support ([#126](https://github.com/flame-engine/gamepads/issues/126)). ([4552f041](https://github.com/flame-engine/gamepads/commit/4552f041ebe90127356a4b62be3bfb6c3b9eeb22))
+
 ## 0.1.2+4
 
  - **FIX**: Use typed GCController properties for macOS system button mapping ([#96](https://github.com/flame-engine/gamepads/issues/96)). ([b4264e48](https://github.com/flame-engine/gamepads/commit/b4264e481abc5755725d3b1c7626b759f71bb1d4))
@@ -6,7 +10,7 @@
 
  - Update a dependency to the latest release.
 
-## 0.1.2+2
+## 0.1.2
 
  - Update a dependency to the latest release.
 

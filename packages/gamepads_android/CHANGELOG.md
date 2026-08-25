@@ -1,3 +1,8 @@
+## 0.1.9
+
+ - **FIX**: Correct inverted Android stick Y axis and map the RX/RY right stick ([#129](https://github.com/flame-engine/gamepads/issues/129)). ([18c18861](https://github.com/flame-engine/gamepads/commit/18c188614ffbeb9241b24c00ab50e8c6ef48d802))
+ - **FIX**(android): Correct gamepad device detection and stop breaking keyboard input ([#127](https://github.com/flame-engine/gamepads/issues/127)). ([50843a0c](https://github.com/flame-engine/gamepads/commit/50843a0ccfb395af7cba5083fff47789c3fa8cae))
+
 ## 0.1.8+2
 
  - **FIX**(android): Avoid KGP warning on AGP 8.x with built-in Kotlin ([#120](https://github.com/flame-engine/gamepads/issues/120)). ([291d43e8](https://github.com/flame-engine/gamepads/commit/291d43e83f33f05d1c1c29623d66b7097b4a7b5d))
@@ -33,7 +38,7 @@
 
  - **FEAT**: Add AXIS_BRAKE and AXIS_GAS as supported axes on Android. ([#50](https://github.com/flame-engine/gamepads/issues/50)). ([adfb8d1f](https://github.com/flame-engine/gamepads/commit/adfb8d1fa2206571d6c59315697d3cf9c951b423))
 
-## 0.1.2+2
+## 0.1.2
 
  - Update a dependency to the latest release.
 

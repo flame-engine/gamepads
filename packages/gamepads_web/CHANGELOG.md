@@ -1,3 +1,7 @@
+## 0.1.2
+
+ - Bump "gamepads_web" to `0.1.2`.
+
 ## 0.1.1+1
 
  - **FIX**: Remove unused dependency that causes package:js dependency ([#103](https://github.com/flame-engine/gamepads/issues/103)). ([0463612b](https://github.com/flame-engine/gamepads/commit/0463612b646e187d3dc1cac3424167a042b9cf1b))
