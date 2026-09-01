@@ -62,6 +62,40 @@ It also reports `vendorId` and `productId` where the platform provides them, so 
 identify a connected gamepad (e.g. "Sony DualSense") before it sends any input. These are
 `null` on macOS and iOS, where `GCController` does not expose vendor/product ids.
 
+To react to gamepads being plugged in and unplugged instead of polling `list`,
+listen to `onConnected` and `onDisconnected`:
+
+```dart
+Gamepads.onConnected.listen((event) {
+  print('${event.name} (${event.gamepadId}) connected');
+});
+
+Gamepads.onDisconnected.listen((event) {
+  print('${event.name} (${event.gamepadId}) disconnected');
+});
+```
+
+Both are filtered views of `connectionEvents`, which emits a
+`GamepadConnectionEvent` for either case:
+
+```dart
+class GamepadConnectionEvent {
+  /// The id of the gamepad controller that was connected or disconnected.
+  final String gamepadId;
+
+  /// A user-facing, platform-dependant name for the gamepad controller.
+  final String name;
+
+  /// Whether the gamepad was connected or disconnected.
+  final GamepadConnectionType type;
+}
+```
+
+The `gamepadId` matches the `GamepadController.id` returned by `list` and the
+`GamepadEvent.gamepadId` of the events fired by that gamepad. Only gamepads
+that connect while your app is running are reported, so call `list` once at
+startup to pick up the ones that were already connected.
+
 Listen to `normalizedEvents` for gamepad input with consistent
 button/axis names and value ranges across all platforms:
 

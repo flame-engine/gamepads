@@ -23,6 +23,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         super.init()
 
         self.gamepads.listener = onGamepadEvent
+        self.gamepads.connectionListener = onGamepadConnectionEvent
     }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -57,6 +58,15 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             ]
             channel.invokeMethod("onGamepadEvent", arguments: arguments)
         }
+    }
+
+    private func onGamepadConnectionEvent(gamepadId: Int, gamepad: GCExtendedGamepad, connected: Bool) {
+        let arguments: [String: Any] = [
+            "gamepadId": String(gamepadId),
+            "name": getName(gamepad: gamepad),
+            "type": connected ? "connected" : "disconnected",
+        ]
+        channel.invokeMethod("onGamepadConnectionEvent", arguments: arguments)
     }
 
     /// Returns a fixed key name for elements whose SF Symbol names are

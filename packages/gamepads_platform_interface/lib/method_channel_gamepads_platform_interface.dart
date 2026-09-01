@@ -1,7 +1,5 @@
-import 'dart:async';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:gamepads_platform_interface/api/gamepad_connection_event.dart';
 import 'package:gamepads_platform_interface/api/gamepad_controller.dart';
 import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
@@ -29,22 +27,8 @@ class MethodChannelGamepadsPlatformInterface extends GamepadsPlatformInterface {
     switch (call.method) {
       case 'onGamepadEvent':
         emitGamepadEvent(GamepadEvent.parse(call.args));
+      case 'onGamepadConnectionEvent':
+        emitGamepadConnectionEvent(GamepadConnectionEvent.parse(call.args));
     }
-  }
-
-  void emitGamepadEvent(GamepadEvent event) {
-    _gamepadEventsStreamController.add(event);
-  }
-
-  final StreamController<GamepadEvent> _gamepadEventsStreamController =
-      StreamController<GamepadEvent>.broadcast();
-
-  @override
-  Stream<GamepadEvent> get gamepadEventsStream =>
-      _gamepadEventsStreamController.stream;
-
-  @mustCallSuper
-  Future<void> dispose() async {
-    _gamepadEventsStreamController.close();
   }
 }

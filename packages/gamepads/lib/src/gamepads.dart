@@ -2,6 +2,7 @@ library gamepads;
 
 import 'package:gamepads/src/api/normalized_gamepad_event.dart';
 import 'package:gamepads/src/gamepad_normalizer.dart';
+import 'package:gamepads_platform_interface/api/gamepad_connection_event.dart';
 import 'package:gamepads_platform_interface/api/gamepad_controller.dart';
 import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
@@ -55,4 +56,22 @@ class Gamepads {
   static Stream<GamepadEvent> eventsByGamepad(String gamepadId) {
     return events.where((event) => event.gamepadId == gamepadId);
   }
+
+  /// A stream of gamepads being connected to and disconnected from the device.
+  ///
+  /// Use [onConnected] or [onDisconnected] to listen to only one of the two.
+  static Stream<GamepadConnectionEvent> get connectionEvents =>
+      _platform.gamepadConnectionEventsStream;
+
+  /// A stream that emits whenever a gamepad is connected.
+  static Stream<GamepadConnectionEvent> get onConnected =>
+      connectionEvents.where(
+        (event) => event.type == GamepadConnectionType.connected,
+      );
+
+  /// A stream that emits whenever a gamepad is disconnected.
+  static Stream<GamepadConnectionEvent> get onDisconnected =>
+      connectionEvents.where(
+        (event) => event.type == GamepadConnectionType.disconnected,
+      );
 }

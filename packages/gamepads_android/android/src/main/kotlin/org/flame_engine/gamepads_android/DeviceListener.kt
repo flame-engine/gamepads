@@ -4,7 +4,10 @@ import android.hardware.input.InputManager
 import android.util.Log
 import android.view.InputDevice
 
-class DeviceListener(val isGamepadsInputDevice: (device: InputDevice) -> Boolean): InputManager.InputDeviceListener {
+class DeviceListener(
+    val isGamepadsInputDevice: (device: InputDevice) -> Boolean,
+    val onConnectionChanged: (deviceId: Int, name: String, connected: Boolean) -> Unit,
+): InputManager.InputDeviceListener {
     private val devicesLookup: MutableMap<Int, InputDevice> = mutableMapOf()
     private val TAG = "ConnectionListener"
 
@@ -37,12 +40,25 @@ class DeviceListener(val isGamepadsInputDevice: (device: InputDevice) -> Boolean
         return devicesLookup.containsKey(deviceId)
     }
 
+    private fun add(deviceId: Int, device: InputDevice) {
+        if (devicesLookup.put(deviceId, device) == null) {
+            onConnectionChanged(deviceId, device.name, true)
+        }
+    }
+
+    private fun remove(deviceId: Int) {
+        val device = devicesLookup.remove(deviceId)
+        if (device != null) {
+            onConnectionChanged(deviceId, device.name, false)
+        }
+    }
+
     override fun onInputDeviceAdded(deviceId: Int) {
         val device: InputDevice? = InputDevice.getDevice(deviceId)
         if (device != null) {
             if (isGamepadsInputDevice(device)) {
                 Log.i(TAG, "${device.name} passed input device test")
-                devicesLookup[deviceId] = device
+                add(deviceId, device)
             } else {
                 Log.e(TAG, "${device.name} failed input device test")
             }
@@ -50,16 +66,15 @@ class DeviceListener(val isGamepadsInputDevice: (device: InputDevice) -> Boolean
     }
 
     override fun onInputDeviceRemoved(deviceId: Int) {
-        val device: InputDevice? = InputDevice.getDevice(deviceId)
-        devicesLookup.remove(deviceId)
+        remove(deviceId)
     }
 
     override fun onInputDeviceChanged(deviceId: Int) {
         val device: InputDevice? = InputDevice.getDevice(deviceId)
         if (device != null && isGamepadsInputDevice(device)) {
-            devicesLookup[deviceId] = device
+            add(deviceId, device)
         } else {
-            devicesLookup.remove(deviceId)
+            remove(deviceId)
         }
     }
 }

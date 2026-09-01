@@ -187,6 +187,10 @@ void Gamepads::on_gamepad_connected(IGameInputDevice* device) {
   std::cout << "Gamepad connected: " << gp->id << " : " << gp->name
             << std::endl;
 
+  if (connection_emitter.has_value()) {
+    (*connection_emitter)(gp->id, gp->name, true);
+  }
+
   std::thread read_thread(
       [this, gp, device]() { this->read_gamepad(gp, device); });
   read_thread.detach();
@@ -210,7 +214,11 @@ void Gamepads::on_gamepad_disconnected(IGameInputDevice* device) {
   }
   // Remove the gamepad from list. The thread will free up memory.
   if (removeGp != nullptr) {
+    const std::string name = removeGp->name;
     this->gamepads.remove(removeGp);
+    if (connection_emitter.has_value()) {
+      (*connection_emitter)(removeId, name, false);
+    }
   }
 }
 

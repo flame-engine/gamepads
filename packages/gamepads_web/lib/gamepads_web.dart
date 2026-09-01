@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:js_interop';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:gamepads_platform_interface/api/gamepad_connection_event.dart';
 import 'package:gamepads_platform_interface/api/gamepad_controller.dart';
 import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
@@ -88,6 +88,14 @@ class GamepadsWeb extends GamepadsPlatformInterface {
       'gamepadconnected',
       (web.Event event) {
         _gamepadCount++;
+        final jsGamepad = (event as web.GamepadEvent).gamepad;
+        emitGamepadConnectionEvent(
+          GamepadConnectionEvent(
+            gamepadId: jsGamepad.index.toString(),
+            name: jsGamepad.id,
+            type: GamepadConnectionType.connected,
+          ),
+        );
         if (_gamepadCount == 1) {
           // The game pad state for web is not event driven. We need to
           // query the game pad state by ourself.
@@ -110,6 +118,13 @@ class GamepadsWeb extends GamepadsPlatformInterface {
         final gamepadId = jsGamepad.index.toString();
         _gamepadIds.remove(gamepadId);
         _lastGamepadStates.remove(gamepadId);
+        emitGamepadConnectionEvent(
+          GamepadConnectionEvent(
+            gamepadId: gamepadId,
+            name: jsGamepad.id,
+            type: GamepadConnectionType.disconnected,
+          ),
+        );
         if (_gamepadCount == 0) {
           _gamepadPollingTimer?.cancel();
         }
@@ -127,21 +142,5 @@ class GamepadsWeb extends GamepadsPlatformInterface {
   Future<List<GamepadController>> listGamepads() async {
     controllers = getGamepads(this);
     return controllers!;
-  }
-
-  void emitGamepadEvent(GamepadEvent event) {
-    _gamepadEventsStreamController.add(event);
-  }
-
-  final StreamController<GamepadEvent> _gamepadEventsStreamController =
-      StreamController<GamepadEvent>.broadcast();
-
-  @override
-  Stream<GamepadEvent> get gamepadEventsStream =>
-      _gamepadEventsStreamController.stream;
-
-  @mustCallSuper
-  Future<void> dispose() async {
-    _gamepadEventsStreamController.close();
   }
 }
