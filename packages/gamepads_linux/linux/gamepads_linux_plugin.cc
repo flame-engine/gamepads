@@ -86,6 +86,10 @@ static void gamepads_linux_plugin_handle_method_call(
                    fl_value_new_string(device_id.c_str()));
       fl_value_set(map, fl_value_new_string("name"),
                    fl_value_new_string(gamepad.name.c_str()));
+      fl_value_set(map, fl_value_new_string("vendorId"),
+                   fl_value_new_int(gamepad.vendor_id));
+      fl_value_set(map, fl_value_new_string("productId"),
+                   fl_value_new_int(gamepad.product_id));
       fl_value_append(list, map);
     }
     respond(method_call, list);
