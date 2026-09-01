@@ -6,6 +6,11 @@ class GamepadsListener {
     var listener: ((Int, GCExtendedGamepad, GCControllerElement) -> Void)?
     var connectionListener: ((Int, GCExtendedGamepad, Bool) -> Void)?
 
+    /// The id each gamepad was given when it connected. Looking the id up
+    /// again on disconnect would return a different one, since removing a
+    /// gamepad shifts the indices of the ones after it.
+    private var gamepadIds: [ObjectIdentifier: Int] = [:]
+
     init() {
         NotificationCenter.default.addObserver(
             self,
@@ -30,6 +35,7 @@ class GamepadsListener {
             if let gamepad = controller.extendedGamepad {
                 gamepads.append(gamepad)
                 let gamepadId = getAndSetPlayerId(of: gamepad)
+                gamepadIds[ObjectIdentifier(gamepad)] = gamepadId
 
                 gamepad.valueChangedHandler = { gamepad, element in
                     if let listener = self.listener {
@@ -44,10 +50,11 @@ class GamepadsListener {
 
     @objc private func joystickDidDisconnect(notification: NSNotification) {
         if let controller = notification.object as? GCController {
-            if let gamepad = controller.extendedGamepad,
-               let gamepadId = gamepads.firstIndex(of: gamepad) {
-                gamepads.remove(at: gamepadId)
-                connectionListener?(gamepadId, gamepad, false)
+            if let gamepad = controller.extendedGamepad {
+                gamepads.removeAll(where: { $0 == gamepad })
+                if let gamepadId = gamepadIds.removeValue(forKey: ObjectIdentifier(gamepad)) {
+                    connectionListener?(gamepadId, gamepad, false)
+                }
             }
         }
     }

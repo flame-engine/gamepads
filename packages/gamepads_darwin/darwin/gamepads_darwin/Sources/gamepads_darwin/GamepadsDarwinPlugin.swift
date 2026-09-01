@@ -18,6 +18,11 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     let channel: FlutterMethodChannel
     let gamepads = GamepadsListener()
 
+    /// The name each gamepad had when it connected. By the time it
+    /// disconnects its `GCDevice` is usually already gone, and `getName`
+    /// would fall back to "Unknown device".
+    private var gamepadNames = [Int: String]()
+
     init(channel: FlutterMethodChannel) {
         self.channel = channel
         super.init()
@@ -61,9 +66,16 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     }
 
     private func onGamepadConnectionEvent(gamepadId: Int, gamepad: GCExtendedGamepad, connected: Bool) {
+        let name: String
+        if connected {
+            name = getName(gamepad: gamepad)
+            gamepadNames[gamepadId] = name
+        } else {
+            name = gamepadNames.removeValue(forKey: gamepadId) ?? getName(gamepad: gamepad)
+        }
         let arguments: [String: Any] = [
             "gamepadId": String(gamepadId),
-            "name": getName(gamepad: gamepad),
+            "name": name,
             "type": connected ? "connected" : "disconnected",
         ]
         channel.invokeMethod("onGamepadConnectionEvent", arguments: arguments)
