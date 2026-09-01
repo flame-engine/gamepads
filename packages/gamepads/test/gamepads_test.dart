@@ -43,6 +43,30 @@ void main() {
     expect(popLastCall().method, 'listGamepads');
   });
 
+  test('parses vendorId and productId', () async {
+    final controller = GamepadController.parse(<String, dynamic>{
+      'id': '1',
+      'name': 'Test Gamepad',
+      'vendorId': 0x054c,
+      'productId': 0x0ce6,
+    }, platformInterface);
+    addTearDown(controller.dispose);
+
+    expect(controller.vendorId, 0x054c);
+    expect(controller.productId, 0x0ce6);
+  });
+
+  test('leaves vendorId and productId null when absent', () async {
+    final controller = GamepadController.parse(<String, dynamic>{
+      'id': '1',
+      'name': 'Test Gamepad',
+    }, platformInterface);
+    addTearDown(controller.dispose);
+
+    expect(controller.vendorId, isNull);
+    expect(controller.productId, isNull);
+  });
+
   test('can listen to events through platform interface', () async {
     final listener = Gamepads.events.first;
     final millis = DateTime.now().millisecondsSinceEpoch;
