@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gamepads_example/flutter_example/pages/slider_with_gamepad_support.dart';
+import 'package:flutter_gamepads_flutter_example/pages/slider_with_gamepad_support.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});

@@ -3,9 +3,9 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
-import 'package:flutter_gamepads_example/flame_example/components/power_up.dart';
-import 'package:flutter_gamepads_example/flame_example/components/spaceship.dart';
-import 'package:flutter_gamepads_example/flame_example/game.dart';
+import 'package:flutter_gamepads_flame_example/components/power_up.dart';
+import 'package:flutter_gamepads_flame_example/components/spaceship.dart';
+import 'package:flutter_gamepads_flame_example/game.dart';
 
 class MyWorld extends World
     with HasCollisionDetection, HasGameReference<MyGame> {

@@ -2,7 +2,9 @@ name: gamepads_workspace
 repository: https://github.com/flame-engine/gamepads
 workspace:
     - packages/flutter_gamepads
-    - packages/flutter_gamepads/example
+    - packages/flutter_gamepads/example/basic
+    - packages/flutter_gamepads/example/flame
+    - packages/flutter_gamepads/example/flutter
     - packages/gamepads
     - packages/gamepads/example
     - packages/gamepads_android

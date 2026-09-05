@@ -1,12 +1,12 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gamepads/flutter_gamepads.dart';
-import 'package:flutter_gamepads_example/flame_example/game.dart';
-import 'package:flutter_gamepads_example/flame_example/overlays/help_overlay.dart';
-import 'package:flutter_gamepads_example/flame_example/overlays/overlays.dart';
-import 'package:flutter_gamepads_example/flame_example/overlays/statusbar.dart';
-import 'package:flutter_gamepads_example/flame_example/overlays/upgrade_overlay.dart';
-import 'package:flutter_gamepads_example/flame_example/theme.dart';
+import 'package:flutter_gamepads_flame_example/game.dart';
+import 'package:flutter_gamepads_flame_example/overlays/help_overlay.dart';
+import 'package:flutter_gamepads_flame_example/overlays/overlays.dart';
+import 'package:flutter_gamepads_flame_example/overlays/statusbar.dart';
+import 'package:flutter_gamepads_flame_example/overlays/upgrade_overlay.dart';
+import 'package:flutter_gamepads_flame_example/theme.dart';
 
 void main() {
   runApp(const MyFlameApp());
