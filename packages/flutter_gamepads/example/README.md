@@ -1,8 +1,7 @@
-# flutter_gamepads example
+# flutter_gamepads examples
 
-A simple example project showcasing the flutter_gamepads plugin.
+This package contains the following examples:
 
-The example project consists of two distinct different apps:
-
-- [A Flutter example](lib/flutter_example/)
-- [A Flame game example](lib/flame_example/)
+- [Basic example](basic/)
+- [A Flutter example](flutter/)
+- [A Flame game example](flame/)

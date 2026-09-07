@@ -4,9 +4,9 @@ import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gamepads_example/flame_example/components/power_up.dart';
-import 'package:flutter_gamepads_example/flame_example/game.dart';
-import 'package:flutter_gamepads_example/flame_example/state/game_state.dart';
+import 'package:flutter_gamepads_flame_example/components/power_up.dart';
+import 'package:flutter_gamepads_flame_example/game.dart';
+import 'package:flutter_gamepads_flame_example/state/game_state.dart';
 import 'package:gamepads/gamepads.dart';
 
 class SpaceShip extends SpriteComponent
