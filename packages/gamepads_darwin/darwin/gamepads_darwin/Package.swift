@@ -6,6 +6,7 @@ import PackageDescription
 let package = Package(
     name: "gamepads_darwin",
     platforms: [
+        .iOS("13.0"),
         .macOS("10.15")
     ],
     products: [

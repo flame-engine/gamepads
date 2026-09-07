@@ -5,9 +5,9 @@
 Pod::Spec.new do |s|
   s.name             = 'gamepads_darwin'
   s.version          = '0.1.1'
-  s.summary          = 'MacOS implementation of gamepads.'
+  s.summary          = 'iOS and macOS implementation of gamepads.'
   s.description      = <<-DESC
-MacOS implementation of gamepads, a Flutter plugin to handle gamepad input across multiple platforms.
+iOS and macOS implementation of gamepads, a Flutter plugin to handle gamepad input across multiple platforms.
                        DESC
   s.homepage         = 'https://flame-engine.org'
   s.license          = { :file => '../LICENSE' }
@@ -15,9 +15,16 @@ MacOS implementation of gamepads, a Flutter plugin to handle gamepad input acros
 
   s.source           = { :path => '.' }
   s.source_files     = 'gamepads_darwin/Sources/gamepads_darwin/**/*.swift'
-  s.dependency 'FlutterMacOS'
+  s.ios.dependency 'Flutter'
+  s.osx.dependency 'FlutterMacOS'
 
-  s.platform = :osx, '10.15'
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
+  s.ios.deployment_target = '13.0'
+  s.osx.deployment_target = '10.15'
+
+  # Flutter.framework does not contain a i386 slice.
+  s.pod_target_xcconfig = {
+    'DEFINES_MODULE' => 'YES',
+    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386',
+  }
   s.swift_version = '5.0'
 end

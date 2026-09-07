@@ -96,8 +96,9 @@ Gamepads.normalizer = GamepadNormalizer.forPlatform(
 If you need access to the underlying platform-specific events,
 use the `events` stream instead. Note that raw key names and
 value ranges differ across platforms (e.g., the A button is
-`"0"` on Linux, `"a"` on Windows, `"buttonA"` on iOS,
-`"KEYCODE_BUTTON_A"` on Android, and `"button 0"` on Web).
+`"0"` on Linux, `"a"` on Windows, `"a.circle"` on iOS and
+macOS, `"KEYCODE_BUTTON_A"` on Android, and `"button 0"` on
+Web).
 
 ```dart
   Gamepads.events.listen((event) {
@@ -158,11 +159,13 @@ Stick conventions: Left/Down = -1, Right/Up = +1.
 
 ## Platform Details
 
-**iOS / macOS** — Uses the GCController API. Button and axis
-names are SF Symbols strings (e.g. `a.circle`, `l.joystick`),
-which the normalizer matches by pattern. `GCController` does
-not expose USB identifiers, so `vendorId` and `productId` are
-always `null` on these platforms.
+**iOS / macOS** — Both platforms are served by the same
+`gamepads_darwin` implementation, which uses the GCController
+API. Button and axis names are SF Symbols strings (e.g.
+`a.circle`, `l.joystick`), which the normalizer matches by
+pattern. `GCController` does not expose USB identifiers, so
+`vendorId` and `productId` are always `null` on these
+platforms.
 
 **Android** — Uses `KeyEvent` and `MotionEvent` with
 platform-defined key codes (e.g. `KEYCODE_BUTTON_A`,
