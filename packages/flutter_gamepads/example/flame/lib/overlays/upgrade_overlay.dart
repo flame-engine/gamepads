@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gamepads_example/flame_example/game.dart';
-import 'package:flutter_gamepads_example/flame_example/overlays/overlay_dialog_backdrop.dart';
-import 'package:flutter_gamepads_example/flame_example/overlays/overlays.dart';
-import 'package:flutter_gamepads_example/flame_example/state/game_state.dart';
+import 'package:flutter_gamepads_flame_example/game.dart';
+import 'package:flutter_gamepads_flame_example/overlays/overlay_dialog_backdrop.dart';
+import 'package:flutter_gamepads_flame_example/overlays/overlays.dart';
+import 'package:flutter_gamepads_flame_example/state/game_state.dart';
 
 class UpgradeOverlay extends StatelessWidget {
   final MyGame game;

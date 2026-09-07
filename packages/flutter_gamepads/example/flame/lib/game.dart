@@ -1,8 +1,8 @@
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
-import 'package:flutter_gamepads_example/flame_example/overlays/overlays.dart';
-import 'package:flutter_gamepads_example/flame_example/state/game_state.dart';
-import 'package:flutter_gamepads_example/flame_example/world.dart';
+import 'package:flutter_gamepads_flame_example/overlays/overlays.dart';
+import 'package:flutter_gamepads_flame_example/state/game_state.dart';
+import 'package:flutter_gamepads_flame_example/world.dart';
 
 /// This is our flame game.
 class MyGame extends FlameGame with HasKeyboardHandlerComponents {
