@@ -58,6 +58,9 @@ The `list` method will list all currently connected gamepads:
 ```
 
 This uses the data class `GamepadController`, which has an `id` and a user-facing `name`.
+It also reports `vendorId` and `productId` where the platform provides them, so you can
+identify a connected gamepad (e.g. "Sony DualSense") before it sends any input. These are
+`null` on macOS and iOS, where `GCController` does not expose vendor/product ids.
 
 Listen to `normalizedEvents` for gamepad input with consistent
 button/axis names and value ranges across all platforms:
@@ -157,7 +160,9 @@ Stick conventions: Left/Down = -1, Right/Up = +1.
 
 **iOS / macOS** — Uses the GCController API. Button and axis
 names are SF Symbols strings (e.g. `a.circle`, `l.joystick`),
-which the normalizer matches by pattern.
+which the normalizer matches by pattern. `GCController` does
+not expose USB identifiers, so `vendorId` and `productId` are
+always `null` on these platforms.
 
 **Android** — Uses `KeyEvent` and `MotionEvent` with
 platform-defined key codes (e.g. `KEYCODE_BUTTON_A`,

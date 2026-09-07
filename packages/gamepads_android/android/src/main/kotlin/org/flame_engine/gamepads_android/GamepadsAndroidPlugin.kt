@@ -34,14 +34,16 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private var motionDecorView: View? = null
   private var genericMotionListener: View.OnGenericMotionListener? = null
 
-  private fun listGamepads(): List<Map<String, String>>  {
+  private fun listGamepads(): List<Map<String, Any?>>  {
     if (!::devices.isInitialized) {
       return emptyList()
     }
     return devices.getDevices().map { device ->
       mapOf(
         "id" to device.key.toString(),
-        "name" to device.value.name
+        "name" to device.value.name,
+        "vendorId" to device.value.vendorId,
+        "productId" to device.value.productId
       )
     }
   }

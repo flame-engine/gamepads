@@ -52,6 +52,10 @@ void GamepadsWindowsPlugin::HandleMethodCall(
       map[flutter::EncodableValue("id")] = flutter::EncodableValue(gamepad->id);
       map[flutter::EncodableValue("name")] =
           flutter::EncodableValue(gamepad->name);
+      map[flutter::EncodableValue("vendorId")] =
+          flutter::EncodableValue(gamepad->vendor_id);
+      map[flutter::EncodableValue("productId")] =
+          flutter::EncodableValue(gamepad->product_id);
       list.push_back(flutter::EncodableValue(map));
     }
     result->Success(flutter::EncodableValue(list));

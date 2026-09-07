@@ -19,6 +19,16 @@ class GamepadController {
   /// A user-facing, platform-dependant name for the gamepad controller.
   final String name;
 
+  /// The USB vendor ID of the controller, if available.
+  ///
+  /// Always `null` on macOS and iOS, where `GCController` does not expose it.
+  final int? vendorId;
+
+  /// The USB product ID of the controller, if available.
+  ///
+  /// Always `null` on macOS and iOS, where `GCController` does not expose it.
+  final int? productId;
+
   final state = GamepadState();
 
   StreamSubscription<GamepadEvent>? _subscription;
@@ -27,6 +37,8 @@ class GamepadController {
     required this.id,
     required this.name,
     required GamepadsPlatformInterface plugin,
+    this.vendorId,
+    this.productId,
   }) {
     _subscription = plugin.eventsByGamepad(id).listen(state.update);
   }
@@ -37,7 +49,15 @@ class GamepadController {
   ) {
     final id = map['id'] as String;
     final name = map['name'] as String;
-    return GamepadController(id: id, name: name, plugin: plugin);
+    final vendorId = map['vendorId'] as int?;
+    final productId = map['productId'] as int?;
+    return GamepadController(
+      id: id,
+      name: name,
+      plugin: plugin,
+      vendorId: vendorId,
+      productId: productId,
+    );
   }
 
   /// Stops listening for new inputs.

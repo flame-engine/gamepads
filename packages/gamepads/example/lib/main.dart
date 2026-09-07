@@ -173,9 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 const CircularProgressIndicator()
               else ...[
                 for (final gamepad in _gamepads) ...[
-                  Text(
-                    '${gamepad.id} - ${gamepad.name}',
-                  ),
+                  Text(_describeGamepad(gamepad)),
                 ],
               ],
             ],
@@ -183,6 +181,20 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  String _describeGamepad(GamepadController gamepad) {
+    final vendorId = gamepad.vendorId;
+    final productId = gamepad.productId;
+
+    if (vendorId == null || productId == null) {
+      return '${gamepad.id} - ${gamepad.name}';
+    }
+
+    final vendor = vendorId.toRadixString(16).padLeft(4, '0');
+    final product = productId.toRadixString(16).padLeft(4, '0');
+
+    return '${gamepad.id} - ${gamepad.name} ($vendor:$product)';
   }
 
   Widget _buildEventTile(_EventEntry entry) {
