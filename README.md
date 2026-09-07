@@ -62,6 +62,10 @@ It also reports `vendorId` and `productId` where the platform provides them, so 
 identify a connected gamepad (e.g. "Sony DualSense") before it sends any input. These are
 `null` on macOS and iOS, where `GCController` does not expose vendor/product ids.
 
+A gamepad that reconnects is not guaranteed to get the same `id` back, so treat it as a new
+gamepad. Each `GamepadController` subscribes to the event stream to keep its state up to
+date, so call `dispose` on them once they are no longer needed.
+
 To react to gamepads being plugged in and unplugged instead of polling `list`,
 listen to `onConnected` and `onDisconnected`:
 
