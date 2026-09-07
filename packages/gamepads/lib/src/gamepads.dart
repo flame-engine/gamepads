@@ -31,6 +31,13 @@ class Gamepads {
     _normalizedEvents = null;
   }
 
+  /// Currently connected gamepads.
+  ///
+  /// This is a snapshot. Connect or unplug a pad and call [list] again;
+  /// a disconnected pad is not kept in the result.
+  ///
+  /// On iOS and macOS, [GamepadController.name] can be `Unknown device`
+  /// when `GCController` does not expose vendor or product strings.
   static Future<List<GamepadController>> list() => _platform.listGamepads();
 
   static Stream<GamepadEvent> get events => _platform.gamepadEventsStream;

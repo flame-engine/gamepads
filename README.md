@@ -50,12 +50,16 @@ new connections.
 
 ## Getting Started
 
-The `list` method will list all currently connected gamepads:
+The `list` method returns a snapshot of currently connected gamepads:
 
 ```dart
   final gamepads = await Gamepads.list();
   // ...
 ```
+
+Unplug a pad and call `list()` again — it is not kept in the result.
+On iOS and macOS the name can be `Unknown device` when `GCController`
+does not expose vendor or product strings.
 
 This uses the data class `GamepadController`, which has an `id` and a user-facing `name`.
 It also reports `vendorId` and `productId` where the platform provides them, so you can
