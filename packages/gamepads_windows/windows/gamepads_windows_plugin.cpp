@@ -35,6 +35,10 @@ GamepadsWindowsPlugin::GamepadsWindowsPlugin(
   gamepads.event_emitter = [&](GamepadData* gamepad, const Event& event) {
     this->emit_gamepad_event(gamepad, event);
   };
+  gamepads.connection_emitter = [&](const std::string& id,
+                                    const std::string& name, bool connected) {
+    this->emit_gamepad_connection_event(id, name, connected);
+  };
   gamepads.init();
 }
 
@@ -81,6 +85,23 @@ void GamepadsWindowsPlugin::emit_gamepad_event(GamepadData* gamepad,
     map[flutter::EncodableValue("productId")] =
         flutter::EncodableValue(gamepad->product_id);
     _channel->InvokeMethod("onGamepadEvent",
+                           std::make_unique<flutter::EncodableValue>(
+                               flutter::EncodableValue(map)));
+  }
+}
+
+void GamepadsWindowsPlugin::emit_gamepad_connection_event(
+    const std::string& id,
+    const std::string& name,
+    bool connected) {
+  auto _channel = this->channel.get();
+  if (_channel) {
+    flutter::EncodableMap map;
+    map[flutter::EncodableValue("gamepadId")] = flutter::EncodableValue(id);
+    map[flutter::EncodableValue("name")] = flutter::EncodableValue(name);
+    map[flutter::EncodableValue("type")] =
+        flutter::EncodableValue(connected ? "connected" : "disconnected");
+    _channel->InvokeMethod("onGamepadConnectionEvent",
                            std::make_unique<flutter::EncodableValue>(
                                flutter::EncodableValue(map)));
   }

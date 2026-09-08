@@ -61,6 +61,22 @@ static void emit_gamepad_event(gamepad::GamepadInfo* gamepad,
   }
 }
 
+static void emit_gamepad_connection_event(const std::string& device_id,
+                                          const std::string& name,
+                                          bool connected) {
+  if (channel) {
+    g_autoptr(FlValue) map = fl_value_new_map();
+    fl_value_set_string(map, "gamepadId",
+                        fl_value_new_string(device_id.c_str()));
+    fl_value_set_string(map, "name", fl_value_new_string(name.c_str()));
+    fl_value_set_string(
+        map, "type",
+        fl_value_new_string(connected ? "connected" : "disconnected"));
+    fl_method_channel_invoke_method(channel, "onGamepadConnectionEvent", map,
+                                    nullptr, nullptr, nullptr);
+  }
+}
+
 static void respond_not_found(FlMethodCall* method_call) {
   g_autoptr(FlMethodResponse) response =
       FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
@@ -131,9 +147,10 @@ void event_loop_start() {
       &keep_reading_events,
       [](const connection_listener::ConnectionEvent& event) {
         std::string key = event.device_id;
-        std::optional<gamepad::GamepadInfo> existingGamepad = gamepads[key];
+        auto existingGamepad = gamepads.find(key);
         if (event.type == connection_listener::ConnectionEventType::CONNECTED) {
-          if (existingGamepad && existingGamepad->alive) {
+          if (existingGamepad != gamepads.end() &&
+              existingGamepad->second.alive) {
             std::cout << "Existing gamepad found; skipping" << std::endl;
             return;
           }
@@ -149,14 +166,17 @@ void event_loop_start() {
           std::cout << "Gamepad connected " << key << " - " << info->name
                     << std::endl;
           gamepads[key] = *info;
+          emit_gamepad_connection_event(key, info->name, true);
 
           std::thread input_thread(process_connection_event, &gamepads[key]);
           input_thread.detach();
         } else {
           std::cout << "Gamepad disconnected " << key << std::endl;
-          if (existingGamepad) {
-            gamepads[key].alive = false;
-            gamepads.erase(key);
+          if (existingGamepad != gamepads.end()) {
+            const std::string name = existingGamepad->second.name;
+            existingGamepad->second.alive = false;
+            gamepads.erase(existingGamepad);
+            emit_gamepad_connection_event(key, name, false);
           }
         }
       });

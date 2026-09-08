@@ -39,6 +39,9 @@ class Gamepads {
  public:
   std::optional<std::function<void(GamepadData* gamepad, const Event& event)>>
       event_emitter;
+  std::optional<std::function<
+      void(const std::string& id, const std::string& name, bool connected)>>
+      connection_emitter;
   void init();
   void stop();
   std::list<GamepadData*> get_gamepads();

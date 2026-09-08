@@ -187,6 +187,10 @@ void Gamepads::on_gamepad_connected(IGameInputDevice* device) {
   std::cout << "Gamepad connected: " << gp->id << " : " << gp->name
             << std::endl;
 
+  if (connection_emitter.has_value()) {
+    (*connection_emitter)(gp->id, gp->name, true);
+  }
+
   std::thread read_thread(
       [this, gp, device]() { this->read_gamepad(gp, device); });
   read_thread.detach();
@@ -201,8 +205,12 @@ void Gamepads::on_gamepad_disconnected(IGameInputDevice* device) {
   std::string removeId = AppLocalDeviceIdToString(info->deviceId);
   std::cout << "Gamepad disconnected: " << removeId << std::endl;
   GamepadData* removeGp = nullptr;
+  std::string removeName;
   for (auto gp : this->gamepads) {
     if (gp->id == removeId) {
+      // Copy the name before signalling the thread; once stop_thread is set
+      // the thread may exit and free the gamepad at any moment.
+      removeName = gp->name;
       gp->stop_thread = true;
       removeGp = gp;
       break;
@@ -211,6 +219,9 @@ void Gamepads::on_gamepad_disconnected(IGameInputDevice* device) {
   // Remove the gamepad from list. The thread will free up memory.
   if (removeGp != nullptr) {
     this->gamepads.remove(removeGp);
+    if (connection_emitter.has_value()) {
+      (*connection_emitter)(removeId, removeName, false);
+    }
   }
 }
 

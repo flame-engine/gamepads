@@ -43,6 +43,7 @@ class _EventEntry {
 
 class _MyHomePageState extends State<MyHomePage> {
   StreamSubscription<GamepadEvent>? _subscription;
+  StreamSubscription<GamepadConnectionEvent>? _connectionSubscription;
   late final GamepadNormalizer _normalizer;
 
   List<GamepadController> _gamepads = [];
@@ -81,6 +82,13 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _normalizer = GamepadNormalizer();
+    _connectionSubscription = Gamepads.connectionEvents.listen((event) {
+      _eventLog.add(
+        '${DateTime.now().toIso8601String()} '
+        '[${event.name}] ${event.type.name}',
+      );
+      _listGamepads();
+    });
     _subscription = Gamepads.events.listen((event) {
       if (!_gamepadNames.containsKey(event.gamepadId)) {
         _listGamepads();
@@ -131,6 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     _subscription?.cancel();
+    _connectionSubscription?.cancel();
     super.dispose();
   }
 

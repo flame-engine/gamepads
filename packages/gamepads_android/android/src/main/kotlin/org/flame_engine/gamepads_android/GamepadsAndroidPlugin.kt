@@ -48,6 +48,20 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
   }
 
+  private fun emitConnectionEvent(deviceId: Int, name: String, type: ConnectionEventType) {
+    if (!::channel.isInitialized) {
+      return
+    }
+    channel.invokeMethod(
+      "onGamepadConnectionEvent",
+      mapOf(
+        "gamepadId" to deviceId.toString(),
+        "name" to name,
+        "type" to type.eventName,
+      )
+    )
+  }
+
   // FlutterPlugin
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "xyz.luan/gamepads")
@@ -82,9 +96,21 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       )
       return
     }
-    devices = DeviceListener { compatibleActivity.isGamepadsInputDevice(it) }
+    // The listener is registered with the process-wide InputManager, so it
+    // outlives the activity and must only be registered once. Registering a
+    // new one on every reattach (which happens on every configuration change,
+    // such as a rotation) would report each connection and disconnection once
+    // per registration.
+    if (!::devices.isInitialized) {
+      devices = DeviceListener(
+        isGamepadsInputDevice = { compatibleActivity.isGamepadsInputDevice(it) },
+        onConnectionChanged = { deviceId, name, type ->
+          emitConnectionEvent(deviceId, name, type)
+        },
+      )
+      compatibleActivity.registerInputDeviceListener(devices, handler = null)
+    }
     events = EventListener()
-    compatibleActivity.registerInputDeviceListener(devices, handler = null)
     compatibleActivity.registerKeyEventHandler { event ->
       if (devices.containsKey(event.deviceId)) {
         events.onKeyEvent(event, channel)

@@ -115,4 +115,76 @@ void main() {
       expect(event.value, 1.0);
     },
   );
+
+  test('can listen to connection events through platform interface', () async {
+    final listener = Gamepads.connectionEvents.first;
+    await platformInterface.platformCallHandler(
+      const MethodCall(
+        'onGamepadConnectionEvent',
+        <String, dynamic>{
+          'gamepadId': '1',
+          'name': 'Test Controller',
+          'type': 'connected',
+        },
+      ),
+    );
+    final event = await listener;
+    expect(event.gamepadId, '1');
+    expect(event.name, 'Test Controller');
+    expect(event.type, GamepadConnectionEventType.connected);
+  });
+
+  test('onConnected only emits connection events', () async {
+    final listener = Gamepads.onConnected.first;
+    await platformInterface.platformCallHandler(
+      const MethodCall(
+        'onGamepadConnectionEvent',
+        <String, dynamic>{
+          'gamepadId': '1',
+          'name': 'Test Controller',
+          'type': 'disconnected',
+        },
+      ),
+    );
+    await platformInterface.platformCallHandler(
+      const MethodCall(
+        'onGamepadConnectionEvent',
+        <String, dynamic>{
+          'gamepadId': '2',
+          'name': 'Other Controller',
+          'type': 'connected',
+        },
+      ),
+    );
+    final event = await listener;
+    expect(event.gamepadId, '2');
+    expect(event.type, GamepadConnectionEventType.connected);
+  });
+
+  test('onDisconnected only emits disconnection events', () async {
+    final listener = Gamepads.onDisconnected.first;
+    await platformInterface.platformCallHandler(
+      const MethodCall(
+        'onGamepadConnectionEvent',
+        <String, dynamic>{
+          'gamepadId': '1',
+          'name': 'Test Controller',
+          'type': 'connected',
+        },
+      ),
+    );
+    await platformInterface.platformCallHandler(
+      const MethodCall(
+        'onGamepadConnectionEvent',
+        <String, dynamic>{
+          'gamepadId': '2',
+          'name': 'Other Controller',
+          'type': 'disconnected',
+        },
+      ),
+    );
+    final event = await listener;
+    expect(event.gamepadId, '2');
+    expect(event.type, GamepadConnectionEventType.disconnected);
+  });
 }

@@ -32,6 +32,10 @@ class GamepadsWindowsPlugin : public flutter::Plugin {
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
 
   void emit_gamepad_event(GamepadData* gamepad, const Event& event);
+
+  void emit_gamepad_connection_event(const std::string& id,
+                                     const std::string& name,
+                                     bool connected);
 };
 
 }  // namespace gamepads_windows

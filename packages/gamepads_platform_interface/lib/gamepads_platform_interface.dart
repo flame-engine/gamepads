@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:gamepads_platform_interface/api/gamepad_connection_event.dart';
 import 'package:gamepads_platform_interface/api/gamepad_controller.dart';
 import 'package:gamepads_platform_interface/api/gamepad_event.dart';
 import 'package:gamepads_platform_interface/method_channel_gamepads_platform_interface.dart';
@@ -17,10 +21,36 @@ abstract class GamepadsPlatformInterface extends PlatformInterface {
   static GamepadsPlatformInterface instance =
       MethodChannelGamepadsPlatformInterface();
 
+  final StreamController<GamepadEvent> _gamepadEventsStreamController =
+      StreamController<GamepadEvent>.broadcast();
+
+  final StreamController<GamepadConnectionEvent>
+  _gamepadConnectionEventsStreamController =
+      StreamController<GamepadConnectionEvent>.broadcast();
+
   Future<List<GamepadController>> listGamepads();
 
-  Stream<GamepadEvent> get gamepadEventsStream;
+  Stream<GamepadEvent> get gamepadEventsStream =>
+      _gamepadEventsStreamController.stream;
 
   Stream<GamepadEvent> eventsByGamepad(String gamepadId) =>
       gamepadEventsStream.where((event) => event.gamepadId == gamepadId);
+
+  /// A stream of gamepads being connected to and disconnected from the device.
+  Stream<GamepadConnectionEvent> get gamepadConnectionEventsStream =>
+      _gamepadConnectionEventsStreamController.stream;
+
+  void emitGamepadEvent(GamepadEvent event) {
+    _gamepadEventsStreamController.add(event);
+  }
+
+  void emitGamepadConnectionEvent(GamepadConnectionEvent event) {
+    _gamepadConnectionEventsStreamController.add(event);
+  }
+
+  @mustCallSuper
+  Future<void> dispose() async {
+    await _gamepadEventsStreamController.close();
+    await _gamepadConnectionEventsStreamController.close();
+  }
 }
