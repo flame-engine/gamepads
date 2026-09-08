@@ -66,12 +66,12 @@ class Gamepads {
   /// A stream that emits whenever a gamepad is connected.
   static Stream<GamepadConnectionEvent> get onConnected =>
       connectionEvents.where(
-        (event) => event.type == GamepadConnectionType.connected,
+        (event) => event.type == GamepadConnectionEventType.connected,
       );
 
   /// A stream that emits whenever a gamepad is disconnected.
   static Stream<GamepadConnectionEvent> get onDisconnected =>
       connectionEvents.where(
-        (event) => event.type == GamepadConnectionType.disconnected,
+        (event) => event.type == GamepadConnectionEventType.disconnected,
       );
 }

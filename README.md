@@ -87,7 +87,7 @@ class GamepadConnectionEvent {
   final String name;
 
   /// Whether the gamepad was connected or disconnected.
-  final GamepadConnectionType type;
+  final GamepadConnectionEventType type;
 }
 ```
 

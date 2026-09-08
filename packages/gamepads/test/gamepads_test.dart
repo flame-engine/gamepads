@@ -131,7 +131,7 @@ void main() {
     final event = await listener;
     expect(event.gamepadId, '1');
     expect(event.name, 'Test Controller');
-    expect(event.type, GamepadConnectionType.connected);
+    expect(event.type, GamepadConnectionEventType.connected);
   });
 
   test('onConnected only emits connection events', () async {
@@ -158,7 +158,7 @@ void main() {
     );
     final event = await listener;
     expect(event.gamepadId, '2');
-    expect(event.type, GamepadConnectionType.connected);
+    expect(event.type, GamepadConnectionEventType.connected);
   });
 
   test('onDisconnected only emits disconnection events', () async {
@@ -185,6 +185,6 @@ void main() {
     );
     final event = await listener;
     expect(event.gamepadId, '2');
-    expect(event.type, GamepadConnectionType.disconnected);
+    expect(event.type, GamepadConnectionEventType.disconnected);
   });
 }

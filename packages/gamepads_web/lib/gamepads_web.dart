@@ -93,7 +93,7 @@ class GamepadsWeb extends GamepadsPlatformInterface {
           GamepadConnectionEvent(
             gamepadId: jsGamepad.index.toString(),
             name: jsGamepad.id,
-            type: GamepadConnectionType.connected,
+            type: GamepadConnectionEventType.connected,
           ),
         );
         if (_gamepadCount == 1) {
@@ -122,7 +122,7 @@ class GamepadsWeb extends GamepadsPlatformInterface {
           GamepadConnectionEvent(
             gamepadId: gamepadId,
             name: jsGamepad.id,
-            type: GamepadConnectionType.disconnected,
+            type: GamepadConnectionEventType.disconnected,
           ),
         );
         if (_gamepadCount == 0) {

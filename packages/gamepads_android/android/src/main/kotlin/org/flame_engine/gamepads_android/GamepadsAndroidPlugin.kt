@@ -48,7 +48,7 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
   }
 
-  private fun emitConnectionEvent(deviceId: Int, name: String, connected: Boolean) {
+  private fun emitConnectionEvent(deviceId: Int, name: String, type: ConnectionEventType) {
     if (!::channel.isInitialized) {
       return
     }
@@ -57,7 +57,7 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       mapOf(
         "gamepadId" to deviceId.toString(),
         "name" to name,
-        "type" to if (connected) "connected" else "disconnected",
+        "type" to type.eventName,
       )
     )
   }
@@ -104,8 +104,8 @@ class GamepadsAndroidPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     if (!::devices.isInitialized) {
       devices = DeviceListener(
         isGamepadsInputDevice = { compatibleActivity.isGamepadsInputDevice(it) },
-        onConnectionChanged = { deviceId, name, connected ->
-          emitConnectionEvent(deviceId, name, connected)
+        onConnectionChanged = { deviceId, name, type ->
+          emitConnectionEvent(deviceId, name, type)
         },
       )
       compatibleActivity.registerInputDeviceListener(devices, handler = null)

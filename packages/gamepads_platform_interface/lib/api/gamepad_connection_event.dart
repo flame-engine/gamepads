@@ -1,5 +1,5 @@
 /// Whether a gamepad became available or unavailable.
-enum GamepadConnectionType {
+enum GamepadConnectionEventType {
   /// The gamepad was plugged in or paired and can now fire events.
   connected,
 
@@ -20,7 +20,7 @@ class GamepadConnectionEvent {
   final String name;
 
   /// Whether the gamepad was connected or disconnected.
-  final GamepadConnectionType type;
+  final GamepadConnectionEventType type;
 
   GamepadConnectionEvent({
     required this.gamepadId,
@@ -36,7 +36,9 @@ class GamepadConnectionEvent {
   factory GamepadConnectionEvent.parse(Map<dynamic, dynamic> map) {
     final gamepadId = map['gamepadId'] as String;
     final name = map['name'] as String;
-    final type = GamepadConnectionType.values.byName(map['type'] as String);
+    final type = GamepadConnectionEventType.values.byName(
+      map['type'] as String,
+    );
 
     return GamepadConnectionEvent(
       gamepadId: gamepadId,

@@ -4,9 +4,14 @@ import android.hardware.input.InputManager
 import android.util.Log
 import android.view.InputDevice
 
+enum class ConnectionEventType(val eventName: String) {
+    CONNECTED("connected"),
+    DISCONNECTED("disconnected"),
+}
+
 class DeviceListener(
     val isGamepadsInputDevice: (device: InputDevice) -> Boolean,
-    val onConnectionChanged: (deviceId: Int, name: String, connected: Boolean) -> Unit,
+    val onConnectionChanged: (deviceId: Int, name: String, type: ConnectionEventType) -> Unit,
 ): InputManager.InputDeviceListener {
     private val devicesLookup: MutableMap<Int, InputDevice> = mutableMapOf()
     private val TAG = "ConnectionListener"
@@ -42,14 +47,14 @@ class DeviceListener(
 
     private fun add(deviceId: Int, device: InputDevice) {
         if (devicesLookup.put(deviceId, device) == null) {
-            onConnectionChanged(deviceId, device.name, true)
+            onConnectionChanged(deviceId, device.name, ConnectionEventType.CONNECTED)
         }
     }
 
     private fun remove(deviceId: Int) {
         val device = devicesLookup.remove(deviceId)
         if (device != null) {
-            onConnectionChanged(deviceId, device.name, false)
+            onConnectionChanged(deviceId, device.name, ConnectionEventType.DISCONNECTED)
         }
     }
 
