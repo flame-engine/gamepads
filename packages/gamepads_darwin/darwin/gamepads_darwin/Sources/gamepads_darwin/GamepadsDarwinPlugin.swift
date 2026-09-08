@@ -1,6 +1,11 @@
-import Cocoa
+import Foundation
 import GameController
+
+#if os(macOS)
 import FlutterMacOS
+#else
+import Flutter
+#endif
 
 enum FixedKey: String {
     case buttonMenu
@@ -21,7 +26,12 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "xyz.luan/gamepads", binaryMessenger: registrar.messenger)
+        #if os(macOS)
+        let messenger = registrar.messenger
+        #else
+        let messenger = registrar.messenger()
+        #endif
+        let channel = FlutterMethodChannel(name: "xyz.luan/gamepads", binaryMessenger: messenger)
         let instance = GamepadsDarwinPlugin(channel: channel)
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
@@ -60,18 +70,18 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         if let opt = gamepad.buttonOptions, element === opt {
             return .buttonOptions
         }
-        if #available(macOS 11.0, *) {
+        if #available(iOS 14.0, macOS 11.0, *) {
             if let home = gamepad.buttonHome, element === home {
                 return .buttonHome
             }
         }
-        if #available(macOS 11.3, *) {
+        if #available(iOS 14.5, macOS 11.3, *) {
             if let ds = gamepad as? GCDualSenseGamepad,
                element === ds.touchpadButton {
                 return .touchpadButton
             }
         }
-        if #available(macOS 11.0, *) {
+        if #available(iOS 14.0, macOS 11.0, *) {
             if let ds = gamepad as? GCDualShockGamepad,
                element === ds.touchpadButton {
                 return .touchpadButton
@@ -84,7 +94,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         if let element = element as? GCControllerButtonInput {
             var button: String = fixedKey?.rawValue ?? "Unknown button"
             if fixedKey == nil {
-                if #available(macOS 11.0, *) {
+                if #available(iOS 14.0, macOS 11.0, *) {
                     if let name = element.sfSymbolsName {
                         button = name
                     }
@@ -94,7 +104,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         } else if let element = element as? GCControllerAxisInput {
             var axis: String = fixedKey?.rawValue ?? "Unknown axis"
             if fixedKey == nil {
-                if #available(macOS 11.0, *) {
+                if #available(iOS 14.0, macOS 11.0, *) {
                     if let name = element.sfSymbolsName {
                         axis = name
                     }
@@ -104,7 +114,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         } else if let element = element as? GCControllerDirectionPad {
             var directionPad: String = fixedKey?.rawValue ?? "Unknown direction pad"
             if fixedKey == nil {
-                if #available(macOS 11.0, *) {
+                if #available(iOS 14.0, macOS 11.0, *) {
                     if let name = element.sfSymbolsName {
                         directionPad = name
                     }
@@ -118,9 +128,9 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
             return []
         }
     }
-    
+
     private func getNameForElement(element: GCControllerElement) -> String? {
-        if #available(macOS 11.0, *) {
+        if #available(iOS 14.0, macOS 11.0, *) {
             return element.sfSymbolsName
         } else {
             return nil
@@ -128,7 +138,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     }
 
     private func getTimestamp(gamepad: GCExtendedGamepad) -> TimeInterval {
-        if #available(macOS 11.0, *) {
+        if #available(iOS 14.0, macOS 11.0, *) {
             return gamepad.lastEventTimestamp
         } else {
             return Date().timeIntervalSince1970
@@ -136,7 +146,7 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     }
 
     private func getName(gamepad: GCExtendedGamepad) -> String {
-        if #available(macOS 11.0, *) {
+        if #available(iOS 14.0, macOS 11.0, *) {
             let device = gamepad.device
             return maybeConcat(device?.vendorName, device?.productCategory) ?? "Unknown device"
         } else {

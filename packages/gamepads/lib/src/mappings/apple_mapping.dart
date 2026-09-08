@@ -2,10 +2,10 @@ import 'package:gamepads/src/api/gamepad_axis.dart';
 import 'package:gamepads/src/api/gamepad_button.dart';
 import 'package:gamepads/src/mappings/platform_mapping.dart';
 
-/// Mapping for macOS gamepad events.
+/// Mapping for iOS and macOS gamepad events.
 ///
-/// macOS uses GCController API with SF Symbols names for buttons.
-/// Button names look like "a.circle", "b.circle", etc.
+/// Both platforms use the GCController API with SF Symbols names for
+/// buttons. Button names look like "a.circle", "b.circle", etc.
 /// Axis names are constructed as
 /// "`<element.sfSymbolsName>` - xAxis/yAxis".
 ///
@@ -25,7 +25,7 @@ import 'package:gamepads/src/mappings/platform_mapping.dart';
 /// - "house.circle" - home
 /// - "l.joystick.press.down" / "l.joystick.down" - left stick click
 /// - "r.joystick.press.down" / "r.joystick.down" - right stick click
-class MacosMapping extends PlatformMapping {
+class AppleMapping extends PlatformMapping {
   // SF Symbols names can vary by controller, so we use contains-based
   // matching on first encounter, then cache the result.
   static const _buttonPatterns = <String, GamepadButton>{

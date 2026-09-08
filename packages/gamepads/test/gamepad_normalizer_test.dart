@@ -15,7 +15,7 @@ void main() {
           gamepadId: 'pad1',
           timestamp: 1000,
           type: KeyType.button,
-          key: 'buttonA',
+          key: 'a.circle',
           value: 1.0,
         );
 
@@ -34,7 +34,7 @@ void main() {
           gamepadId: 'pad1',
           timestamp: 2000,
           type: KeyType.analog,
-          key: 'leftStick - xAxis',
+          key: 'l.joystick - xAxis',
           value: 0.75,
         );
 
@@ -72,6 +72,23 @@ void main() {
         );
 
         expect(normalizer.normalize(event), isEmpty);
+      });
+    });
+
+    group('macOS platform', () {
+      final normalizer = GamepadNormalizer.forPlatform(GamepadPlatform.macos);
+
+      test('shares the iOS mapping', () {
+        final event = GamepadEvent(
+          gamepadId: 'pad1',
+          timestamp: 1000,
+          type: KeyType.button,
+          key: 'a.circle',
+          value: 1.0,
+        );
+
+        final results = normalizer.normalize(event);
+        expect(results.single.button, GamepadButton.a);
       });
     });
 
@@ -149,14 +166,14 @@ void main() {
             gamepadId: 'pad1',
             timestamp: 1000,
             type: KeyType.button,
-            key: 'buttonA',
+            key: 'a.circle',
             value: 1.0,
           ),
           GamepadEvent(
             gamepadId: 'pad1',
             timestamp: 2000,
             type: KeyType.analog,
-            key: 'leftStick - xAxis',
+            key: 'l.joystick - xAxis',
             value: 0.5,
           ),
           GamepadEvent(
@@ -216,7 +233,7 @@ void main() {
           gamepadId: 'pad1',
           timestamp: 1000,
           type: KeyType.button,
-          key: 'buttonA',
+          key: 'a.circle',
           value: 1.0,
         ),
       );
@@ -235,7 +252,7 @@ void main() {
           gamepadId: 'pad1',
           timestamp: 1000,
           type: KeyType.analog,
-          key: 'leftStick - xAxis',
+          key: 'l.joystick - xAxis',
           value: 0.5,
         ),
       );

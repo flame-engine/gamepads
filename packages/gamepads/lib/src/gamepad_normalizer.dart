@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:gamepads/src/api/normalized_gamepad_event.dart';
 import 'package:gamepads/src/mappings/android_mapping.dart';
-import 'package:gamepads/src/mappings/ios_mapping.dart';
+import 'package:gamepads/src/mappings/apple_mapping.dart';
 import 'package:gamepads/src/mappings/linux_mapping.dart';
-import 'package:gamepads/src/mappings/macos_mapping.dart';
 import 'package:gamepads/src/mappings/platform_mapping.dart';
 import 'package:gamepads/src/mappings/web_standard_mapping.dart';
 import 'package:gamepads/src/mappings/windows_mapping.dart';
@@ -97,9 +96,8 @@ class GamepadNormalizer {
       case GamepadPlatform.android:
         return AndroidMapping();
       case GamepadPlatform.ios:
-        return IosMapping();
       case GamepadPlatform.macos:
-        return MacosMapping();
+        return AppleMapping();
       case GamepadPlatform.linux:
         return LinuxMapping();
       case GamepadPlatform.windows:

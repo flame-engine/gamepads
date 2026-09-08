@@ -11,7 +11,7 @@ flutter:
       android:
         default_package: gamepads_android
       ios:
-        default_package: gamepads_ios
+        default_package: gamepads_darwin
       linux:
         default_package: gamepads_linux
       macos:
@@ -30,7 +30,6 @@ dependencies:
     sdk: flutter
   gamepads_android: ^0.1.9
   gamepads_darwin: ^0.1.3
-  gamepads_ios: ^0.1.4
   gamepads_linux: ^0.1.2
   gamepads_platform_interface: ^0.1.3
   gamepads_web: ^0.1.2
