@@ -8,6 +8,7 @@ event stream.
 Given that the emitted events matches the raw one of the normalizer platform, gamepads will emit
 also normalized events for your tested app code.
 
+
 ## Usage
 
 Add this package to your dev dependencies, as you typically only will use this package
