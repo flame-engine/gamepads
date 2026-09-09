@@ -27,7 +27,10 @@ void main() {
     expect(normalizedEvents, hasLength(1));
     expect(events[0].key, equals('a'));
     expect(events[0].type, equals(KeyType.button));
-    expect(events[0].timestamp, lessThanOrEqualTo(DateTime.now().millisecondsSinceEpoch));
+    expect(
+      events[0].timestamp,
+      lessThanOrEqualTo(DateTime.now().millisecondsSinceEpoch),
+    );
     expect(events[0].value, equals(1.0));
     expect(normalizedEvents[0].button, equals(GamepadButton.a));
     expect(normalizedEvents[0].axis, isNull);
@@ -42,7 +45,10 @@ void main() {
     expect(normalizedEvents, hasLength(1));
     expect(events[0].key, equals('leftThumbstickX'));
     expect(events[0].type, equals(KeyType.analog));
-    expect(events[0].timestamp, lessThanOrEqualTo(DateTime.now().millisecondsSinceEpoch));
+    expect(
+      events[0].timestamp,
+      lessThanOrEqualTo(DateTime.now().millisecondsSinceEpoch),
+    );
     expect(events[0].value, equals(0.75));
     expect(normalizedEvents[0].button, isNull);
     expect(normalizedEvents[0].axis, equals(GamepadAxis.leftStickX));
