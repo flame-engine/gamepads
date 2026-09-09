@@ -344,6 +344,7 @@ Or by becoming a patron on Patreon:
   />
 </a>
 
+
 ## Controller vibration
 
 Use the device ID returned by `Gamepads.list()`:
@@ -371,13 +372,20 @@ physical motors actually moved. Missing hardware, OS support, or permissions
 can make vibration unavailable. Web permission/focus failures may also occur
 asynchronously after a request was accepted.
 
-| Platform | Backend and limitations |
+| Platform | Backend |
 | --- | --- |
-| Windows | GameInput device capabilities and SetRumbleState; depends on installed runtime and device support. No new runtime dependency. |
-| macOS / iOS | GameController and Core Haptics on macOS 11 / iOS 14 or newer; uses controller actuators. |
-| Android | InputDevice vibrator(s); separate motors on supported Android 12+ devices, combined strength otherwise. Older APIs may only provide on/off vibration. |
-| Linux | FF_RUMBLE on the joystick's sibling evdev node; requires write access to that event device. |
-| Web | GamepadHapticActuator dual-rumble; browser/device support and foreground access required. Long effects are split into at most five-second segments. |
+| Windows | GameInput device capabilities and SetRumbleState |
+| macOS / iOS | GameController and Core Haptics (macOS 11 / iOS 14+) |
+| Android | InputDevice vibrator(s) |
+| Linux | FF_RUMBLE on the joystick's sibling evdev node |
+| Web | GamepadHapticActuator dual-rumble |
+
+Windows depends on the installed runtime and device support, with no new runtime
+dependency. Apple uses controller actuators. Android supports separate motors on
+some Android 12+ devices and combines strength otherwise; older APIs may provide
+only on/off vibration. Linux requires write access to the event device. Web needs
+browser/device support and foreground access; long effects are split into
+segments of at most five seconds.
 
 The example includes per-controller test and stop buttons. This API covers
 ordinary dual-motor rumble, not adaptive triggers or arbitrary force feedback.
