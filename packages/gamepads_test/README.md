@@ -25,10 +25,18 @@ GamepadsTester.setNormalizer(GamepadPlatform.windows);
 
 Then use these methods to emit events:
 
-- `GampadsTester.emitRawButton(String rawButton, double value)` - emit a button event
-- `GampadsTester.emitRawAnalog(String rawAnalog, double value)` - emit an analog/axis event
-- `GampadsTester.emitRawButtonPress(String rawButton)` - emit two button events for button down,
-  button up
+```dart
+GampadsTester.emitRawButton("dpadUp", 1.0);
+GampadsTester.emitRawAnalog("leftThumbstickX", 0.3);
+GampadsTester.emitRawButtonPress("x");
+```
+
+Explanation:
+
+- `setNormalizer()` sets which normalizer to use.
+- `emitRawButton()` emits a button event.
+- `emitRawAnalog()` emits a analog/axis event.
+- `emitRawButtonPress()` emits a button down and then a button up event. (value 1.0, then value 0.0)
 
 
 ## Raw button/analog names
