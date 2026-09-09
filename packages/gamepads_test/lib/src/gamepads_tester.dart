@@ -16,7 +16,7 @@ class GamepadsTester {
 
   /// Set Gamepads normalizer to a normalizer for [platform]
   ///
-  /// Affects the names of buttons and analog axises you should emit for
+  /// Affects the names of buttons and analog axes you should emit for
   /// normalized events to be correctly mapped.
   static void setNormalizer(GamepadPlatform platform) {
     Gamepads.normalizer = GamepadNormalizer.forPlatform(platform);
