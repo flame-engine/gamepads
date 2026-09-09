@@ -222,6 +222,7 @@ GamepadControl(
                     Slider(
                         value: sliderValue,
                         label: 'Does not work with gamepads',
+                        showValueIndicator: ShowValueIndicator.onDrag,
                         onChanged: (value) => setState(() => sliderValue = value),
                     ),
                     // This slider can be operated with Gamepad due to the
@@ -243,7 +244,8 @@ GamepadControl(
                         },
                         child: Slider(
                             value: _value,
-                            label: 'Works with gamepads',
+                            label: 'Works with gamepads - use right stick',
+                            showValueIndicator: ShowValueIndicator.onDrag,
                             // This setState never occur by Gamepad input, but is
                             // good to allow keyboard/mouse input as well.
                             onChanged: (value) => setState(() => _value = value),
