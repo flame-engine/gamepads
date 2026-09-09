@@ -25,9 +25,9 @@ GamepadsTester.setNormalizer(GamepadPlatform.windows);
 
 Then use these methods to emit events:
 
-* `GampadsTester.emitRawButton(String rawButton, double value)` - emit a button event
-* `GampadsTester.emitRawAnalog(String rawAnalog, double value)` - emit an analog/axis event
-* `GampadsTester.emitRawButtonPress(String rawButton)` - emit two button events for button down,
+- `GampadsTester.emitRawButton(String rawButton, double value)` - emit a button event
+- `GampadsTester.emitRawAnalog(String rawAnalog, double value)` - emit an analog/axis event
+- `GampadsTester.emitRawButtonPress(String rawButton)` - emit two button events for button down,
   button up
 
 
