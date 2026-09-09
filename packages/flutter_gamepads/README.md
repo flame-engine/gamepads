@@ -213,13 +213,16 @@ GamepadControl(
                         value: switchValue,
                         onChanged: (value) => setState(() => switchValue = value),
                     ),
-                    ElevatedButton(onPressed: () {}, Text('Can be clicked with gamepad')),
+                    ElevatedButton(
+                        onPressed: () {},
+                        child: const Text('Can be clicked with gamepad'),
+                    ),
                     // This can be focused, but gamepad users cannot change the value
                     // The solution is given below.
                     Slider(
                         value: sliderValue,
                         label: 'Does not work with gamepads',
-                        onChange: (value) => setState(() => sliderValue = value),
+                        onChanged: (value) => setState(() => sliderValue = value),
                     ),
                     // This slider can be operated with Gamepad due to the
                     // compatibility layer provided via GamepadInterceptor.
@@ -227,10 +230,10 @@ GamepadControl(
                         onBeforeIntent: (activator, intent) {
                             if (intent is ScrollIntent) {
                                 if (intent.direction == AxisDirection.right) {
-                                    setState(() _value = min(1.0, _value + 0.1));
+                                    setState(() => _value = min(1.0, _value + 0.1));
                                 } else if (intent.direction ==
                                                         AxisDirection.left) {
-                                    setState(() _value = max(0.0, _value - 0.1));
+                                    setState(() => _value = max(0.0, _value - 0.1));
                                 }
                                 // Block actual emit of ScrollIntent
                                 return false;
@@ -241,10 +244,9 @@ GamepadControl(
                         child: Slider(
                             value: _value,
                             label: 'Works with gamepads',
-                            max: 1.0,
                             // This setState never occur by Gamepad input, but is
                             // good to allow keyboard/mouse input as well.
-                            onChange: (value) => setState(() => _value = value),
+                            onChanged: (value) => setState(() => _value = value),
                         ),
                     ),
                 ],
