@@ -58,10 +58,14 @@ class _MyHomePageState extends State<MyHomePage> {
     for (final gamepad in response) {
       _gamepadNames[gamepad.id] = gamepad.name;
     }
+    final previous = _gamepads;
     setState(() {
       _gamepads = response;
       loading = false;
     });
+    for (final gamepad in previous) {
+      await gamepad.dispose();
+    }
   }
 
   void _clear() {
@@ -140,6 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     _subscription?.cancel();
     _connectionSubscription?.cancel();
+    for (final gamepad in _gamepads) {
+      unawaited(gamepad.dispose());
+    }
     super.dispose();
   }
 

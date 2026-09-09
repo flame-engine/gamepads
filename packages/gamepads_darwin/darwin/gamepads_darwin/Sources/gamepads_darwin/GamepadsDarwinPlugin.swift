@@ -18,17 +18,20 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
     let channel: FlutterMethodChannel
     let gamepads = GamepadsListener()
 
-    /// The name each gamepad had when it connected. By the time it
-    /// disconnects its `GCDevice` is usually already gone, and `getName`
-    /// would fall back to "Unknown device".
+    /// The name each gamepad had when it connected, so that a disconnect
+    /// reports the same name the connect did.
     private var gamepadNames = [Int: String]()
 
     init(channel: FlutterMethodChannel) {
         self.channel = channel
         super.init()
 
-        self.gamepads.listener = onGamepadEvent
-        self.gamepads.connectionListener = onGamepadConnectionEvent
+        self.gamepads.listener = { [weak self] gamepadId, gamepad, element in
+            self?.onGamepadEvent(gamepadId: gamepadId, gamepad: gamepad, element: element)
+        }
+        self.gamepads.connectionListener = { [weak self] gamepadId, controller, connected in
+            self?.onGamepadConnectionEvent(gamepadId: gamepadId, controller: controller, connected: connected)
+        }
     }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -65,13 +68,13 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         }
     }
 
-    private func onGamepadConnectionEvent(gamepadId: Int, gamepad: GCExtendedGamepad, connected: Bool) {
+    private func onGamepadConnectionEvent(gamepadId: Int, controller: GCController, connected: Bool) {
         let name: String
         if connected {
-            name = getName(gamepad: gamepad)
+            name = getName(controller: controller)
             gamepadNames[gamepadId] = name
         } else {
-            name = gamepadNames.removeValue(forKey: gamepadId) ?? getName(gamepad: gamepad)
+            name = gamepadNames.removeValue(forKey: gamepadId) ?? getName(controller: controller)
         }
         let arguments: [String: Any] = [
             "gamepadId": String(gamepadId),
@@ -167,18 +170,18 @@ public class GamepadsDarwinPlugin: NSObject, FlutterPlugin {
         }
     }
 
-    private func getName(gamepad: GCExtendedGamepad) -> String {
+    private func getName(controller: GCController) -> String {
         if #available(iOS 14.0, macOS 11.0, *) {
-            let device = gamepad.device
-            return maybeConcat(device?.vendorName, device?.productCategory) ?? "Unknown device"
+            let productCategory: String? = controller.productCategory
+            return maybeConcat(controller.vendorName, productCategory) ?? "Unknown device"
         } else {
-            return "Unknown device"
+            return controller.vendorName ?? "Unknown device"
         }
     }
 
     private func listGamepads() -> [[String: Any?]] {
-        return gamepads.gamepads.enumerated().map { (index, gamepad) in
-            [ "id": String(index), "name": getName(gamepad: gamepad) ]
+        return gamepads.gamepads.map { entry in
+            [ "id": String(entry.id), "name": getName(controller: entry.controller) ]
         }
     }
 
