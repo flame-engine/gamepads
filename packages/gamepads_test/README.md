@@ -1,13 +1,13 @@
 # gamepads_test
 
-A utility package for [*gamepads*](https://pub.dev/packages/gamepads) to help
-writing tests.
+A utility package for [*gamepads*](https://pub.dev/packages/gamepads) to help writing tests.
 
-Provides `GamepadsTester` which you can use to emit raw (non-normalized) events into the gamepads event stream.
+Provides `GamepadsTester` which you can use to emit raw (non-normalized) events into the gamepads
+event stream.
 
-Given that the emitted events matches the raw one of the
-normalizer platform, gamepads will emit also normalized
-events for your tested app code.
+Given that the emitted events matches the raw one of the normalizer platform, gamepads will emit
+also normalized events for your tested app code.
+
 
 ## Usage
 
