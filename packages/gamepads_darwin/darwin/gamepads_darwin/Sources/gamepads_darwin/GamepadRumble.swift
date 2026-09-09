@@ -51,7 +51,18 @@ final class GamepadRumble {
         effect.stop()
         let stereo = haptics.supportedLocalities.contains(.leftHandle) &&
             haptics.supportedLocalities.contains(.rightHandle)
-        let localities: [GCHapticsLocality] = stereo ? [.leftHandle, .rightHandle] : [.default]
+        let localities: [GCHapticsLocality]
+        if stereo {
+            localities = [.leftHandle, .rightHandle]
+        } else if haptics.supportedLocalities.contains(.default) {
+            localities = [.default]
+        } else if haptics.supportedLocalities.contains(.handles) {
+            localities = [.handles]
+        } else if haptics.supportedLocalities.contains(.leftHandle) {
+            localities = [.leftHandle]
+        } else {
+            localities = [.rightHandle]
+        }
         do {
             if effect.engines.isEmpty {
                 for locality in localities {
