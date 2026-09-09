@@ -9,7 +9,8 @@ import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
 /// It is therefore important that the button and axis names you emit
 /// match those of the normalizer's platform.
 class GamepadsTester {
-  static GamepadsPlatformInterface platformInterface = GamepadsPlatformInterface.instance;
+  static GamepadsPlatformInterface platformInterface =
+      GamepadsPlatformInterface.instance;
 
   /// Set Gamepads normalizer to a normalizer for [platform]
   ///
