@@ -9,14 +9,10 @@ void main() {
     WidgetsFlutterBinding.ensureInitialized();
     GamepadsTester.setNormalizer(GamepadPlatform.windows);
     expect(Gamepads.normalizer, isNotNull);
-    List<GamepadEvent> events = [];
-    List<NormalizedGamepadEvent> normalizedEvents = [];
-    Gamepads.events.listen((event) {
-      events.add(event);
-    });
-    Gamepads.normalizedEvents.listen((event) {
-      normalizedEvents.add(event);
-    });
+    final events = <GamepadEvent>[];
+    final normalizedEvents = <NormalizedGamepadEvent>[];
+    Gamepads.events.listen(events.add);
+    Gamepads.normalizedEvents.listen(normalizedEvents.add);
     await tester.pumpAndSettle();
     expect(events, isEmpty);
     expect(normalizedEvents, isEmpty);

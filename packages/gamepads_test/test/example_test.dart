@@ -13,7 +13,7 @@ void main() {
     WidgetsFlutterBinding.ensureInitialized();
     GamepadsTester.setNormalizer(GamepadPlatform.windows);
 
-    await tester.pumpWidget(MyGame());
+    await tester.pumpWidget(const MyGame());
 
     expect(find.byKey(aKey), findsNothing);
     expect(find.byKey(movementKey), findsNothing);
@@ -71,8 +71,8 @@ class _MyGameState extends State<MyGame> {
       home: Scaffold(
         body: Column(
           children: [
-            if (enableA) Text('A enabled', key: aKey),
-            if (enableMovement) Text('Is moving', key: movementKey),
+            if (enableA) const Text('A enabled', key: aKey),
+            if (enableMovement) const Text('Is moving', key: movementKey),
           ],
         ),
       ),
