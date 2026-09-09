@@ -4,8 +4,8 @@ import 'package:gamepads_platform_interface/method_channel_gamepads_platform_int
 
 /// A class that can be used to emit gamepads events for your tests.
 ///
-/// It emit non-normalized events which gamepads library may normalize
-/// and provide also normalized events for the consumer.
+/// It emits non-normalized events, which the gamepads library may normalize
+/// and then also provide as normalized events to the consumer.
 ///
 /// It is therefore important that the button and axis names you emit
 /// match those of the normalizer's platform.
