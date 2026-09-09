@@ -343,3 +343,41 @@ Or by becoming a patron on Patreon:
    alt="Patreon donate button"
   />
 </a>
+
+## Controller vibration
+
+Use the device ID returned by `Gamepads.list()`:
+
+```dart
+if (await Gamepads.hasRumble(gamepad.id)) {
+  await Gamepads.rumble(
+    gamepad.id,
+    lowFrequency: 0.6,
+    highFrequency: 0.3,
+    duration: const Duration(milliseconds: 500),
+  );
+}
+await Gamepads.stopRumble(gamepad.id);
+```
+
+Intensities range from 0 to 1. Effects replace the current effect immediately;
+they do not queue. Both intensities at zero, or a zero duration, stop the effect.
+Duration defaults to 500 ms and must be between 0 and 30 seconds. Invalid
+parameters throw ArgumentError. Each native effect expires without requiring
+a Dart timer. Stop effects when a screen/session ends or your app backgrounds.
+
+The boolean result reports whether the request was accepted, not whether the
+physical motors actually moved. Missing hardware, OS support, or permissions
+can make vibration unavailable. Web permission/focus failures may also occur
+asynchronously after a request was accepted.
+
+| Platform | Backend and limitations |
+| --- | --- |
+| Windows | GameInput device capabilities and SetRumbleState; depends on installed runtime and device support. No new runtime dependency. |
+| macOS / iOS | GameController and Core Haptics on macOS 11 / iOS 14 or newer; uses controller actuators. |
+| Android | InputDevice vibrator(s); separate motors on supported Android 12+ devices, combined strength otherwise. Older APIs may only provide on/off vibration. |
+| Linux | FF_RUMBLE on the joystick's sibling evdev node; requires write access to that event device. |
+| Web | GamepadHapticActuator dual-rumble; browser/device support and foreground access required. Long effects are split into at most five-second segments. |
+
+The example includes per-controller test and stop buttons. This API covers
+ordinary dual-motor rumble, not adaptive triggers or arbitrary force feedback.

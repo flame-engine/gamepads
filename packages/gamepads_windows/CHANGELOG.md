@@ -1,3 +1,7 @@
+## Unreleased
+
+- Add controller rumble capability queries, finite dual-motor effects, and stop support.
+
 ## 0.3.1
 
  - Bump "gamepads_windows" to `0.3.1`.

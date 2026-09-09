@@ -1,6 +1,8 @@
 #ifndef FLUTTER_PLUGIN_GAMEPADS_WINDOWS_PLUGIN_H_
 #define FLUTTER_PLUGIN_GAMEPADS_WINDOWS_PLUGIN_H_
 
+#include "rumble.h"
+
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
 
@@ -23,6 +25,7 @@ class GamepadsWindowsPlugin : public flutter::Plugin {
   GamepadsWindowsPlugin& operator=(const GamepadsWindowsPlugin&) = delete;
 
  private:
+  std::unique_ptr<GamepadRumble> rumble_;
   flutter::PluginRegistrarWindows* registrar;
   static inline std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>>
       channel{};

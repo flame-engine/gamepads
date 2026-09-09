@@ -1,0 +1,60 @@
+name: Rumble platform builds
+
+on:
+  push:
+    branches: [feat/upstream-gamepad-rumble, feat/gamepad-rumble]
+  pull_request:
+    paths:
+      - 'packages/**'
+      - '.github/workflows/rumble-platforms.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows
+            command: windows --debug
+          - os: ubuntu-latest
+            platform: linux
+            command: linux --debug
+          - os: ubuntu-latest
+            platform: android
+            command: apk --debug
+          - os: ubuntu-latest
+            platform: web
+            command: web --release
+          - os: macos-latest
+            platform: macos
+            command: macos --debug
+          - os: macos-latest
+            platform: ios
+            command: ios --simulator --debug --no-codesign
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.6'
+          cache: true
+      - if: matrix.platform == 'android'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - if: matrix.platform == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
+      - run: flutter pub get
+      - name: Generate example platform runner
+        working-directory: packages/gamepads/example
+        run: flutter create --platforms=${{ matrix.platform }} --project-name gamepads_example --no-pub .
+      - name: Compile platform implementation
+        working-directory: packages/gamepads/example
+        run: flutter build ${{ matrix.command }}
