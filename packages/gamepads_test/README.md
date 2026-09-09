@@ -10,6 +10,9 @@ also normalized events for your tested app code.
 
 ## Usage
 
+Add this package to your dev dependencies, as you typically only will use this package
+in your tests.
+
 Start by setting a normalizer if the code that you will test has event listeners on
 `Gamepads.normalizedEvents` or your app uses a package such as `flame_gamepads` or
 `flutter_gamepads` that depends on normalized events.
