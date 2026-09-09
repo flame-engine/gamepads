@@ -8,7 +8,7 @@ import 'package:gamepads_platform_interface/method_channel_gamepads_platform_int
 /// and provide also normalized events for the consumer.
 ///
 /// It is therefore important that the button and axis names you emit
-/// matches the one of the normalizer platform.
+/// match those of the normalizer's platform.
 class GamepadsTester {
   static MethodChannelGamepadsPlatformInterface platformInterface =
       GamepadsPlatformInterface.instance
