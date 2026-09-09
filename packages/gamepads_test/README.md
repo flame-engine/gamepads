@@ -26,9 +26,9 @@ GamepadsTester.setNormalizer(GamepadPlatform.windows);
 Then use these methods to emit events:
 
 ```dart
-GampadsTester.emitRawButton("dpadUp", 1.0);
-GampadsTester.emitRawAnalog("leftThumbstickX", 0.3);
-GampadsTester.emitRawButtonPress("x");
+GamepadsTester.emitRawButton("dpadUp", 1.0);
+GamepadsTester.emitRawAnalog("leftThumbstickX", 0.3);
+GamepadsTester.emitRawButtonPress("x");
 ```
 
 Explanation:
