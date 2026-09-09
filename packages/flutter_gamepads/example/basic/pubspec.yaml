@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_gamepads: ^0.1.12
+  material_ui: ^1.0.0
 
 dev_dependencies:
   flame_lint: ^1.4.1
