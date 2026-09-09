@@ -20,4 +20,3 @@ dev_dependencies:
   flame_lint: ^1.4.1
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
