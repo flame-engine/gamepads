@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:gamepads/gamepads.dart';
 import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
 import 'package:gamepads_platform_interface/method_channel_gamepads_platform_interface.dart';
