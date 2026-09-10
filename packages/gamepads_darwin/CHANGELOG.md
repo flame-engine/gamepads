@@ -1,7 +1,3 @@
-## Unreleased
-
-- Add controller rumble capability queries, finite dual-motor effects, and stop support.
-
 ## 0.1.3
 
  - **FEAT**: Add Swift Package Manager support ([#126](https://github.com/flame-engine/gamepads/issues/126)). ([4552f041](https://github.com/flame-engine/gamepads/commit/4552f041ebe90127356a4b62be3bfb6c3b9eeb22))

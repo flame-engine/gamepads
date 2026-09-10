@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     for (final gamepad in _gamepads) {
-      unawaited(Gamepads.stopRumble(gamepad.id));
+      unawaited(gamepad.stopRumble());
     }
     _subscription?.cancel();
     _connectionSubscription?.cancel();
@@ -190,13 +190,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       TextButton(
                         onPressed: () async {
-                          final supported = await Gamepads.hasRumble(
-                            gamepad.id,
-                          );
+                          final supported = await gamepad.hasRumble();
                           final accepted =
                               supported &&
-                              await Gamepads.rumble(
-                                gamepad.id,
+                              await gamepad.rumble(
                                 lowFrequency: 0.5,
                                 highFrequency: 0.5,
                               );
@@ -216,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: const Text('Test rumble'),
                       ),
                       TextButton(
-                        onPressed: () => Gamepads.stopRumble(gamepad.id),
+                        onPressed: gamepad.stopRumble,
                         child: const Text('Stop rumble'),
                       ),
                     ],

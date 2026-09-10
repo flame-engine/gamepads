@@ -38,14 +38,14 @@ new connections.
 
 ## Platform Support
 
-| Platform | Status |
-|----------|--------|
-| Android  | Supported |
-| iOS      | Supported |
-| macOS    | Supported |
-| Linux    | Supported |
-| Windows  | Supported |
-| Web      | Supported |
+| Platform   | Status    |
+| ---------- | --------- |
+| Android    | Supported |
+| iOS        | Supported |
+| macOS      | Supported |
+| Linux      | Supported |
+| Windows    | Supported |
+| Web        | Supported |
 
 
 ## Getting Started
@@ -347,12 +347,11 @@ Or by becoming a patron on Patreon:
 
 ## Controller vibration
 
-Use the device ID returned by `Gamepads.list()`:
+Use a controller returned by `Gamepads.list()`:
 
 ```dart
-if (await Gamepads.hasRumble(gamepad.id)) {
-  await Gamepads.rumble(
-    gamepad.id,
+if (await gamepad.hasRumble()) {
+  await gamepad.rumble(
     lowFrequency: 0.6,
     highFrequency: 0.3,
     duration: const Duration(milliseconds: 500),
@@ -365,20 +364,20 @@ they do not queue. Both intensities at zero, or a zero duration, stop the effect
 Duration defaults to 500 ms and must be between 0 and 30 seconds. Invalid
 parameters throw ArgumentError. Each native effect expires without requiring
 a Dart timer. To stop early when a screen/session ends or your app backgrounds,
-call `await Gamepads.stopRumble(gamepad.id)` from that lifecycle handler.
+call `await gamepad.stopRumble()` from that lifecycle handler.
 
 The boolean result reports whether the request was accepted, not whether the
 physical motors actually moved. Missing hardware, OS support, or permissions
 can make vibration unavailable. Web permission/focus failures may also occur
 asynchronously after a request was accepted.
 
-| Platform | Backend |
-| --- | --- |
-| Windows | GameInput device capabilities and SetRumbleState |
+| Platform    | Backend                                              |
+| ----------- | ---------------------------------------------------- |
+| Windows     | GameInput device capabilities and SetRumbleState     |
 | macOS / iOS | GameController and Core Haptics (macOS 11 / iOS 14+) |
-| Android | InputDevice vibrator(s) |
-| Linux | FF_RUMBLE on the joystick's sibling evdev node |
-| Web | GamepadHapticActuator dual-rumble |
+| Android     | InputDevice vibrator(s)                              |
+| Linux       | FF_RUMBLE on the joystick's sibling evdev node       |
+| Web         | GamepadHapticActuator dual-rumble                    |
 
 Windows depends on the installed runtime and device support, with no new runtime
 dependency. Apple uses controller actuators. Android supports separate motors on

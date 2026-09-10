@@ -32,35 +32,6 @@ class Gamepads {
     _normalizedEvents = null;
   }
 
-  /// Whether this controller currently supports vibration.
-  static Future<bool> hasRumble(String gamepadId) =>
-      _platform.hasRumble(gamepadId);
-
-  /// Replaces the current vibration with a finite dual-motor effect.
-  /// Zero amplitudes or zero duration stop it.
-  /// Unsupported devices return false.
-  static Future<bool> rumble(
-    String gamepadId, {
-    double lowFrequency = 0,
-    double highFrequency = 0,
-    Duration duration = const Duration(milliseconds: 500),
-  }) {
-    GamepadsPlatformInterface.validateRumble(
-      lowFrequency,
-      highFrequency,
-      duration,
-    );
-    return _platform.rumble(
-      gamepadId,
-      lowFrequency: lowFrequency,
-      highFrequency: highFrequency,
-      duration: duration,
-    );
-  }
-
-  static Future<bool> stopRumble(String gamepadId) =>
-      _platform.stopRumble(gamepadId);
-
   static Future<List<GamepadController>> list() => _platform.listGamepads();
 
   static Stream<GamepadEvent> get events => _platform.gamepadEventsStream;

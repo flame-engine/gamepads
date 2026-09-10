@@ -30,6 +30,7 @@ class GamepadController {
   final int? productId;
 
   final state = GamepadState();
+  final GamepadsPlatformInterface _platform;
 
   StreamSubscription<GamepadEvent>? _subscription;
 
@@ -39,7 +40,7 @@ class GamepadController {
     required GamepadsPlatformInterface plugin,
     this.vendorId,
     this.productId,
-  }) {
+  }) : _platform = plugin {
     _subscription = plugin.eventsByGamepad(id).listen(state.update);
   }
 
@@ -59,6 +60,32 @@ class GamepadController {
       productId: productId,
     );
   }
+
+  /// Whether this controller currently supports vibration.
+  Future<bool> hasRumble() => _platform.hasRumble(id);
+
+  /// Replaces the current vibration with a finite dual-motor effect.
+  /// Zero amplitudes or zero duration stop it.
+  /// Unsupported devices return false.
+  Future<bool> rumble({
+    double lowFrequency = 0,
+    double highFrequency = 0,
+    Duration duration = const Duration(milliseconds: 500),
+  }) {
+    GamepadsPlatformInterface.validateRumble(
+      lowFrequency,
+      highFrequency,
+      duration,
+    );
+    return _platform.rumble(
+      id,
+      lowFrequency: lowFrequency,
+      highFrequency: highFrequency,
+      duration: duration,
+    );
+  }
+
+  Future<bool> stopRumble() => _platform.stopRumble(id);
 
   /// Stops listening for new inputs.
   Future<void> dispose() async {

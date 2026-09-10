@@ -1,7 +1,3 @@
-## Unreleased
-
-- Add controller rumble capability queries, finite dual-motor effects, and stop support.
-
 ## 0.1.2
 
  - Bump "gamepads_web" to `0.1.2`.

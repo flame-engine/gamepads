@@ -1,7 +1,3 @@
-## Unreleased
-
-- Add controller rumble capability queries, finite dual-motor effects, and stop support.
-
 ## 0.1.11
 
  - **FIX**: Correct inverted Android stick Y axis and map the RX/RY right stick ([#129](https://github.com/flame-engine/gamepads/issues/129)). ([18c18861](https://github.com/flame-engine/gamepads/commit/18c188614ffbeb9241b24c00ab50e8c6ef48d802))
