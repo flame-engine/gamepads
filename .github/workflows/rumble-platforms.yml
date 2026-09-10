@@ -58,3 +58,12 @@ jobs:
       - name: Compile platform implementation
         working-directory: packages/gamepads/example
         run: flutter build ${{ matrix.command }}
+      - name: Configure Windows rumble regression
+        if: matrix.platform == 'windows'
+        run: cmake -S packages/gamepads_windows/windows/test -B build/rumble-test
+      - name: Build Windows rumble regression
+        if: matrix.platform == 'windows'
+        run: cmake --build build/rumble-test --config Release
+      - name: Run Windows rumble regression
+        if: matrix.platform == 'windows'
+        run: ctest --test-dir build/rumble-test -C Release --output-on-failure

@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.14)
+project(gamepads_rumble_test LANGUAGES CXX)
+enable_testing()
+add_executable(rumble_test rumble_test.cpp)
+target_compile_features(rumble_test PRIVATE cxx_std_17)
+target_compile_options(rumble_test PRIVATE /W4 /WX)
+add_test(NAME rumble_stop_paths COMMAND rumble_test)

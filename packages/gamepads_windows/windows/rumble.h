@@ -44,7 +44,7 @@ class GamepadRumble {
     if (worker_.joinable())
       worker_.join();
     for (auto& item : devices_) {
-      item.second.device->SetRumbleState(nullptr);
+      Stop(item.second.device);
       item.second.device->Release();
     }
     if (input_)
@@ -68,9 +68,11 @@ class GamepadRumble {
     auto& entry = it->second;
     const bool stop = milliseconds == 0 || (low == 0 && high == 0);
     GameInputRumbleParams params{};
-    params.lowFrequency = static_cast<float>(low);
-    params.highFrequency = static_cast<float>(high);
-    entry.device->SetRumbleState(stop ? nullptr : &params);
+    if (!stop) {
+      params.lowFrequency = static_cast<float>(low);
+      params.highFrequency = static_cast<float>(high);
+    }
+    entry.device->SetRumbleState(&params);
     entry.active = !stop;
     entry.until = Clock::now() + std::chrono::milliseconds(milliseconds);
     changed_.notify_all();
@@ -84,6 +86,12 @@ class GamepadRumble {
     bool active = false;
     Clock::time_point until{};
   };
+  static void Stop(IGameInputDevice* device) {
+    // Some GameInput redistributables dereference null rumble parameters.
+    // Always send an explicit zero state, including trigger motors.
+    const GameInputRumbleParams zero{};
+    device->SetRumbleState(&zero);
+  }
   static bool Supported(IGameInputDevice* device) {
     const auto* info = device->GetDeviceInfo();
     return info &&
@@ -101,7 +109,7 @@ class GamepadRumble {
     std::lock_guard<std::mutex> lock(mutex_);
     auto it = devices_.find(id.str());
     if (it != devices_.end()) {
-      it->second.device->SetRumbleState(nullptr);
+      Stop(it->second.device);
       it->second.device->Release();
       devices_.erase(it);
     }
@@ -120,7 +128,7 @@ class GamepadRumble {
         if (!entry.active)
           continue;
         if (entry.until <= Clock::now()) {
-          entry.device->SetRumbleState(nullptr);
+          Stop(entry.device);
           entry.active = false;
         } else if (entry.until < next) {
           next = entry.until;
