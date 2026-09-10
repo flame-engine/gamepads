@@ -22,7 +22,8 @@ struct TestDevice {
   void SetRumbleState(const GameInputRumbleParams* params) {
     // GameInput 3.3 can dereference a null stop parameter. Reject it even when
     // it comes from the worker, disconnect callback, or destructor.
-    if (!params) std::abort();
+    if (!params)
+      std::abort();
     std::lock_guard<std::mutex> lock(mutex);
     last = *params;
     ++calls;
@@ -39,15 +40,20 @@ struct TestDevice {
 };
 
 struct TestInput {
-  using Callback = void (*)(GameInputCallbackToken, void*, TestDevice*,
-                            uint64_t, GameInputDeviceStatus,
+  using Callback = void (*)(GameInputCallbackToken,
+                            void*,
+                            TestDevice*,
+                            uint64_t,
+                            GameInputDeviceStatus,
                             GameInputDeviceStatus);
   TestDevice device;
   Callback callback = nullptr;
   void* context = nullptr;
-  HRESULT RegisterDeviceCallback(TestDevice*, GameInputKind,
+  HRESULT RegisterDeviceCallback(TestDevice*,
+                                 GameInputKind,
                                  GameInputDeviceStatus,
-                                 GameInputEnumerationKind, void* owner,
+                                 GameInputEnumerationKind,
+                                 void* owner,
                                  Callback notify,
                                  GameInputCallbackToken* token) {
     context = owner;
@@ -83,18 +89,28 @@ int main() {
   const std::string id(APP_LOCAL_DEVICE_ID_SIZE * 2, '0');
   {
     GamepadRumble rumble;
-    if (!rumble.Has(id) || !rumble.Set(id, 0.5, 0.5, 50)) return 1;
-    if (!input.device.WaitForZero(2)) return 2;  // Native expiry.
-    if (!rumble.Set(id, 0.5, 0.5, 0)) return 3;
-    if (!input.device.WaitForZero(3)) return 4;  // Zero duration.
-    if (!rumble.Set(id, 0, 0, 30000)) return 5;
-    if (!input.device.WaitForZero(4)) return 6;  // Explicit stop.
-    if (!rumble.Set(id, 0.5, 0.5, 30000)) return 7;
+    if (!rumble.Has(id) || !rumble.Set(id, 0.5, 0.5, 50))
+      return 1;
+    if (!input.device.WaitForZero(2))
+      return 2;  // Native expiry.
+    if (!rumble.Set(id, 0.5, 0.5, 0))
+      return 3;
+    if (!input.device.WaitForZero(3))
+      return 4;  // Zero duration.
+    if (!rumble.Set(id, 0, 0, 30000))
+      return 5;
+    if (!input.device.WaitForZero(4))
+      return 6;  // Explicit stop.
+    if (!rumble.Set(id, 0.5, 0.5, 30000))
+      return 7;
     input.Notify(GameInputDeviceNoStatus);
-    if (!input.device.WaitForZero(6) || rumble.Has(id)) return 8;
+    if (!input.device.WaitForZero(6) || rumble.Has(id))
+      return 8;
     input.Notify(GameInputDeviceConnected);
-    if (!rumble.Set(id, 0.5, 0.5, 30000)) return 9;
+    if (!rumble.Set(id, 0.5, 0.5, 30000))
+      return 9;
   }
-  if (!input.device.WaitForZero(8) || input.device.references != 0) return 10;
+  if (!input.device.WaitForZero(8) || input.device.references != 0)
+    return 10;
   return 0;
 }

@@ -29,6 +29,7 @@ class GamepadRumble {
     if (milliseconds == 0 || (low == 0 && high == 0))
       return Stop(id);
     auto it = effects_.find(id);
+    const bool reused = it != effects_.end();
     if (it == effects_.end()) {
       const int fd = Open(id);
       if (fd < 0)
@@ -43,6 +44,10 @@ class GamepadRumble {
     effect.replay.length = static_cast<__u16>(milliseconds);
     if (ioctl(it->second.fd, EVIOCSFF, &effect) < 0) {
       Stop(id);
+      // A reconnected jsN can retain the old evdev descriptor. Retry once
+      // with a fresh descriptor; a fresh upload failure does not recurse.
+      if (reused)
+        return Set(id, low, high, milliseconds);
       return false;
     }
     it->second.effect = effect.id;

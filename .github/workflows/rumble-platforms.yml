@@ -67,3 +67,8 @@ jobs:
       - name: Run Windows rumble regression
         if: matrix.platform == 'windows'
         run: ctest --test-dir build/rumble-test -C Release --output-on-failure
+      - name: Run Linux rumble regression
+        if: matrix.platform == 'linux'
+        run: |
+          g++ -std=c++17 -Wall -Wextra -Werror packages/gamepads_linux/linux/test/rumble_test.cpp -o "$RUNNER_TEMP/rumble_test"
+          "$RUNNER_TEMP/rumble_test"

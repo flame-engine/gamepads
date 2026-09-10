@@ -358,14 +358,14 @@ if (await Gamepads.hasRumble(gamepad.id)) {
     duration: const Duration(milliseconds: 500),
   );
 }
-await Gamepads.stopRumble(gamepad.id);
 ```
 
 Intensities range from 0 to 1. Effects replace the current effect immediately;
 they do not queue. Both intensities at zero, or a zero duration, stop the effect.
 Duration defaults to 500 ms and must be between 0 and 30 seconds. Invalid
 parameters throw ArgumentError. Each native effect expires without requiring
-a Dart timer. Stop effects when a screen/session ends or your app backgrounds.
+a Dart timer. To stop early when a screen/session ends or your app backgrounds,
+call `await Gamepads.stopRumble(gamepad.id)` from that lifecycle handler.
 
 The boolean result reports whether the request was accepted, not whether the
 physical motors actually moved. Missing hardware, OS support, or permissions
