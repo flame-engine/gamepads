@@ -38,14 +38,14 @@ new connections.
 
 ## Platform Support
 
-| Platform   | Status    |
-| ---------- | --------- |
-| Android    | Supported |
-| iOS        | Supported |
-| macOS      | Supported |
-| Linux      | Supported |
-| Windows    | Supported |
-| Web        | Supported |
+| Platform | Status    |
+|----------|-----------|
+| Android  | Supported |
+| iOS      | Supported |
+| macOS    | Supported |
+| Linux    | Supported |
+| Windows  | Supported |
+| Web      | Supported |
 
 
 ## Getting Started
