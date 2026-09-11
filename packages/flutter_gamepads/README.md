@@ -154,6 +154,11 @@ The bindings can customized via the `shortcuts` parameter. It is not limited to 
 above. Any class that inherits from the `Intent` base class can be used as the emitted intent
 for a gamepad activator (button or axis).
 
+If you prefer to use directional focus over sequential focus you can set `shortcuts` to
+`GamepadShortcuts.directionalTraversal`. This may be less robust than the default sequential
+focus traversal bindings, but each app has its own situation and only way to find out is
+to test what works for your case.
+
 
 ### Flame specific guidance
 
