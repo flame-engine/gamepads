@@ -48,29 +48,17 @@ class GamepadControl extends StatefulWidget {
     /// Configures the bindings between Gamepad activator (button or axis)
     /// and intents to invoke.
     ///
+    /// Defaults to [GamepadShortcuts.sequentialTraversal].
+    ///
+    /// If you need directional navigation consider either using
+    /// a [GamepadInterceptor] for local override or using
+    /// [GamepadShortcuts.directionalTraversal] for directional
+    /// focus navigation globally.
+    ///
     /// References of available intents can be found by looking up
     /// [WidgetsApp.defaultShortcuts], which contains the default keyboard
     /// shortcuts used in apps.
-    this.shortcuts = const {
-      GamepadActivatorButton.a(): ActivateIntent(),
-      GamepadActivatorButton.b(): DismissIntent(),
-      GamepadActivatorButton.dpadUp(): PreviousFocusIntent(),
-      GamepadActivatorButton.dpadLeft(): PreviousFocusIntent(),
-      GamepadActivatorButton.dpadDown(): NextFocusIntent(),
-      GamepadActivatorButton.dpadRight(): NextFocusIntent(),
-      GamepadActivatorAxis.rightStickUp(): ScrollIntent(
-        direction: AxisDirection.up,
-      ),
-      GamepadActivatorAxis.rightStickLeft(): ScrollIntent(
-        direction: AxisDirection.left,
-      ),
-      GamepadActivatorAxis.rightStickDown(): ScrollIntent(
-        direction: AxisDirection.down,
-      ),
-      GamepadActivatorAxis.rightStickRight(): ScrollIntent(
-        direction: AxisDirection.right,
-      ),
-    },
+    this.shortcuts = GamepadShortcuts.sequentialTraversal,
 
     /// Set of intents which will be repeated if a GamepadActivator
     /// linked to this Intent is being activated for
@@ -229,7 +217,9 @@ class _GamepadControlState extends State<GamepadControl> {
     // Allow previous/next to use parent context when focusContext is null
     // to allow user to focus something even when there is no autofocus.
     return focusedContext ??
-        ((intent is PreviousFocusIntent || intent is NextFocusIntent)
+        ((intent is PreviousFocusIntent ||
+                intent is NextFocusIntent ||
+                intent is DirectionalFocusIntent)
             ? context
             : null);
   }
