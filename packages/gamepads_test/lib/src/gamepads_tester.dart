@@ -1,0 +1,51 @@
+import 'package:gamepads/gamepads.dart';
+import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
+
+/// A class that can be used to emit gamepads events for your tests.
+///
+/// It emits non-normalized events, which the gamepads library may normalize
+/// and then also provide as normalized events to the consumer.
+///
+/// It is therefore important that the button and axis names you emit
+/// match those of the normalizer's platform.
+class GamepadsTester {
+  static GamepadsPlatformInterface platformInterface =
+      GamepadsPlatformInterface.instance;
+
+  /// Set Gamepads normalizer to a normalizer for [platform]
+  ///
+  /// Affects the names of buttons and analog axes you should emit for
+  /// normalized events to be correctly mapped.
+  static void setNormalizer(GamepadPlatform platform) {
+    Gamepads.normalizer = GamepadNormalizer.forPlatform(platform);
+  }
+
+  /// Emit a raw (non-normalized) button [rawButton] event with given [value]
+  static void emitButton(String rawButton, double value) {
+    _emitGamepadEvent(rawButton, KeyType.button, value);
+  }
+
+  /// Emit a raw (non-normalized) analog [rawAnalog] event with given [value]
+  static void emitAnalog(String rawAnalog, double value) {
+    _emitGamepadEvent(rawAnalog, KeyType.analog, value);
+  }
+
+  /// Emit a sequence of raw (non-normalized) button down and button up events.
+  static void emitButtonPress(String rawButton) {
+    emitButton(rawButton, 1.0);
+    emitButton(rawButton, 0.0);
+  }
+
+  static void _emitGamepadEvent(String rawKey, KeyType type, double value) {
+    final millis = DateTime.now().millisecondsSinceEpoch;
+    platformInterface.emitGamepadEvent(
+      GamepadEvent(
+        gamepadId: '1',
+        timestamp: millis,
+        type: type,
+        key: rawKey,
+        value: value,
+      ),
+    );
+  }
+}
