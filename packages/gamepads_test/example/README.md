@@ -11,9 +11,9 @@ void main() {
 
     await tester.pumpWidget(MyApp());
 
-    GamepadsTester.emitRawButtonPress('a');
+    GamepadsTester.emitButtonPress('a');
     await tester.pumpAndSettle();
-    GamepadsTester.emitRawAnalog('leftThumbstickX', 0.7);
+    GamepadsTester.emitAnalog('leftThumbstickX', 0.7);
     await tester.pumpAndSettle();
 
     // Test that expected thing has happened

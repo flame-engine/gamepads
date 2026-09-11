@@ -18,13 +18,13 @@ void main() {
     expect(find.byKey(aKey), findsNothing);
     expect(find.byKey(movementKey), findsNothing);
 
-    GamepadsTester.emitRawButtonPress('a');
+    GamepadsTester.emitButtonPress('a');
     await tester.pumpAndSettle();
     // Widget aKey should now be visible
     expect(find.byKey(aKey), findsOne);
     expect(find.byKey(movementKey), findsNothing);
 
-    GamepadsTester.emitRawAnalog('leftThumbstickX', 0.7);
+    GamepadsTester.emitAnalog('leftThumbstickX', 0.7);
     await tester.pumpAndSettle();
     // Widget movementKey should now be visible
     expect(find.byKey(aKey), findsOne);

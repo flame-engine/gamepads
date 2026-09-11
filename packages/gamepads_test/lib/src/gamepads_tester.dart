@@ -21,22 +21,22 @@ class GamepadsTester {
   }
 
   /// Emit a raw (non-normalized) button [rawButton] event with given [value]
-  static void emitRawButton(String rawButton, double value) {
-    _emitRaw(rawButton, KeyType.button, value);
+  static void emitButton(String rawButton, double value) {
+    _emitGamepadEvent(rawButton, KeyType.button, value);
   }
 
   /// Emit a raw (non-normalized) analog [rawAnalog] event with given [value]
-  static void emitRawAnalog(String rawAnalog, double value) {
-    _emitRaw(rawAnalog, KeyType.analog, value);
+  static void emitAnalog(String rawAnalog, double value) {
+    _emitGamepadEvent(rawAnalog, KeyType.analog, value);
   }
 
   /// Emit a sequence of raw (non-normalized) button down and button up events.
-  static void emitRawButtonPress(String rawButton) {
-    emitRawButton(rawButton, 1.0);
-    emitRawButton(rawButton, 0.0);
+  static void emitButtonPress(String rawButton) {
+    emitButton(rawButton, 1.0);
+    emitButton(rawButton, 0.0);
   }
 
-  static void _emitRaw(String rawKey, KeyType type, double value) {
+  static void _emitGamepadEvent(String rawKey, KeyType type, double value) {
     final millis = DateTime.now().millisecondsSinceEpoch;
     platformInterface.emitGamepadEvent(
       GamepadEvent(

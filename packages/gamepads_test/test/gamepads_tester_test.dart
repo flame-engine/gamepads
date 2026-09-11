@@ -17,7 +17,7 @@ void main() {
     expect(events, isEmpty);
     expect(normalizedEvents, isEmpty);
 
-    GamepadsTester.emitRawButton('a', 1.0);
+    GamepadsTester.emitButton('a', 1.0);
     await tester.pumpAndSettle();
     expect(events, hasLength(1));
     expect(normalizedEvents, hasLength(1));
@@ -35,7 +35,7 @@ void main() {
     events.clear();
     normalizedEvents.clear();
 
-    GamepadsTester.emitRawAnalog('leftThumbstickX', 0.75);
+    GamepadsTester.emitAnalog('leftThumbstickX', 0.75);
     await tester.pumpAndSettle();
     expect(events, hasLength(1));
     expect(normalizedEvents, hasLength(1));
@@ -53,7 +53,7 @@ void main() {
     events.clear();
     normalizedEvents.clear();
 
-    GamepadsTester.emitRawButtonPress('x');
+    GamepadsTester.emitButtonPress('x');
     await tester.pumpAndSettle();
     expect(events, hasLength(2));
     expect(normalizedEvents, hasLength(2));
