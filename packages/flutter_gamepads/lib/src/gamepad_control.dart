@@ -217,7 +217,9 @@ class _GamepadControlState extends State<GamepadControl> {
     // Allow previous/next to use parent context when focusContext is null
     // to allow user to focus something even when there is no autofocus.
     return focusedContext ??
-        ((intent is PreviousFocusIntent || intent is NextFocusIntent)
+        ((intent is PreviousFocusIntent ||
+                intent is NextFocusIntent ||
+                intent is DirectionalFocusIntent)
             ? context
             : null);
   }
