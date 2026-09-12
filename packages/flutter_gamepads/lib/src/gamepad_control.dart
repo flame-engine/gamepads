@@ -148,7 +148,7 @@ class _GamepadControlState extends State<GamepadControl> {
         _maybeInvokeIntent(
           activator,
           intent,
-          const Duration(milliseconds: 700),
+          widget.initialRepeatDelay,
         );
       }
     }
@@ -254,7 +254,7 @@ class _GamepadControlState extends State<GamepadControl> {
   }
 
   void _onRepeat(GamepadActivator activator, Intent intent) {
-    _maybeInvokeIntent(activator, intent, const Duration(milliseconds: 200));
+    _maybeInvokeIntent(activator, intent, widget.repeatedRepeatDelay);
   }
 
   void _updatePreviousAxisValues(NormalizedGamepadEvent event) {
