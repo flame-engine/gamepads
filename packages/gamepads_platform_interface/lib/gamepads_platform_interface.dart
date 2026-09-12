@@ -30,6 +30,37 @@ abstract class GamepadsPlatformInterface extends PlatformInterface {
 
   Future<List<GamepadController>> listGamepads();
 
+  /// Whether the device currently exposes a usable rumble actuator.
+  Future<bool> hasRumble(String gamepadId) async => false;
+
+  /// Replaces the current effect. Intensities are in [0, 1]; duration is
+  /// limited to 30 seconds. Returns false when unavailable or rejected.
+  /// A true result means accepted, not that physical feedback was verified.
+  Future<bool> rumble(
+    String gamepadId, {
+    double lowFrequency = 0,
+    double highFrequency = 0,
+    Duration duration = const Duration(milliseconds: 500),
+  }) async => false;
+
+  /// Stops this device immediately without affecting other controllers.
+  Future<bool> stopRumble(String gamepadId) async => false;
+
+  static void validateRumble(double low, double high, Duration duration) {
+    if (!low.isFinite ||
+        low < 0 ||
+        low > 1 ||
+        !high.isFinite ||
+        high < 0 ||
+        high > 1 ||
+        duration < Duration.zero ||
+        duration > const Duration(seconds: 30)) {
+      throw ArgumentError(
+        'Rumble requires intensities in [0, 1] and a duration of 0–30 seconds',
+      );
+    }
+  }
+
   Stream<GamepadEvent> get gamepadEventsStream =>
       _gamepadEventsStreamController.stream;
 

@@ -138,6 +138,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
+    for (final gamepad in _gamepads) {
+      unawaited(gamepad.stopRumble());
+    }
     _subscription?.cancel();
     _connectionSubscription?.cancel();
     super.dispose();
@@ -183,6 +186,38 @@ class _MyHomePageState extends State<MyHomePage> {
               else ...[
                 for (final gamepad in _gamepads) ...[
                   Text(_describeGamepad(gamepad)),
+                  Wrap(
+                    children: [
+                      TextButton(
+                        onPressed: () async {
+                          final supported = await gamepad.hasRumble();
+                          final accepted =
+                              supported &&
+                              await gamepad.rumble(
+                                lowFrequency: 0.5,
+                                highFrequency: 0.5,
+                              );
+                          if (!mounted) {
+                            return;
+                          }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                accepted
+                                    ? 'Rumble requested (500 ms)'
+                                    : 'Rumble unavailable for this controller',
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Text('Test rumble'),
+                      ),
+                      TextButton(
+                        onPressed: gamepad.stopRumble,
+                        child: const Text('Stop rumble'),
+                      ),
+                    ],
+                  ),
                 ],
               ],
             ],

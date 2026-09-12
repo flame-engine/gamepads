@@ -49,6 +49,46 @@ GamepadsWindowsPlugin::~GamepadsWindowsPlugin() {
 void GamepadsWindowsPlugin::HandleMethodCall(
     const flutter::MethodCall<flutter::EncodableValue>& method_call,
     std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
+  const auto& method = method_call.method_name();
+  if (method == "rumble" || method == "hasRumble" || method == "stopRumble") {
+    if (!rumble_)
+      rumble_ = std::make_unique<GamepadRumble>();
+    const auto* args =
+        std::get_if<flutter::EncodableMap>(method_call.arguments());
+    if (!args) {
+      result->Success(flutter::EncodableValue(false));
+      return;
+    }
+    const auto idIt = args->find(flutter::EncodableValue("gamepadId"));
+    if (idIt == args->end() ||
+        !std::holds_alternative<std::string>(idIt->second)) {
+      result->Success(flutter::EncodableValue(false));
+      return;
+    }
+    const auto& id = std::get<std::string>(idIt->second);
+    bool accepted = false;
+    if (method == "hasRumble")
+      accepted = rumble_->Has(id);
+    else if (method == "stopRumble")
+      accepted = rumble_->Set(id, 0, 0, 0);
+    else {
+      const auto low = args->find(flutter::EncodableValue("lowFrequency"));
+      const auto high = args->find(flutter::EncodableValue("highFrequency"));
+      const auto duration =
+          args->find(flutter::EncodableValue("durationMillis"));
+      if (low != args->end() && high != args->end() &&
+          duration != args->end() &&
+          std::holds_alternative<double>(low->second) &&
+          std::holds_alternative<double>(high->second) &&
+          std::holds_alternative<int32_t>(duration->second)) {
+        accepted = rumble_->Set(id, std::get<double>(low->second),
+                                std::get<double>(high->second),
+                                std::get<int32_t>(duration->second));
+      }
+    }
+    result->Success(flutter::EncodableValue(accepted));
+    return;
+  }
   if (method_call.method_name().compare("listGamepads") == 0) {
     flutter::EncodableList list;
     for (auto gamepad : gamepads.get_gamepads()) {

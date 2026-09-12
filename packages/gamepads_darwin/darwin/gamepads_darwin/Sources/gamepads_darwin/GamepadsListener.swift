@@ -26,6 +26,12 @@ class GamepadsListener {
         )
     }
 
+    func discoverConnectedControllers() {
+        for controller in GCController.controllers() {
+            joystickDidConnect(notification: NSNotification(name: .GCControllerDidConnect, object: controller))
+        }
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -33,6 +39,7 @@ class GamepadsListener {
     @objc private func joystickDidConnect(notification: NSNotification) {
         if let controller = notification.object as? GCController {
             if let gamepad = controller.extendedGamepad {
+                if gamepads.contains(where: { $0 === gamepad }) { return }
                 gamepads.append(gamepad)
                 let gamepadId = getAndSetPlayerId(of: gamepad)
                 gamepadIds[ObjectIdentifier(gamepad)] = gamepadId
@@ -59,8 +66,18 @@ class GamepadsListener {
         }
     }
 
+    func gamepad(for id: Int) -> GCExtendedGamepad? {
+        gamepads.first { gamepadIds[ObjectIdentifier($0)] == id }
+    }
+
+    func id(for gamepad: GCExtendedGamepad) -> Int {
+        gamepadIds[ObjectIdentifier(gamepad)] ?? -1
+    }
+
     private func getAndSetPlayerId(of gamepad: GCExtendedGamepad) -> Int {
-        let gamepadId = gamepads.firstIndex(of: gamepad) ?? -1
+        var gamepadId = 0
+        while gamepadIds.values.contains(gamepadId) { gamepadId += 1 }
+        gamepadIds[ObjectIdentifier(gamepad)] = gamepadId
         gamepad.controller?.playerIndex = toPlayerIndex(index: gamepadId)
         return gamepadId
     }

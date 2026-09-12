@@ -1,3 +1,5 @@
+#include "rumble.h"
+
 #include "include/gamepads_linux/gamepads_linux_plugin.h"
 
 #include <flutter_linux/flutter_linux.h>
@@ -17,6 +19,7 @@
 
 struct _GamepadsLinuxPlugin {
   GObject parent_instance;
+  GamepadRumble* rumble;
 };
 
 G_DEFINE_TYPE(GamepadsLinuxPlugin, gamepads_linux_plugin, g_object_get_type())
@@ -94,6 +97,39 @@ static void gamepads_linux_plugin_handle_method_call(
     FlMethodCall* method_call) {
   const gchar* method = fl_method_call_get_name(method_call);
 
+  if (strcmp(method, "rumble") == 0 || strcmp(method, "hasRumble") == 0 ||
+      strcmp(method, "stopRumble") == 0) {
+    auto* args = fl_method_call_get_args(method_call);
+    bool accepted = false;
+    if (args && fl_value_get_type(args) == FL_VALUE_TYPE_MAP) {
+      auto* id = fl_value_lookup_string(args, "gamepadId");
+      if (id && fl_value_get_type(id) == FL_VALUE_TYPE_STRING) {
+        const std::string key = fl_value_get_string(id);
+        if (strcmp(method, "hasRumble") == 0)
+          accepted = self->rumble->Has(key);
+        else if (strcmp(method, "stopRumble") == 0)
+          accepted = self->rumble->Stop(key);
+        else {
+          auto* low = fl_value_lookup_string(args, "lowFrequency");
+          auto* high = fl_value_lookup_string(args, "highFrequency");
+          auto* duration = fl_value_lookup_string(args, "durationMillis");
+          if (low && high && duration &&
+              fl_value_get_type(low) == FL_VALUE_TYPE_FLOAT &&
+              fl_value_get_type(high) == FL_VALUE_TYPE_FLOAT &&
+              fl_value_get_type(duration) == FL_VALUE_TYPE_INT &&
+              fl_value_get_int(duration) >= 0 &&
+              fl_value_get_int(duration) <= 30000) {
+            accepted = self->rumble->Set(
+                key, fl_value_get_float(low), fl_value_get_float(high),
+                static_cast<int>(fl_value_get_int(duration)));
+          }
+        }
+      }
+    }
+    g_autoptr(FlValue) value = fl_value_new_bool(accepted);
+    respond(method_call, value);
+    return;
+  }
   if (strcmp(method, "listGamepads") == 0) {
     g_autoptr(FlValue) list = fl_value_new_list();
     for (auto [device_id, gamepad] : gamepads) {
@@ -183,6 +219,9 @@ void event_loop_start() {
 }
 
 static void gamepads_linux_plugin_dispose(GObject* object) {
+  auto* self = GAMEPADS_LINUX_PLUGIN(object);
+  delete self->rumble;
+  self->rumble = nullptr;
   keep_reading_events = false;
   G_OBJECT_CLASS(gamepads_linux_plugin_parent_class)->dispose(object);
 }
@@ -192,6 +231,7 @@ static void gamepads_linux_plugin_class_init(GamepadsLinuxPluginClass* klass) {
 }
 
 static void gamepads_linux_plugin_init(GamepadsLinuxPlugin* self) {
+  self->rumble = new GamepadRumble();
   keep_reading_events = true;
 
   std::thread event_loop_thread(event_loop_start);
