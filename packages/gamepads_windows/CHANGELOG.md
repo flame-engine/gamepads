@@ -1,3 +1,9 @@
+## 0.3.2
+
+ - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
+ - **FEAT**: Add connect and disconnect event streams ([#132](https://github.com/flame-engine/gamepads/issues/132)). ([20f1942b](https://github.com/flame-engine/gamepads/commit/20f1942b39f139ec1e4f47779fd77de3e33df936))
+ - **FEAT**: Add vendorId and productId to Gamepads.list() ([#135](https://github.com/flame-engine/gamepads/issues/135)). ([bfb807c7](https://github.com/flame-engine/gamepads/commit/bfb807c7d494800173574fb83b4c047d077efa5c))
+
 ## 0.3.1
 
  - Bump "gamepads_windows" to `0.3.1`.

@@ -3,6 +3,90 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-09-15
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`flutter_gamepads` - `v0.1.13`](#flutter_gamepads---v0113)
+ - [`gamepads` - `v0.1.12`](#gamepads---v0112)
+ - [`gamepads_android` - `v0.1.10`](#gamepads_android---v0110)
+ - [`gamepads_darwin` - `v0.1.4`](#gamepads_darwin---v014)
+ - [`gamepads_linux` - `v0.1.3`](#gamepads_linux---v013)
+ - [`gamepads_platform_interface` - `v0.1.4`](#gamepads_platform_interface---v014)
+ - [`gamepads_web` - `v0.1.3`](#gamepads_web---v013)
+ - [`gamepads_windows` - `v0.3.2`](#gamepads_windows---v032)
+ - [`gamepads_test` - `v0.1.1`](#gamepads_test---v011)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads_test` - `v0.1.1`
+
+---
+
+#### `flutter_gamepads` - `v0.1.13`
+
+ - **FIX**: Use invoke context fallback also for DirectionalFocusIntent ([#145](https://github.com/flame-engine/gamepads/issues/145)). ([1ec72bed](https://github.com/flame-engine/gamepads/commit/1ec72bed80ba5ca2390d7209c434ceaa565b4df8))
+ - **FIX**: Actually respect initialRepeatDelay and repeatedRepeatDelay parameters ([#143](https://github.com/flame-engine/gamepads/issues/143)). ([174350a4](https://github.com/flame-engine/gamepads/commit/174350a4332d8a1b8d6a5c2d663d0193eb624cbe))
+ - **DOCS**: Improve README and basic example ([#140](https://github.com/flame-engine/gamepads/issues/140)). ([7fa4bbc5](https://github.com/flame-engine/gamepads/commit/7fa4bbc55dbead618ed596a1c0c322f1d3552bc3))
+ - **DOCS**: Split examples into separate folders using a main README.md ([#136](https://github.com/flame-engine/gamepads/issues/136)). ([fea68d4d](https://github.com/flame-engine/gamepads/commit/fea68d4d55a59300c7b49e1b8f77174a342dbd23))
+
+#### `gamepads` - `v0.1.12`
+
+ - **FIX**: Drop disconnected gamepads from Gamepads.list() on Apple platforms ([#139](https://github.com/flame-engine/gamepads/issues/139)). ([fc3b857b](https://github.com/flame-engine/gamepads/commit/fc3b857b654d30d32ebaf7e9d36c006bd4224f3e))
+ - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
+ - **FEAT**: Add connect and disconnect event streams ([#132](https://github.com/flame-engine/gamepads/issues/132)). ([20f1942b](https://github.com/flame-engine/gamepads/commit/20f1942b39f139ec1e4f47779fd77de3e33df936))
+ - **FEAT**: Share the native implementation between iOS and macOS ([#137](https://github.com/flame-engine/gamepads/issues/137)). ([49a07525](https://github.com/flame-engine/gamepads/commit/49a07525b9a1620976a2f97604fa34b41db27a28))
+ - **FEAT**: Add vendorId and productId to Gamepads.list() ([#135](https://github.com/flame-engine/gamepads/issues/135)). ([bfb807c7](https://github.com/flame-engine/gamepads/commit/bfb807c7d494800173574fb83b4c047d077efa5c))
+
+#### `gamepads_android` - `v0.1.10`
+
+ - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
+ - **FEAT**: Add connect and disconnect event streams ([#132](https://github.com/flame-engine/gamepads/issues/132)). ([20f1942b](https://github.com/flame-engine/gamepads/commit/20f1942b39f139ec1e4f47779fd77de3e33df936))
+ - **FEAT**: Add vendorId and productId to Gamepads.list() ([#135](https://github.com/flame-engine/gamepads/issues/135)). ([bfb807c7](https://github.com/flame-engine/gamepads/commit/bfb807c7d494800173574fb83b4c047d077efa5c))
+
+#### `gamepads_darwin` - `v0.1.4`
+
+ - **FIX**: Drop disconnected gamepads from Gamepads.list() on Apple platforms ([#139](https://github.com/flame-engine/gamepads/issues/139)). ([fc3b857b](https://github.com/flame-engine/gamepads/commit/fc3b857b654d30d32ebaf7e9d36c006bd4224f3e))
+ - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
+ - **FEAT**: Add connect and disconnect event streams ([#132](https://github.com/flame-engine/gamepads/issues/132)). ([20f1942b](https://github.com/flame-engine/gamepads/commit/20f1942b39f139ec1e4f47779fd77de3e33df936))
+ - **FEAT**: Share the native implementation between iOS and macOS ([#137](https://github.com/flame-engine/gamepads/issues/137)). ([49a07525](https://github.com/flame-engine/gamepads/commit/49a07525b9a1620976a2f97604fa34b41db27a28))
+
+#### `gamepads_linux` - `v0.1.3`
+
+ - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
+ - **FEAT**: Add connect and disconnect event streams ([#132](https://github.com/flame-engine/gamepads/issues/132)). ([20f1942b](https://github.com/flame-engine/gamepads/commit/20f1942b39f139ec1e4f47779fd77de3e33df936))
+ - **FEAT**: Add vendorId and productId to Gamepads.list() ([#135](https://github.com/flame-engine/gamepads/issues/135)). ([bfb807c7](https://github.com/flame-engine/gamepads/commit/bfb807c7d494800173574fb83b4c047d077efa5c))
+
+#### `gamepads_platform_interface` - `v0.1.4`
+
+ - **FIX**: Drop disconnected gamepads from Gamepads.list() on Apple platforms ([#139](https://github.com/flame-engine/gamepads/issues/139)). ([fc3b857b](https://github.com/flame-engine/gamepads/commit/fc3b857b654d30d32ebaf7e9d36c006bd4224f3e))
+ - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
+ - **FEAT**: Add connect and disconnect event streams ([#132](https://github.com/flame-engine/gamepads/issues/132)). ([20f1942b](https://github.com/flame-engine/gamepads/commit/20f1942b39f139ec1e4f47779fd77de3e33df936))
+ - **FEAT**: Add vendorId and productId to Gamepads.list() ([#135](https://github.com/flame-engine/gamepads/issues/135)). ([bfb807c7](https://github.com/flame-engine/gamepads/commit/bfb807c7d494800173574fb83b4c047d077efa5c))
+
+#### `gamepads_web` - `v0.1.3`
+
+ - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
+ - **FEAT**: Add connect and disconnect event streams ([#132](https://github.com/flame-engine/gamepads/issues/132)). ([20f1942b](https://github.com/flame-engine/gamepads/commit/20f1942b39f139ec1e4f47779fd77de3e33df936))
+ - **FEAT**: Add vendorId and productId to Gamepads.list() ([#135](https://github.com/flame-engine/gamepads/issues/135)). ([bfb807c7](https://github.com/flame-engine/gamepads/commit/bfb807c7d494800173574fb83b4c047d077efa5c))
+
+#### `gamepads_windows` - `v0.3.2`
+
+ - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
+ - **FEAT**: Add connect and disconnect event streams ([#132](https://github.com/flame-engine/gamepads/issues/132)). ([20f1942b](https://github.com/flame-engine/gamepads/commit/20f1942b39f139ec1e4f47779fd77de3e33df936))
+ - **FEAT**: Add vendorId and productId to Gamepads.list() ([#135](https://github.com/flame-engine/gamepads/issues/135)). ([bfb807c7](https://github.com/flame-engine/gamepads/commit/bfb807c7d494800173574fb83b4c047d077efa5c))
+
+
 ## 2026-08-25
 
 ### Changes
