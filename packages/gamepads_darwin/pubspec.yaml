@@ -1,7 +1,7 @@
 name: gamepads_darwin
 resolution: workspace
 description: iOS and macOS implementation of gamepads, a Flutter plugin to handle gamepad input across multiple platforms.
-version: 0.1.3
+version: 0.1.4
 homepage: https://github.com/flame-engine/gamepads
 repository: https://github.com/flame-engine/gamepads/tree/main/packages/gamepads_darwin
 
@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  gamepads_platform_interface: ^0.1.3
+  gamepads_platform_interface: ^0.1.4
 
 dev_dependencies:
   flame_lint: ^1.4.1
