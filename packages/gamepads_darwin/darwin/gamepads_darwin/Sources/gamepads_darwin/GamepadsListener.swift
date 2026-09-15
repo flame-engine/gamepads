@@ -1,15 +1,21 @@
 import Foundation
 import GameController
 
-class GamepadsListener {
-    var gamepads: [GCExtendedGamepad] = []
-    var listener: ((Int, GCExtendedGamepad, GCControllerElement) -> Void)?
-    var connectionListener: ((Int, GCExtendedGamepad, Bool) -> Void)?
+struct ConnectedGamepad {
+    let id: Int
+    let controller: GCController
+    let gamepad: GCExtendedGamepad
+}
 
-    /// The id each gamepad was given when it connected. Looking the id up
-    /// again on disconnect would return a different one, since removing a
-    /// gamepad shifts the indices of the ones after it.
-    private var gamepadIds: [ObjectIdentifier: Int] = [:]
+class GamepadsListener {
+    private(set) var gamepads: [ConnectedGamepad] = []
+    var listener: ((Int, GCExtendedGamepad, GCControllerElement) -> Void)?
+    var connectionListener: ((Int, GCController, Bool) -> Void)?
+
+    /// Identifiers are handed out in order and never reused, so an identifier
+    /// captured by an event handler keeps pointing at the same controller even
+    /// after other controllers disconnect.
+    private var nextId = 0
 
     init() {
         NotificationCenter.default.addObserver(
@@ -24,62 +30,79 @@ class GamepadsListener {
             name: .GCControllerDidDisconnect,
             object: nil
         )
-    }
 
-    func discoverConnectedControllers() {
+        // Controllers that were already connected when the plugin was
+        // registered do not produce a connection notification.
         for controller in GCController.controllers() {
-            joystickDidConnect(notification: NSNotification(name: .GCControllerDidConnect, object: controller))
+            addGamepad(controller: controller)
         }
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+        for entry in gamepads {
+            entry.gamepad.valueChangedHandler = nil
+        }
     }
- 
+
     @objc private func joystickDidConnect(notification: NSNotification) {
         if let controller = notification.object as? GCController {
-            if let gamepad = controller.extendedGamepad {
-                if gamepads.contains(where: { $0 === gamepad }) { return }
-                gamepads.append(gamepad)
-                let gamepadId = getAndSetPlayerId(of: gamepad)
-                gamepadIds[ObjectIdentifier(gamepad)] = gamepadId
-
-                gamepad.valueChangedHandler = { gamepad, element in
-                    if let listener = self.listener {
-                        listener(gamepadId, gamepad, element);
-                    }
-                }
-
-                connectionListener?(gamepadId, gamepad, true)
-            }
+            addGamepad(controller: controller)
         }
     }
 
     @objc private func joystickDidDisconnect(notification: NSNotification) {
         if let controller = notification.object as? GCController {
-            if let gamepad = controller.extendedGamepad {
-                gamepads.removeAll(where: { $0 == gamepad })
-                if let gamepadId = gamepadIds.removeValue(forKey: ObjectIdentifier(gamepad)) {
-                    connectionListener?(gamepadId, gamepad, false)
-                }
-            }
+            removeGamepad(controller: controller)
         }
     }
 
-    func gamepad(for id: Int) -> GCExtendedGamepad? {
-        gamepads.first { gamepadIds[ObjectIdentifier($0)] == id }
+    func gamepad(for id: Int) -> ConnectedGamepad? {
+        gamepads.first { $0.id == id }
     }
 
-    func id(for gamepad: GCExtendedGamepad) -> Int {
-        gamepadIds[ObjectIdentifier(gamepad)] ?? -1
+    private func addGamepad(controller: GCController) {
+        guard let gamepad = controller.extendedGamepad else {
+            return
+        }
+        guard !gamepads.contains(where: { $0.controller === controller }) else {
+            return
+        }
+
+        let gamepadId = nextId
+        nextId += 1
+        gamepads.append(
+            ConnectedGamepad(id: gamepadId, controller: controller, gamepad: gamepad)
+        )
+        updatePlayerIndices()
+
+        gamepad.valueChangedHandler = { [weak self] gamepad, element in
+            self?.listener?(gamepadId, gamepad, element)
+        }
+
+        connectionListener?(gamepadId, controller, true)
     }
 
-    private func getAndSetPlayerId(of gamepad: GCExtendedGamepad) -> Int {
-        var gamepadId = 0
-        while gamepadIds.values.contains(gamepadId) { gamepadId += 1 }
-        gamepadIds[ObjectIdentifier(gamepad)] = gamepadId
-        gamepad.controller?.playerIndex = toPlayerIndex(index: gamepadId)
-        return gamepadId
+    private func removeGamepad(controller: GCController) {
+        // The controller is matched by identity rather than by its profile,
+        // because `GCController.extendedGamepad` is no longer guaranteed to
+        // resolve once the controller has disconnected.
+        let removed = gamepads.filter { $0.controller === controller }
+        for entry in removed {
+            entry.gamepad.valueChangedHandler = nil
+        }
+        gamepads.removeAll(where: { $0.controller === controller })
+        updatePlayerIndices()
+
+        for entry in removed {
+            connectionListener?(entry.id, entry.controller, false)
+        }
+    }
+
+    private func updatePlayerIndices() {
+        for (index, entry) in gamepads.enumerated() {
+            entry.controller.playerIndex = toPlayerIndex(index: index)
+        }
     }
 
     private func toPlayerIndex(index: Int) -> GCControllerPlayerIndex {

@@ -12,8 +12,12 @@ import 'package:gamepads_platform_interface/gamepads_platform_interface.dart';
 class GamepadController {
   /// A unique identifier for the gamepad controller.
   ///
-  /// On Linux, it maps to the file descriptor path.
-  /// On macOs and Windows, it's just the index of the connected controller.
+  /// The format is opaque and differs per platform: the device node path on
+  /// Linux, a device identifier on Windows, the input device id on Android,
+  /// the gamepad index on web, and a per-process counter on iOS and macOS.
+  ///
+  /// It stays the same for as long as the gamepad is connected, but a gamepad
+  /// that reconnects is not guaranteed to get the same identifier back.
   final String id;
 
   /// A user-facing, platform-dependant name for the gamepad controller.

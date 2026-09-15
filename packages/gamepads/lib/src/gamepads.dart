@@ -32,6 +32,11 @@ class Gamepads {
     _normalizedEvents = null;
   }
 
+  /// Lists the gamepads that are currently connected.
+  ///
+  /// Every returned [GamepadController] subscribes to [events] to keep its
+  /// state up to date, so call [GamepadController.dispose] on them once they
+  /// are no longer needed.
   static Future<List<GamepadController>> list() => _platform.listGamepads();
 
   static Stream<GamepadEvent> get events => _platform.gamepadEventsStream;
