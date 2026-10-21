@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <map>
+#include <memory>
+#include <mutex>
 #include <optional>
 #include <sstream>
 #include <thread>
@@ -27,9 +29,39 @@ G_DEFINE_TYPE(GamepadsLinuxPlugin, gamepads_linux_plugin, g_object_get_type())
 static FlMethodChannel* channel;
 
 bool keep_reading_events = false;
-std::map<std::string, gamepad::GamepadInfo> gamepads = {};
+// Written by the connection thread, read by the platform thread
+// (listGamepads): always accessed under gamepads_mutex.
+std::map<std::string, std::shared_ptr<gamepad::GamepadInfo>> gamepads = {};
+std::mutex gamepads_mutex;
 
-static std::string parse_event_type(js_event event) {
+struct PendingMessage {
+  const char* method;
+  FlValue* args;
+};
+
+static gboolean send_pending_message(gpointer data) {
+  auto* message = static_cast<PendingMessage*>(data);
+  if (channel) {
+    fl_method_channel_invoke_method(channel, message->method, message->args,
+                                    nullptr, nullptr, nullptr);
+  }
+  return G_SOURCE_REMOVE;
+}
+
+static void free_pending_message(gpointer data) {
+  auto* message = static_cast<PendingMessage*>(data);
+  fl_value_unref(message->args);
+  delete message;
+}
+
+// Platform channels must only be used from the platform (GTK main) thread:
+// the reading threads hand their messages over to the main loop.
+static void invoke_on_platform_thread(const char* method, FlValue* args) {
+  g_idle_add_full(G_PRIORITY_DEFAULT, send_pending_message,
+                  new PendingMessage{method, args}, free_pending_message);
+}
+
+static std::optional<std::string> parse_event_type(js_event event) {
   switch (event.type & ~JS_EVENT_INIT) {
     case JS_EVENT_BUTTON: {
       return "button";
@@ -38,46 +70,44 @@ static std::string parse_event_type(js_event event) {
       return "analog";
     }
     default: {
-      std::cerr << "Unknown event type " << event.type << std::endl;
-      throw std::invalid_argument("Unknown event type");
+      std::cerr << "Unknown event type " << +event.type << std::endl;
+      return std::nullopt;
     }
   }
 }
 
-static void emit_gamepad_event(gamepad::GamepadInfo* gamepad,
+static void emit_gamepad_event(const gamepad::GamepadInfo& gamepad,
                                const js_event& event) {
-  if (channel) {
-    g_autoptr(FlValue) map = fl_value_new_map();
-    fl_value_set_string(map, "gamepadId",
-                        fl_value_new_string(gamepad->device_id.c_str()));
-    fl_value_set_string(map, "time", fl_value_new_int(event.time));
-    fl_value_set_string(map, "type",
-                        fl_value_new_string(parse_event_type(event).c_str()));
-    fl_value_set_string(
-        map, "key", fl_value_new_string(std::to_string(event.number).c_str()));
-    fl_value_set_string(map, "value", fl_value_new_float(event.value));
-    fl_value_set_string(map, "vendorId", fl_value_new_int(gamepad->vendor_id));
-    fl_value_set_string(map, "productId",
-                        fl_value_new_int(gamepad->product_id));
-    fl_method_channel_invoke_method(channel, "onGamepadEvent", map, nullptr,
-                                    nullptr, nullptr);
+  std::optional<std::string> type = parse_event_type(event);
+  if (!type) {
+    return;
   }
+  FlValue* map = fl_value_new_map();
+  fl_value_set_string_take(map, "gamepadId",
+                           fl_value_new_string(gamepad.device_id.c_str()));
+  fl_value_set_string_take(map, "time", fl_value_new_int(event.time));
+  fl_value_set_string_take(map, "type", fl_value_new_string(type->c_str()));
+  fl_value_set_string_take(
+      map, "key", fl_value_new_string(std::to_string(event.number).c_str()));
+  fl_value_set_string_take(map, "value", fl_value_new_float(event.value));
+  fl_value_set_string_take(map, "vendorId",
+                           fl_value_new_int(gamepad.vendor_id));
+  fl_value_set_string_take(map, "productId",
+                           fl_value_new_int(gamepad.product_id));
+  invoke_on_platform_thread("onGamepadEvent", map);
 }
 
 static void emit_gamepad_connection_event(const std::string& device_id,
                                           const std::string& name,
                                           bool connected) {
-  if (channel) {
-    g_autoptr(FlValue) map = fl_value_new_map();
-    fl_value_set_string(map, "gamepadId",
-                        fl_value_new_string(device_id.c_str()));
-    fl_value_set_string(map, "name", fl_value_new_string(name.c_str()));
-    fl_value_set_string(
-        map, "type",
-        fl_value_new_string(connected ? "connected" : "disconnected"));
-    fl_method_channel_invoke_method(channel, "onGamepadConnectionEvent", map,
-                                    nullptr, nullptr, nullptr);
-  }
+  FlValue* map = fl_value_new_map();
+  fl_value_set_string_take(map, "gamepadId",
+                           fl_value_new_string(device_id.c_str()));
+  fl_value_set_string_take(map, "name", fl_value_new_string(name.c_str()));
+  fl_value_set_string_take(
+      map, "type",
+      fl_value_new_string(connected ? "connected" : "disconnected"));
+  invoke_on_platform_thread("onGamepadConnectionEvent", map);
 }
 
 static void respond_not_found(FlMethodCall* method_call) {
@@ -132,16 +162,17 @@ static void gamepads_linux_plugin_handle_method_call(
   }
   if (strcmp(method, "listGamepads") == 0) {
     g_autoptr(FlValue) list = fl_value_new_list();
-    for (auto [device_id, gamepad] : gamepads) {
+    std::lock_guard<std::mutex> lock(gamepads_mutex);
+    for (const auto& [device_id, gamepad] : gamepads) {
       g_autoptr(FlValue) map = fl_value_new_map();
-      fl_value_set(map, fl_value_new_string("id"),
-                   fl_value_new_string(device_id.c_str()));
-      fl_value_set(map, fl_value_new_string("name"),
-                   fl_value_new_string(gamepad.name.c_str()));
-      fl_value_set(map, fl_value_new_string("vendorId"),
-                   fl_value_new_int(gamepad.vendor_id));
-      fl_value_set(map, fl_value_new_string("productId"),
-                   fl_value_new_int(gamepad.product_id));
+      fl_value_set_string_take(map, "id",
+                               fl_value_new_string(device_id.c_str()));
+      fl_value_set_string_take(map, "name",
+                               fl_value_new_string(gamepad->name.c_str()));
+      fl_value_set_string_take(map, "vendorId",
+                               fl_value_new_int(gamepad->vendor_id));
+      fl_value_set_string_take(map, "productId",
+                               fl_value_new_int(gamepad->product_id));
       fl_value_append(list, map);
     }
     respond(method_call, list);
@@ -172,9 +203,9 @@ void gamepads_linux_plugin_register_with_registrar(
   g_object_unref(plugin);
 }
 
-void process_connection_event(gamepad::GamepadInfo* gamepad) {
+void process_connection_event(std::shared_ptr<gamepad::GamepadInfo> gamepad) {
   gamepad::listen(gamepad, [gamepad](const js_event& value) {
-    emit_gamepad_event(gamepad, value);
+    emit_gamepad_event(*gamepad, value);
   });
 }
 
@@ -183,15 +214,16 @@ void event_loop_start() {
       &keep_reading_events,
       [](const connection_listener::ConnectionEvent& event) {
         std::string key = event.device_id;
+        std::lock_guard<std::mutex> lock(gamepads_mutex);
         auto existingGamepad = gamepads.find(key);
         if (event.type == connection_listener::ConnectionEventType::CONNECTED) {
           if (existingGamepad != gamepads.end() &&
-              existingGamepad->second.alive) {
+              existingGamepad->second->alive) {
             std::cout << "Existing gamepad found; skipping" << std::endl;
             return;
           }
 
-          std::optional<gamepad::GamepadInfo> info =
+          std::shared_ptr<gamepad::GamepadInfo> info =
               gamepad::get_gamepad_info(key);
           if (!info) {
             std::cerr << "Unable to open joystick for reading " << key
@@ -201,16 +233,18 @@ void event_loop_start() {
 
           std::cout << "Gamepad connected " << key << " - " << info->name
                     << std::endl;
-          gamepads[key] = *info;
+          gamepads[key] = info;
           emit_gamepad_connection_event(key, info->name, true);
 
-          std::thread input_thread(process_connection_event, &gamepads[key]);
+          std::thread input_thread(process_connection_event, info);
           input_thread.detach();
         } else {
           std::cout << "Gamepad disconnected " << key << std::endl;
           if (existingGamepad != gamepads.end()) {
-            const std::string name = existingGamepad->second.name;
-            existingGamepad->second.alive = false;
+            const std::string name = existingGamepad->second->name;
+            // The reading thread keeps its own reference and stops on its
+            // next read, which fails now that the device is gone.
+            existingGamepad->second->alive = false;
             gamepads.erase(existingGamepad);
             emit_gamepad_connection_event(key, name, false);
           }
