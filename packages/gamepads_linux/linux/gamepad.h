@@ -19,8 +19,6 @@ struct GamepadInfo {
   int product_id;
 };
 
-// Shared between the plugin's gamepad map and the reading thread, so that
-// removing a gamepad from the map never frees it while it is being read.
 std::shared_ptr<GamepadInfo> get_gamepad_info(const std::string& device);
 
 void listen(std::shared_ptr<GamepadInfo> gamepad,

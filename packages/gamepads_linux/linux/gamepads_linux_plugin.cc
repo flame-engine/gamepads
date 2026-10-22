@@ -4,6 +4,7 @@
 
 #include <flutter_linux/flutter_linux.h>
 
+#include <atomic>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -28,9 +29,7 @@ G_DEFINE_TYPE(GamepadsLinuxPlugin, gamepads_linux_plugin, g_object_get_type())
 
 static FlMethodChannel* channel;
 
-bool keep_reading_events = false;
-// Written by the connection thread, read by the platform thread
-// (listGamepads): always accessed under gamepads_mutex.
+std::atomic<bool> keep_reading_events = false;
 std::map<std::string, std::shared_ptr<gamepad::GamepadInfo>> gamepads = {};
 std::mutex gamepads_mutex;
 
@@ -54,8 +53,6 @@ static void free_pending_message(gpointer data) {
   delete message;
 }
 
-// Platform channels must only be used from the platform (GTK main) thread:
-// the reading threads hand their messages over to the main loop.
 static void invoke_on_platform_thread(const char* method, FlValue* args) {
   g_idle_add_full(G_PRIORITY_DEFAULT, send_pending_message,
                   new PendingMessage{method, args}, free_pending_message);
@@ -80,6 +77,10 @@ static void emit_gamepad_event(const gamepad::GamepadInfo& gamepad,
                                const js_event& event) {
   std::optional<std::string> type = parse_event_type(event);
   if (!type) {
+    return;
+  }
+  std::lock_guard<std::mutex> lock(gamepads_mutex);
+  if (!gamepad.alive) {
     return;
   }
   FlValue* map = fl_value_new_map();
@@ -203,10 +204,27 @@ void gamepads_linux_plugin_register_with_registrar(
   g_object_unref(plugin);
 }
 
+static void remove_gamepad(
+    const std::string& device_id,
+    const std::shared_ptr<gamepad::GamepadInfo>& expected) {
+  std::lock_guard<std::mutex> lock(gamepads_mutex);
+  auto existing = gamepads.find(device_id);
+  if (existing == gamepads.end() ||
+      (expected && existing->second != expected)) {
+    return;
+  }
+  std::cout << "Gamepad disconnected " << device_id << std::endl;
+  existing->second->alive = false;
+  const std::string name = existing->second->name;
+  gamepads.erase(existing);
+  emit_gamepad_connection_event(device_id, name, false);
+}
+
 void process_connection_event(std::shared_ptr<gamepad::GamepadInfo> gamepad) {
   gamepad::listen(gamepad, [gamepad](const js_event& value) {
     emit_gamepad_event(*gamepad, value);
   });
+  remove_gamepad(gamepad->device_id, gamepad);
 }
 
 void event_loop_start() {
@@ -214,41 +232,38 @@ void event_loop_start() {
       &keep_reading_events,
       [](const connection_listener::ConnectionEvent& event) {
         std::string key = event.device_id;
-        std::lock_guard<std::mutex> lock(gamepads_mutex);
-        auto existingGamepad = gamepads.find(key);
-        if (event.type == connection_listener::ConnectionEventType::CONNECTED) {
-          if (existingGamepad != gamepads.end() &&
-              existingGamepad->second->alive) {
+        if (event.type ==
+            connection_listener::ConnectionEventType::DISCONNECTED) {
+          remove_gamepad(key, nullptr);
+          return;
+        }
+
+        {
+          std::lock_guard<std::mutex> lock(gamepads_mutex);
+          if (gamepads.count(key) > 0) {
             std::cout << "Existing gamepad found; skipping" << std::endl;
             return;
           }
+        }
 
-          std::shared_ptr<gamepad::GamepadInfo> info =
-              gamepad::get_gamepad_info(key);
-          if (!info) {
-            std::cerr << "Unable to open joystick for reading " << key
-                      << std::endl;
-            return;
-          }
-
-          std::cout << "Gamepad connected " << key << " - " << info->name
+        std::shared_ptr<gamepad::GamepadInfo> info =
+            gamepad::get_gamepad_info(key);
+        if (!info) {
+          std::cerr << "Unable to open joystick for reading " << key
                     << std::endl;
+          return;
+        }
+
+        std::cout << "Gamepad connected " << key << " - " << info->name
+                  << std::endl;
+        {
+          std::lock_guard<std::mutex> lock(gamepads_mutex);
           gamepads[key] = info;
           emit_gamepad_connection_event(key, info->name, true);
-
-          std::thread input_thread(process_connection_event, info);
-          input_thread.detach();
-        } else {
-          std::cout << "Gamepad disconnected " << key << std::endl;
-          if (existingGamepad != gamepads.end()) {
-            const std::string name = existingGamepad->second->name;
-            // The reading thread keeps its own reference and stops on its
-            // next read, which fails now that the device is gone.
-            existingGamepad->second->alive = false;
-            gamepads.erase(existingGamepad);
-            emit_gamepad_connection_event(key, name, false);
-          }
         }
+
+        std::thread input_thread(process_connection_event, info);
+        input_thread.detach();
       });
 }
 
@@ -257,6 +272,13 @@ static void gamepads_linux_plugin_dispose(GObject* object) {
   delete self->rumble;
   self->rumble = nullptr;
   keep_reading_events = false;
+  {
+    std::lock_guard<std::mutex> lock(gamepads_mutex);
+    for (const auto& [device_id, gamepad] : gamepads) {
+      gamepad->alive = false;
+    }
+    gamepads.clear();
+  }
   G_OBJECT_CLASS(gamepads_linux_plugin_parent_class)->dispose(object);
 }
 

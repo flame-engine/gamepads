@@ -1,5 +1,6 @@
 #include <fcntl.h>
 #include <linux/joystick.h>
+#include <poll.h>
 #include <unistd.h>
 #include <cerrno>
 #include <cstdio>
@@ -15,23 +16,7 @@
 
 using namespace gamepad;
 
-/**
- * Reads a joystick event from the joystick gamepad_id.
- *
- * Returns 0 on success. Otherwise -1 is returned.
- */
-static int read_event(int fd, struct js_event* event) {
-  ssize_t bytes;
-
-  bytes = read(fd, event, sizeof(*event));
-
-  if (bytes == sizeof(*event)) {
-    return 0;
-  }
-
-  /* Error, could not read full event. */
-  return -1;
-}
+constexpr int poll_timeout_ms = 500;
 
 static int read_sysfs_hex(const std::string& path) {
   std::ifstream file(path);
@@ -54,12 +39,10 @@ static std::string extract_js_name(const std::string& device_id) {
 
 namespace gamepad {
 std::shared_ptr<GamepadInfo> get_gamepad_info(const std::string& device_id) {
-  std::cout << "Listening to gamepad " << device_id << std::endl;
+  std::cout << "Opening gamepad " << device_id << std::endl;
 
   int file_descriptor = open(device_id.c_str(), O_RDONLY);
   if (file_descriptor == -1) {
-    // Expected right after a hotplug: udev has not granted access yet. The
-    // following IN_ATTRIB event retries once permissions are set.
     std::cerr << "Could not open joystick: " << strerror(errno) << std::endl;
     return nullptr;
   }
@@ -91,17 +74,25 @@ void listen(std::shared_ptr<GamepadInfo> gamepad,
   std::cout << "Listening to gamepad " << gamepad->device_id << std::endl;
 
   while (gamepad->alive) {
+    struct pollfd poll_fd = {gamepad->file_descriptor, POLLIN, 0};
+    int ready = poll(&poll_fd, 1, poll_timeout_ms);
+    if (ready == 0 || (ready == -1 && errno == EINTR)) {
+      continue;
+    }
+    if (ready == -1) {
+      break;
+    }
+
     struct js_event event;
-    if (read_event(gamepad->file_descriptor, &event) != 0) {
-      if (errno == EINTR) {
-        continue;
-      }
-      // Device unplugged (ENODEV): never forward an uninitialized event.
+    ssize_t bytes = read(gamepad->file_descriptor, &event, sizeof(event));
+    if (bytes == -1 && errno == EINTR) {
+      continue;
+    }
+    if (bytes != sizeof(event)) {
       break;
     }
     event_consumer(event);
   }
-  gamepad->alive = false;
 
   std::cout << "Stopped listening for events: " << gamepad->device_id
             << std::endl;

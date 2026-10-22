@@ -1,3 +1,4 @@
+#include <poll.h>
 #include <unistd.h>
 #include <cerrno>
 #include <cstring>
@@ -16,6 +17,7 @@
 using namespace connection_listener;
 
 const std::string _input_dir = "/dev/input/";
+constexpr int _poll_timeout_ms = 500;
 
 std::map<ConnectionEventType, const char*> connectionEventTypeNames = {
     {ConnectionEventType::CONNECTED, "CONNECTED"},
@@ -37,8 +39,6 @@ void _list_existing(
     const std::function<void(const ConnectionEvent&)>& event_consumer) {
   DIR* dir = opendir(_input_dir.c_str());
 
-  // Errors are logged, never thrown: an exception escaping this detached
-  // thread would terminate the whole app.
   if (!dir) {
     std::cerr << "Error reading existing connections: failed to open "
               << _input_dir << ": " << strerror(errno) << std::endl;
@@ -70,6 +70,17 @@ void _list_existing(
 bool _wait_for_connections(
     int inotify,
     const std::function<void(const ConnectionEvent&)>& event_consumer) {
+  struct pollfd poll_fd = {inotify, POLLIN, 0};
+  int ready = poll(&poll_fd, 1, _poll_timeout_ms);
+  if (ready == 0 || (ready == -1 && errno == EINTR)) {
+    return true;
+  }
+  if (ready == -1) {
+    std::cerr << "Error polling inotify events: " << strerror(errno)
+              << std::endl;
+    return false;
+  }
+
   char buffer[4096] __attribute__((aligned(__alignof__(struct inotify_event))));
   ssize_t len = read(inotify, buffer, sizeof(buffer));
   if (len < 0) {
@@ -86,7 +97,6 @@ bool _wait_for_connections(
     auto* event = reinterpret_cast<struct inotify_event*>(ptr);
     ptr += sizeof(struct inotify_event) + event->len;
 
-    // Skip, don't stop: one read may also carry the next js* event.
     std::string name = event->len > 0 ? event->name : "";
     if (!starts_with(name, "js")) {
       continue;
@@ -106,14 +116,12 @@ bool _wait_for_connections(
 }
 
 namespace connection_listener {
-void listen(const bool* keep_reading,
+void listen(const std::atomic<bool>* keep_reading,
             const std::function<void(const ConnectionEvent&)>& event_consumer) {
   std::cout << "Reading initial gamepads..." << std::endl;
   _list_existing(event_consumer);
 
   int inotify = inotify_init();
-  // Without inotify, gamepads already plugged in keep working; only hotplug
-  // detection is lost.
   if (inotify == -1) {
     std::cerr << "Error initializing inotify: " << strerror(errno) << std::endl;
     return;
@@ -121,9 +129,13 @@ void listen(const bool* keep_reading,
   int watcher = inotify_add_watch(inotify, _input_dir.c_str(),
                                   IN_CREATE | IN_DELETE | IN_ATTRIB);
   if (watcher == -1) {
+    int error = errno;
     std::cerr << "Error adding watch for " << _input_dir << ": "
-              << strerror(errno) << " (see fs.inotify.max_user_watches)"
-              << std::endl;
+              << strerror(error);
+    if (error == ENOSPC) {
+      std::cerr << " (see fs.inotify.max_user_watches)";
+    }
+    std::cerr << std::endl;
     close(inotify);
     return;
   }

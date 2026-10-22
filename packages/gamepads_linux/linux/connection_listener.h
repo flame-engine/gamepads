@@ -1,5 +1,6 @@
 #include <sys/inotify.h>
 #include <unistd.h>
+#include <atomic>
 #include <functional>
 #include <iostream>
 #include <optional>
@@ -18,6 +19,6 @@ struct ConnectionEvent {
   std::string device_id;
 };
 
-void listen(const bool* keep_reading,
+void listen(const std::atomic<bool>* keep_reading,
             const std::function<void(const ConnectionEvent&)>& event_consumer);
 }  // namespace connection_listener
