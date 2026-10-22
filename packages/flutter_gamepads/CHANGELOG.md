@@ -1,3 +1,7 @@
+## 0.1.14
+
+ - Update a dependency to the latest release.
+
 ## 0.1.13
 
  - **FIX**: Use invoke context fallback also for DirectionalFocusIntent ([#145](https://github.com/flame-engine/gamepads/issues/145)). ([1ec72bed](https://github.com/flame-engine/gamepads/commit/1ec72bed80ba5ca2390d7209c434ceaa565b4df8))

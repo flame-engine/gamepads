@@ -1,3 +1,7 @@
+## 0.1.13
+
+ - Update a dependency to the latest release.
+
 ## 0.1.12
 
  - **FIX**: Drop disconnected gamepads from Gamepads.list() on Apple platforms ([#139](https://github.com/flame-engine/gamepads/issues/139)). ([fc3b857b](https://github.com/flame-engine/gamepads/commit/fc3b857b654d30d32ebaf7e9d36c006bd4224f3e))
