@@ -2,8 +2,9 @@
 #include <linux/joystick.h>
 #include <unistd.h>
 
+#include <atomic>
 #include <functional>
-#include <optional>
+#include <memory>
 #include <string>
 
 #include "utils.h"
@@ -13,13 +14,13 @@ struct GamepadInfo {
   std::string device_id;
   std::string name;
   int file_descriptor;
-  bool alive;
+  std::atomic<bool> alive;
   int vendor_id;
   int product_id;
 };
 
-std::optional<GamepadInfo> get_gamepad_info(const std::string& device);
+std::shared_ptr<GamepadInfo> get_gamepad_info(const std::string& device);
 
-void listen(GamepadInfo* gamepad,
+void listen(std::shared_ptr<GamepadInfo> gamepad,
             const std::function<void(const js_event&)>& event_consumer);
 }  // namespace gamepad

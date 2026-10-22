@@ -1,4 +1,7 @@
+#include <poll.h>
 #include <unistd.h>
+#include <cerrno>
+#include <cstring>
 #include <functional>
 #include <iostream>
 #include <optional>
@@ -14,6 +17,7 @@
 using namespace connection_listener;
 
 const std::string _input_dir = "/dev/input/";
+constexpr int _poll_timeout_ms = 500;
 
 std::map<ConnectionEventType, const char*> connectionEventTypeNames = {
     {ConnectionEventType::CONNECTED, "CONNECTED"},
@@ -36,8 +40,9 @@ void _list_existing(
   DIR* dir = opendir(_input_dir.c_str());
 
   if (!dir) {
-    std::cerr << "Failed to open directory: " << _input_dir << std::endl;
-    throw std::runtime_error("Error reading existing connections");
+    std::cerr << "Error reading existing connections: failed to open "
+              << _input_dir << ": " << strerror(errno) << std::endl;
+    return;
   }
 
   struct dirent* entry;
@@ -61,58 +66,85 @@ void _list_existing(
   }
 }
 
-void _wait_for_connections(
+/// Returns false when inotify can no longer be read.
+bool _wait_for_connections(
     int inotify,
     const std::function<void(const ConnectionEvent&)>& event_consumer) {
+  struct pollfd poll_fd = {inotify, POLLIN, 0};
+  int ready = poll(&poll_fd, 1, _poll_timeout_ms);
+  if (ready == 0 || (ready == -1 && errno == EINTR)) {
+    return true;
+  }
+  if (ready == -1) {
+    std::cerr << "Error polling inotify events: " << strerror(errno)
+              << std::endl;
+    return false;
+  }
+
   char buffer[4096] __attribute__((aligned(__alignof__(struct inotify_event))));
   ssize_t len = read(inotify, buffer, sizeof(buffer));
   if (len < 0) {
-    std::cerr << "Error reading inotify events" << std::endl;
-    throw std::runtime_error("Error reading inotify events");
+    if (errno == EINTR) {
+      return true;
+    }
+    std::cerr << "Error reading inotify events: " << strerror(errno)
+              << std::endl;
+    return false;
   }
 
   char* ptr = buffer;
   while (ptr < buffer + len) {
     auto* event = reinterpret_cast<struct inotify_event*>(ptr);
-    std::string name = event->name;
+    ptr += sizeof(struct inotify_event) + event->len;
+
+    std::string name = event->len > 0 ? event->name : "";
     if (!starts_with(name, "js")) {
-      break;
+      continue;
+    }
+    std::optional<ConnectionEventType> type = _parseEventType(event);
+    if (!type) {
+      continue;
     }
 
     std::string device = _input_dir + name;
-    std::optional<ConnectionEventType> type = _parseEventType(event);
-
     std::cout << "Connection found: " << connectionEventTypeNames[*type]
               << " - " << name << std::endl;
     ConnectionEvent connection_event = {*type, device};
     event_consumer(connection_event);
-
-    ptr += sizeof(struct inotify_event) + event->len;
   }
+  return true;
 }
 
 namespace connection_listener {
-void listen(const bool* keep_reading,
+void listen(const std::atomic<bool>* keep_reading,
             const std::function<void(const ConnectionEvent&)>& event_consumer) {
   std::cout << "Reading initial gamepads..." << std::endl;
   _list_existing(event_consumer);
 
   int inotify = inotify_init();
   if (inotify == -1) {
-    std::cerr << "Error initializing inotify" << std::endl;
-    throw std::runtime_error("Error initializing inotify");
+    std::cerr << "Error initializing inotify: " << strerror(errno) << std::endl;
+    return;
   }
   int watcher = inotify_add_watch(inotify, _input_dir.c_str(),
                                   IN_CREATE | IN_DELETE | IN_ATTRIB);
   if (watcher == -1) {
+    int error = errno;
+    std::cerr << "Error adding watch for " << _input_dir << ": "
+              << strerror(error);
+    if (error == ENOSPC) {
+      std::cerr << " (see fs.inotify.max_user_watches)";
+    }
+    std::cerr << std::endl;
     close(inotify);
-    std::cerr << "Error adding watch for " << _input_dir << std::endl;
-    throw std::runtime_error("Error adding inotify watch");
+    return;
   }
 
   std::cout << "Listening for gamepads..." << std::endl;
   while (*keep_reading) {
-    _wait_for_connections(inotify, event_consumer);
+    if (!_wait_for_connections(inotify, event_consumer)) {
+      break;
+    }
   }
   std::cout << "Stopped listening for gamepads." << std::endl;
 
