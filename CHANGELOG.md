@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-10-22
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads_linux` - `v0.1.4`](#gamepads_linux---v014)
+ - [`gamepads` - `v0.1.13`](#gamepads---v0113)
+ - [`flutter_gamepads` - `v0.1.14`](#flutter_gamepads---v0114)
+ - [`gamepads_test` - `v0.1.2`](#gamepads_test---v012)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads` - `v0.1.13`
+ - `flutter_gamepads` - `v0.1.14`
+ - `gamepads_test` - `v0.1.2`
+
+---
+
+#### `gamepads_linux` - `v0.1.4`
+
+ - **FIX**: Prevent crashes on gamepad hotplug on Linux ([#149](https://github.com/flame-engine/gamepads/issues/149)). ([6ee0a61e](https://github.com/flame-engine/gamepads/commit/6ee0a61e6080042f31d1ff12ccaef2f5bb107226))
+
+
 ## 2026-09-15
 
 ### Changes

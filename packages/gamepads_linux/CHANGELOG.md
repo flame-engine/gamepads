@@ -1,3 +1,7 @@
+## 0.1.4
+
+ - **FIX**: Prevent crashes on gamepad hotplug on Linux ([#149](https://github.com/flame-engine/gamepads/issues/149)). ([6ee0a61e](https://github.com/flame-engine/gamepads/commit/6ee0a61e6080042f31d1ff12ccaef2f5bb107226))
+
 ## 0.1.3
 
  - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
