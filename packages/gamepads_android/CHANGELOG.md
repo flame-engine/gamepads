@@ -1,3 +1,7 @@
+## Unreleased
+
+ - **FIX**: Distinguish composite typing keyboards from controllers and pass through non-gamepad input.
+
 ## 0.1.10
 
  - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
