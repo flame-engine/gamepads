@@ -37,6 +37,7 @@ class AndroidMapping extends PlatformMapping {
     'AXIS_RTRIGGER': GamepadAxis.rightTrigger,
     'AXIS_BRAKE': GamepadAxis.leftTrigger,
     'AXIS_GAS': GamepadAxis.rightTrigger,
+    'AXIS_THROTTLE': GamepadAxis.rightTrigger,
     // Right-stick axes for non-Xbox layouts, which report the right stick on
     // RX/RY instead of Z/RZ. E.g. the DJI RC Pro.
     'AXIS_RX': GamepadAxis.rightStickX,
