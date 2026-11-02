@@ -9,7 +9,6 @@
 #include <functional>
 #include <memory>
 #include <mutex>
-#include <optional>
 #include <vector>
 
 #include "gamepad.h"
@@ -45,15 +44,16 @@ class GamepadsWindowsPlugin : public flutter::Plugin {
                                      bool connected);
 
   // GameInput callbacks and read threads are not the platform thread.
-  // Channel messages are queued and sent from the top-level window procedure.
+  // Channel messages are queued and sent from a message-only window owned by
+  // the plugin, which works whether or not the host forwards window messages.
   void post_to_platform_thread(std::function<void()> task);
-  std::optional<LRESULT> HandleWindowProc(HWND hwnd,
-                                          UINT message,
-                                          WPARAM wparam,
-                                          LPARAM lparam);
+  void drain_tasks();
+  static LRESULT CALLBACK DispatchWindowProc(HWND hwnd,
+                                             UINT message,
+                                             WPARAM wparam,
+                                             LPARAM lparam);
 
-  UINT dispatch_message_ = 0;
-  int window_proc_id_ = -1;
+  HWND dispatch_window_ = nullptr;
   bool posted_ = false;  // a dispatch message is pending (tasks_mutex_)
   std::mutex tasks_mutex_;
   std::vector<std::function<void()>> tasks_;

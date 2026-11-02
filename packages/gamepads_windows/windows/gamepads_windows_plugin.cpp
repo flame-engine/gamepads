@@ -9,10 +9,17 @@
 #include <flutter/plugin_registrar_windows.h>
 #include <flutter/standard_method_codec.h>
 
+#include <iostream>
 #include <memory>
 #include <sstream>
+#include <utility>
 
 namespace gamepads_windows {
+namespace {
+constexpr wchar_t kDispatchWindowClass[] = L"gamepads_windows_dispatch";
+constexpr UINT kDispatchMessage = WM_APP;
+}  // namespace
+
 void GamepadsWindowsPlugin::RegisterWithRegistrar(
     flutter::PluginRegistrarWindows* registrar) {
   channel = std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
@@ -32,11 +39,21 @@ void GamepadsWindowsPlugin::RegisterWithRegistrar(
 GamepadsWindowsPlugin::GamepadsWindowsPlugin(
     flutter::PluginRegistrarWindows* registrar)
     : registrar(registrar) {
-  dispatch_message_ = RegisterWindowMessage(L"gamepads_windows_dispatch");
-  window_proc_id_ = registrar->RegisterTopLevelWindowProcDelegate(
-      [this](HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
-        return HandleWindowProc(hwnd, message, wparam, lparam);
-      });
+  WNDCLASSW window_class = {};
+  window_class.lpfnWndProc = DispatchWindowProc;
+  window_class.hInstance = GetModuleHandleW(nullptr);
+  window_class.lpszClassName = kDispatchWindowClass;
+  RegisterClassW(&window_class);
+  dispatch_window_ =
+      CreateWindowExW(0, kDispatchWindowClass, L"", 0, 0, 0, 0, 0, HWND_MESSAGE,
+                      nullptr, window_class.hInstance, nullptr);
+  if (dispatch_window_) {
+    SetWindowLongPtrW(dispatch_window_, GWLP_USERDATA,
+                      reinterpret_cast<LONG_PTR>(this));
+  } else {
+    std::cerr << "Failed to create gamepads dispatch window: " << GetLastError()
+              << std::endl;
+  }
   gamepads.event_emitter = [&](GamepadData* gamepad, const Event& event) {
     this->emit_gamepad_event(gamepad, event);
   };
@@ -51,36 +68,29 @@ GamepadsWindowsPlugin::~GamepadsWindowsPlugin() {
   gamepads.event_emitter.reset();
   gamepads.connection_emitter.reset();
   gamepads.stop();
-  if (window_proc_id_ >= 0) {
-    registrar->UnregisterTopLevelWindowProcDelegate(window_proc_id_);
+  HWND window = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(tasks_mutex_);
+    std::swap(window, dispatch_window_);
+    tasks_.clear();
   }
+  if (window) {
+    DestroyWindow(window);
+  }
+  UnregisterClassW(kDispatchWindowClass, GetModuleHandleW(nullptr));
 }
 
 void GamepadsWindowsPlugin::post_to_platform_thread(
     std::function<void()> task) {
   std::lock_guard<std::mutex> lock(tasks_mutex_);
-  tasks_.push_back(std::move(task));
-  if (posted_)
-    return;  // one pending message drains the whole queue
-
-  // Resolved on each post, not in the constructor: plugins are registered
-  // before the runner parents the Flutter view into the top-level window.
-  // Until then GA_ROOT is the view itself, whose messages never reach the
-  // top-level window proc delegates: keep the tasks for a later post.
-  auto view = registrar->GetView();
-  HWND view_hwnd = view ? view->GetNativeWindow() : nullptr;
-  if (!view_hwnd || !GetParent(view_hwnd))
+  if (!dispatch_window_)
     return;
-  HWND root = GetAncestor(view_hwnd, GA_ROOT);
-  posted_ = root && PostMessage(root, dispatch_message_, 0, 0);
+  tasks_.push_back(std::move(task));
+  if (!posted_)
+    posted_ = PostMessageW(dispatch_window_, kDispatchMessage, 0, 0) != 0;
 }
 
-std::optional<LRESULT> GamepadsWindowsPlugin::HandleWindowProc(HWND hwnd,
-                                                               UINT message,
-                                                               WPARAM wparam,
-                                                               LPARAM lparam) {
-  if (message != dispatch_message_)
-    return std::nullopt;
+void GamepadsWindowsPlugin::drain_tasks() {
   std::vector<std::function<void()>> tasks;
   {
     std::lock_guard<std::mutex> lock(tasks_mutex_);
@@ -89,7 +99,20 @@ std::optional<LRESULT> GamepadsWindowsPlugin::HandleWindowProc(HWND hwnd,
   }
   for (auto& task : tasks)
     task();
-  return 0;
+}
+
+LRESULT CALLBACK GamepadsWindowsPlugin::DispatchWindowProc(HWND hwnd,
+                                                           UINT message,
+                                                           WPARAM wparam,
+                                                           LPARAM lparam) {
+  if (message == kDispatchMessage) {
+    auto plugin = reinterpret_cast<GamepadsWindowsPlugin*>(
+        GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+    if (plugin)
+      plugin->drain_tasks();
+    return 0;
+  }
+  return DefWindowProcW(hwnd, message, wparam, lparam);
 }
 
 void GamepadsWindowsPlugin::HandleMethodCall(
