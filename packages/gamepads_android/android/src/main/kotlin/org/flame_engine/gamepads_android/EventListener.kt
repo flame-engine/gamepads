@@ -15,8 +15,12 @@ data class SupportedAxis(
 class EventListener {
     companion object {
         private const val EPSILON = 0.001
+        private val LEFT_TRIGGER_AXES = setOf(MotionEvent.AXIS_LTRIGGER, MotionEvent.AXIS_BRAKE)
+        private val RIGHT_TRIGGER_AXES = setOf(
+            MotionEvent.AXIS_RTRIGGER, MotionEvent.AXIS_GAS, MotionEvent.AXIS_THROTTLE,
+        )
     }
-    private val lastAxisValue = mutableMapOf<Int, Float>()
+    private val lastAxisValue = mutableMapOf<Pair<Int, Int>, Float>()
     // Reference: https://developer.android.com/reference/android/view/MotionEvent
     //
     // The vertical axes are inverted here so that the values sent to Dart
@@ -35,6 +39,7 @@ class EventListener {
         SupportedAxis(MotionEvent.AXIS_RTRIGGER),
         SupportedAxis(MotionEvent.AXIS_BRAKE),
         SupportedAxis(MotionEvent.AXIS_GAS),
+        SupportedAxis(MotionEvent.AXIS_THROTTLE),
         SupportedAxis(MotionEvent.AXIS_WHEEL),
         // Right-stick axes for non-Xbox layouts (Xbox uses AXIS_Z/RZ).
         // E.g. DJI RC Pro reports its right stick on RX/RY.
@@ -61,7 +66,16 @@ class EventListener {
 
     fun onMotionEvent(motionEvent: MotionEvent, channel: MethodChannel): Boolean {
         var handled = false
+        // Match Chromium's generic mapping: use only advertised joystick ranges,
+        // with the last supported alias winning for each trigger. Reporting absent
+        // axes as zero would overwrite a real trigger or disable digital fallback.
+        val ranges = InputDevice.getDevice(motionEvent.deviceId)?.motionRanges.orEmpty()
+            .filter { (it.source and InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK }
+        val leftTrigger = ranges.lastOrNull { it.axis in LEFT_TRIGGER_AXES }?.axis
+        val rightTrigger = ranges.lastOrNull { it.axis in RIGHT_TRIGGER_AXES }?.axis
         supportedAxes.forEach { axis ->
+            if (axis.axisId in LEFT_TRIGGER_AXES && axis.axisId != leftTrigger) return@forEach
+            if (axis.axisId in RIGHT_TRIGGER_AXES && axis.axisId != rightTrigger) return@forEach
             val axisHandled = reportAxis(motionEvent, channel, axis)
             if (axisHandled) handled = true
         }
@@ -78,14 +92,17 @@ class EventListener {
         val value = motionEvent.getAxisValue(axis.axisId) * multiplier
 
         // No-op if threshold is not met
-        val lastValue = lastAxisValue[axis.axisId]
+        // A second controller must emit its own initial trigger state, even if
+        // the first controller last reported the same value.
+        val axisKey = motionEvent.deviceId to axis.axisId
+        val lastValue = lastAxisValue[axisKey]
         if (lastValue is Float) {
             if (abs(value - lastValue) < EPSILON) {
                 return true
             }
         }
         // Update last value
-        lastAxisValue[axis.axisId] = value
+        lastAxisValue[axisKey] = value
 
         val device = InputDevice.getDevice(motionEvent.deviceId)
         val arguments = mutableMapOf<String, Any>(

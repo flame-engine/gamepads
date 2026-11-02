@@ -113,6 +113,11 @@ void main() {
         mapping.normalizeAxis('AXIS_GAS', 0.5).firstOrNull?.axis,
         GamepadAxis.rightTrigger,
       );
+      for (final value in [0.0, 0.5, 1.0]) {
+        final throttle = mapping.normalizeAxis('AXIS_THROTTLE', value).single;
+        expect(throttle.axis, GamepadAxis.rightTrigger);
+        expect(throttle.value, value);
+      }
     });
 
     test('normalizes hat d-pad axes', () {
