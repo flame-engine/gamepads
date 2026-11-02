@@ -135,7 +135,7 @@ void Gamepads::init() {
               self->on_gamepad_disconnected(device);
             }
           },
-          this->deviceCallbackToken);
+          &this->deviceCallbackToken);
     }
   }
 }
@@ -144,7 +144,8 @@ void Gamepads::stop() {
   if (g_gamepad)
     g_gamepad->Release();
   if (g_gameInput) {
-    g_gameInput->UnregisterCallback(*this->deviceCallbackToken, 5000);
+    if (this->deviceCallbackToken)
+      g_gameInput->UnregisterCallback(this->deviceCallbackToken, 5000);
     g_gameInput->Release();
   }
 
@@ -191,6 +192,9 @@ void Gamepads::on_gamepad_connected(IGameInputDevice* device) {
     (*connection_emitter)(gp->id, gp->name, true);
   }
 
+  // The callback does not transfer a reference to the device: keep it alive
+  // for the read thread, which releases it when it exits.
+  device->AddRef();
   std::thread read_thread(
       [this, gp, device]() { this->read_gamepad(gp, device); });
   read_thread.detach();
@@ -229,10 +233,11 @@ void Gamepads::read_gamepad(GamepadData* gamepad, IGameInputDevice* device) {
   GameInputGamepadState previous_state = {
       GameInputGamepadNone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   while (!gamepad->stop_thread && g_gameInput != nullptr) {
-    IGameInputReading* reading;
+    IGameInputReading* reading = nullptr;
     GameInputGamepadState state;
-    g_gameInput->GetCurrentReading(GameInputKindGamepad, device, &reading);
-    if (reading != nullptr) {
+    HRESULT hr =
+        g_gameInput->GetCurrentReading(GameInputKindGamepad, device, &reading);
+    if (SUCCEEDED(hr) && reading != nullptr) {
       if (reading->GetGamepadState(&state)) {
         if (are_states_different(previous_state, state)) {
           auto events = diff_states(previous_state, state);
@@ -243,12 +248,13 @@ void Gamepads::read_gamepad(GamepadData* gamepad, IGameInputDevice* device) {
           }
         }
         previous_state = state;
-        reading->Release();
       }
+      reading->Release();
     }
 
     Sleep(8);
   }
+  device->Release();
 
   if (gamepad->stop_thread) {
     std::cout << "Gamepad thread exit (via signal) " << gamepad->id

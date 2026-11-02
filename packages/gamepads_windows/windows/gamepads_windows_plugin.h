@@ -6,7 +6,11 @@
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
 
+#include <functional>
 #include <memory>
+#include <mutex>
+#include <optional>
+#include <vector>
 
 #include "gamepad.h"
 
@@ -39,6 +43,20 @@ class GamepadsWindowsPlugin : public flutter::Plugin {
   void emit_gamepad_connection_event(const std::string& id,
                                      const std::string& name,
                                      bool connected);
+
+  // GameInput callbacks and read threads are not the platform thread.
+  // Channel messages are queued and sent from the top-level window procedure.
+  void post_to_platform_thread(std::function<void()> task);
+  std::optional<LRESULT> HandleWindowProc(HWND hwnd,
+                                          UINT message,
+                                          WPARAM wparam,
+                                          LPARAM lparam);
+
+  UINT dispatch_message_ = 0;
+  int window_proc_id_ = -1;
+  bool posted_ = false;  // a dispatch message is pending (tasks_mutex_)
+  std::mutex tasks_mutex_;
+  std::vector<std::function<void()>> tasks_;
 };
 
 }  // namespace gamepads_windows

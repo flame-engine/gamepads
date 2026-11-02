@@ -32,6 +32,11 @@ void GamepadsWindowsPlugin::RegisterWithRegistrar(
 GamepadsWindowsPlugin::GamepadsWindowsPlugin(
     flutter::PluginRegistrarWindows* registrar)
     : registrar(registrar) {
+  dispatch_message_ = RegisterWindowMessage(L"gamepads_windows_dispatch");
+  window_proc_id_ = registrar->RegisterTopLevelWindowProcDelegate(
+      [this](HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
+        return HandleWindowProc(hwnd, message, wparam, lparam);
+      });
   gamepads.event_emitter = [&](GamepadData* gamepad, const Event& event) {
     this->emit_gamepad_event(gamepad, event);
   };
@@ -43,7 +48,48 @@ GamepadsWindowsPlugin::GamepadsWindowsPlugin(
 }
 
 GamepadsWindowsPlugin::~GamepadsWindowsPlugin() {
+  gamepads.event_emitter.reset();
+  gamepads.connection_emitter.reset();
   gamepads.stop();
+  if (window_proc_id_ >= 0) {
+    registrar->UnregisterTopLevelWindowProcDelegate(window_proc_id_);
+  }
+}
+
+void GamepadsWindowsPlugin::post_to_platform_thread(
+    std::function<void()> task) {
+  std::lock_guard<std::mutex> lock(tasks_mutex_);
+  tasks_.push_back(std::move(task));
+  if (posted_)
+    return;  // one pending message drains the whole queue
+
+  // Resolved on each post, not in the constructor: plugins are registered
+  // before the runner parents the Flutter view into the top-level window.
+  // Until then GA_ROOT is the view itself, whose messages never reach the
+  // top-level window proc delegates: keep the tasks for a later post.
+  auto view = registrar->GetView();
+  HWND view_hwnd = view ? view->GetNativeWindow() : nullptr;
+  if (!view_hwnd || !GetParent(view_hwnd))
+    return;
+  HWND root = GetAncestor(view_hwnd, GA_ROOT);
+  posted_ = root && PostMessage(root, dispatch_message_, 0, 0);
+}
+
+std::optional<LRESULT> GamepadsWindowsPlugin::HandleWindowProc(HWND hwnd,
+                                                               UINT message,
+                                                               WPARAM wparam,
+                                                               LPARAM lparam) {
+  if (message != dispatch_message_)
+    return std::nullopt;
+  std::vector<std::function<void()>> tasks;
+  {
+    std::lock_guard<std::mutex> lock(tasks_mutex_);
+    tasks.swap(tasks_);
+    posted_ = false;
+  }
+  for (auto& task : tasks)
+    task();
+  return 0;
 }
 
 void GamepadsWindowsPlugin::HandleMethodCall(
@@ -124,9 +170,14 @@ void GamepadsWindowsPlugin::emit_gamepad_event(GamepadData* gamepad,
         flutter::EncodableValue(gamepad->vendor_id);
     map[flutter::EncodableValue("productId")] =
         flutter::EncodableValue(gamepad->product_id);
-    _channel->InvokeMethod("onGamepadEvent",
-                           std::make_unique<flutter::EncodableValue>(
-                               flutter::EncodableValue(map)));
+    // Built here (`gamepad` may be freed once its thread exits), sent from
+    // the platform thread.
+    post_to_platform_thread([map = std::move(map)]() {
+      if (auto c = channel.get()) {
+        c->InvokeMethod("onGamepadEvent",
+                        std::make_unique<flutter::EncodableValue>(map));
+      }
+    });
   }
 }
 
@@ -141,9 +192,12 @@ void GamepadsWindowsPlugin::emit_gamepad_connection_event(
     map[flutter::EncodableValue("name")] = flutter::EncodableValue(name);
     map[flutter::EncodableValue("type")] =
         flutter::EncodableValue(connected ? "connected" : "disconnected");
-    _channel->InvokeMethod("onGamepadConnectionEvent",
-                           std::make_unique<flutter::EncodableValue>(
-                               flutter::EncodableValue(map)));
+    post_to_platform_thread([map = std::move(map)]() {
+      if (auto c = channel.get()) {
+        c->InvokeMethod("onGamepadConnectionEvent",
+                        std::make_unique<flutter::EncodableValue>(map));
+      }
+    });
   }
 }
 }  // namespace gamepads_windows
