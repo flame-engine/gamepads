@@ -6,6 +6,11 @@ import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
 
+// The same button ranges as KeyEvent.isGamepadButton. D-pad and media keys alone
+// are not evidence of gamepad controls on a composite typing keyboard.
+internal val gamepadButtonKeyCodes = ((KeyEvent.KEYCODE_BUTTON_A..KeyEvent.KEYCODE_BUTTON_MODE) +
+    (KeyEvent.KEYCODE_BUTTON_1..KeyEvent.KEYCODE_BUTTON_16)).toIntArray()
+
 interface GamepadsCompatibleActivity {
     fun isGamepadsInputDevice(device: InputDevice): Boolean {
         val hasGamepadSource =
@@ -14,16 +19,17 @@ interface GamepadsCompatibleActivity {
         if (!hasGamepadSource) {
             return false
         }
-        // Some bluetooth keyboards claim a gamepad source, while some real
-        // controllers expose an alphabetic keyboard profile, so keyboard type
-        // alone cannot tell them apart. Real controllers report joystick axes
-        // (sticks, hats or triggers) and keyboards do not.
-        val hasJoystickAxes = device.motionRanges.any {
-            it.source and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK
+        // Preserve the existing path for ordinary and button-only controllers.
+        if (device.keyboardType != InputDevice.KEYBOARD_TYPE_ALPHABETIC) return true
+
+        // Composite typing keyboards can also report joystick ranges (e.g.
+        // VXE V87 BT2 reports GENERIC_1). Require an axis we actually support,
+        // or a gamepad button, rather than accepting any joystick range.
+        val hasSupportedJoystickAxis = device.motionRanges.any { range ->
+            range.source and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK &&
+                EventListener.supportedAxes.any { it.axisId == range.axis }
         }
-        val isKeyboard =
-            device.keyboardType == InputDevice.KEYBOARD_TYPE_ALPHABETIC && !hasJoystickAxes
-        return !isKeyboard
+        return hasSupportedJoystickAxis || device.hasKeys(*gamepadButtonKeyCodes).any { it }
     }
 
     fun registerInputDeviceListener(listener: InputManager.InputDeviceListener, handler: Handler?)

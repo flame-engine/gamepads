@@ -15,35 +15,56 @@ data class SupportedAxis(
 class EventListener {
     companion object {
         private const val EPSILON = 0.001
+        // Shared with composite device detection so accepted axes are supported.
+        // Reference: https://developer.android.com/reference/android/view/MotionEvent
+        //
+        // The vertical axes are inverted here so that the values sent to Dart
+        // follow up = +1.0, down = -1.0 instead of Android's native convention.
+        // AndroidMapping in the gamepads package relies on that and does not
+        // invert them again, so removing an `invert` below silently flips the
+        // corresponding stick or d-pad direction. See issue #123.
+        internal val supportedAxes = listOf(
+            SupportedAxis(MotionEvent.AXIS_X),
+            SupportedAxis(MotionEvent.AXIS_Y, invert = true),
+            SupportedAxis(MotionEvent.AXIS_Z),
+            SupportedAxis(MotionEvent.AXIS_RZ, invert = true),
+            SupportedAxis(MotionEvent.AXIS_HAT_X),
+            SupportedAxis(MotionEvent.AXIS_HAT_Y, invert = true),
+            SupportedAxis(MotionEvent.AXIS_LTRIGGER),
+            SupportedAxis(MotionEvent.AXIS_RTRIGGER),
+            SupportedAxis(MotionEvent.AXIS_BRAKE),
+            SupportedAxis(MotionEvent.AXIS_GAS),
+            SupportedAxis(MotionEvent.AXIS_WHEEL),
+            // Right-stick axes for non-Xbox layouts (Xbox uses AXIS_Z/RZ).
+            // E.g. DJI RC Pro reports its right stick on RX/RY.
+            SupportedAxis(MotionEvent.AXIS_RX),
+            SupportedAxis(MotionEvent.AXIS_RY, invert = true),
+        )
     }
     private val lastAxisValue = mutableMapOf<Int, Float>()
-    // Reference: https://developer.android.com/reference/android/view/MotionEvent
-    //
-    // The vertical axes are inverted here so that the values sent to Dart
-    // follow up = +1.0, down = -1.0 instead of Android's native convention.
-    // AndroidMapping in the gamepads package relies on that and does not
-    // invert them again, so removing an `invert` below silently flips the
-    // corresponding stick or d-pad direction. See issue #123.
-    private val supportedAxes = listOf(
-        SupportedAxis(MotionEvent.AXIS_X),
-        SupportedAxis(MotionEvent.AXIS_Y, invert = true),
-        SupportedAxis(MotionEvent.AXIS_Z),
-        SupportedAxis(MotionEvent.AXIS_RZ, invert = true),
-        SupportedAxis(MotionEvent.AXIS_HAT_X),
-        SupportedAxis(MotionEvent.AXIS_HAT_Y, invert = true),
-        SupportedAxis(MotionEvent.AXIS_LTRIGGER),
-        SupportedAxis(MotionEvent.AXIS_RTRIGGER),
-        SupportedAxis(MotionEvent.AXIS_BRAKE),
-        SupportedAxis(MotionEvent.AXIS_GAS),
-        SupportedAxis(MotionEvent.AXIS_WHEEL),
-        // Right-stick axes for non-Xbox layouts (Xbox uses AXIS_Z/RZ).
-        // E.g. DJI RC Pro reports its right stick on RX/RY.
-        SupportedAxis(MotionEvent.AXIS_RX),
-        SupportedAxis(MotionEvent.AXIS_RY, invert = true),
-    )
+
+    private fun isCompositeGamepadKey(event: KeyEvent): Boolean {
+        // Some controllers report gamepad buttons with a KEYBOARD source.
+        if (event.keyCode in gamepadButtonKeyCodes) return true
+        val hasControllerSource =
+            event.source and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
+            event.source and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK ||
+            event.source and InputDevice.SOURCE_DPAD == InputDevice.SOURCE_DPAD
+        if (!hasControllerSource) return false
+        return when (event.keyCode) {
+            KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_DPAD_DOWN,
+            KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT,
+            KeyEvent.KEYCODE_MEDIA_RECORD -> true
+            else -> false
+        }
+    }
 
     fun onKeyEvent(keyEvent: KeyEvent, channel: MethodChannel): Boolean {
         val device = InputDevice.getDevice(keyEvent.deviceId)
+        // Let the Activity handle typing keys from an accepted composite device.
+        // Do not change legacy routing for non-alphabetic controllers.
+        if (device?.keyboardType == InputDevice.KEYBOARD_TYPE_ALPHABETIC &&
+            !isCompositeGamepadKey(keyEvent)) return false
         val arguments = mutableMapOf<String, Any>(
             "gamepadId" to keyEvent.deviceId.toString(),
             "time" to keyEvent.eventTime,
@@ -60,6 +81,11 @@ class EventListener {
     }
 
     fun onMotionEvent(motionEvent: MotionEvent, channel: MethodChannel): Boolean {
+        val device = InputDevice.getDevice(motionEvent.deviceId)
+        if (device?.keyboardType == InputDevice.KEYBOARD_TYPE_ALPHABETIC &&
+            motionEvent.source and InputDevice.SOURCE_JOYSTICK != InputDevice.SOURCE_JOYSTICK) {
+            return false
+        }
         var handled = false
         supportedAxes.forEach { axis ->
             val axisHandled = reportAxis(motionEvent, channel, axis)
