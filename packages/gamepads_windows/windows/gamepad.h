@@ -30,7 +30,7 @@ class Gamepads {
  private:
   std::list<GamepadData*> gamepads;
 
-  GameInputCallbackToken* deviceCallbackToken;
+  GameInputCallbackToken deviceCallbackToken = 0;
   void read_gamepad(GamepadData* gamepad, IGameInputDevice* device);
 
   void on_gamepad_connected(IGameInputDevice* device);
