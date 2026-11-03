@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-11-03
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads_android` - `v0.1.11`](#gamepads_android---v0111)
+ - [`gamepads_windows` - `v0.3.3`](#gamepads_windows---v033)
+ - [`gamepads` - `v0.1.14`](#gamepads---v0114)
+ - [`flutter_gamepads` - `v0.1.15`](#flutter_gamepads---v0115)
+ - [`gamepads_test` - `v0.1.3`](#gamepads_test---v013)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gamepads` - `v0.1.14`
+ - `flutter_gamepads` - `v0.1.15`
+ - `gamepads_test` - `v0.1.3`
+
+---
+
+#### `gamepads_android` - `v0.1.11`
+
+ - **FIX**(android): Preserve composite gamepad and keyboard input ([#151](https://github.com/flame-engine/gamepads/issues/151)). ([b17619c2](https://github.com/flame-engine/gamepads/commit/b17619c28e45890e10b881f9b23bf8963b027430))
+
+#### `gamepads_windows` - `v0.3.3`
+
+ - **FIX**: Send Windows channel messages from the platform thread ([#154](https://github.com/flame-engine/gamepads/issues/154)). ([7dd283a3](https://github.com/flame-engine/gamepads/commit/7dd283a397ef7872d98203a11bda346b02c8d1b6))
+
+
 ## 2026-10-22
 
 ### Changes
