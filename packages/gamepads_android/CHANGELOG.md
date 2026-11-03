@@ -1,3 +1,7 @@
+## 0.1.11
+
+ - **FIX**(android): Preserve composite gamepad and keyboard input ([#151](https://github.com/flame-engine/gamepads/issues/151)). ([b17619c2](https://github.com/flame-engine/gamepads/commit/b17619c28e45890e10b881f9b23bf8963b027430))
+
 ## 0.1.10
 
  - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))

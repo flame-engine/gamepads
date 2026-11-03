@@ -1,3 +1,7 @@
+## 0.3.3
+
+ - **FIX**: Send Windows channel messages from the platform thread ([#154](https://github.com/flame-engine/gamepads/issues/154)). ([7dd283a3](https://github.com/flame-engine/gamepads/commit/7dd283a397ef7872d98203a11bda346b02c8d1b6))
+
 ## 0.3.2
 
  - **FEAT**: Add cross-platform controller rumble support ([#142](https://github.com/flame-engine/gamepads/issues/142)). ([c54a863a](https://github.com/flame-engine/gamepads/commit/c54a863a0371a40b5a624f1cd0e776ef60da0aa0))
