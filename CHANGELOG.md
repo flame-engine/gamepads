@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-11-07
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gamepads` - `v0.1.15`](#gamepads---v0115)
+ - [`gamepads_android` - `v0.1.12`](#gamepads_android---v0112)
+ - [`flutter_gamepads` - `v0.1.16`](#flutter_gamepads---v0116)
+ - [`gamepads_test` - `v0.1.4`](#gamepads_test---v014)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `flutter_gamepads` - `v0.1.16`
+ - `gamepads_test` - `v0.1.4`
+
+---
+
+#### `gamepads` - `v0.1.15`
+
+ - **FIX**(android): Honor advertised trigger axes and support throttle ([#153](https://github.com/flame-engine/gamepads/issues/153)). ([a76c08fa](https://github.com/flame-engine/gamepads/commit/a76c08fa7a623d4581acc00cfb6b0fb3080a3c3e))
+
+#### `gamepads_android` - `v0.1.12`
+
+ - **FIX**(android): Honor advertised trigger axes and support throttle ([#153](https://github.com/flame-engine/gamepads/issues/153)). ([a76c08fa](https://github.com/flame-engine/gamepads/commit/a76c08fa7a623d4581acc00cfb6b0fb3080a3c3e))
+
+
 ## 2026-11-03
 
 ### Changes

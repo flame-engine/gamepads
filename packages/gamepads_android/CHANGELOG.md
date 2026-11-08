@@ -1,3 +1,7 @@
+## 0.1.12
+
+ - **FIX**(android): Honor advertised trigger axes and support throttle ([#153](https://github.com/flame-engine/gamepads/issues/153)). ([a76c08fa](https://github.com/flame-engine/gamepads/commit/a76c08fa7a623d4581acc00cfb6b0fb3080a3c3e))
+
 ## 0.1.11
 
  - **FIX**(android): Preserve composite gamepad and keyboard input ([#151](https://github.com/flame-engine/gamepads/issues/151)). ([b17619c2](https://github.com/flame-engine/gamepads/commit/b17619c28e45890e10b881f9b23bf8963b027430))
